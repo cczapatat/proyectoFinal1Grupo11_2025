@@ -1,7 +1,9 @@
 from datetime import datetime
+import os
 import traceback
 import uuid
 
+from models.Operations import Status
 from sqlalchemy.exc import SQLAlchemyError
 from models.BulkTask import db, BulkTask
 from errors.errors import ApiError
@@ -13,10 +15,10 @@ class CreateBulkTask(BaseCommand):
         self.id = uuid.uuid4()
         self.user_email = user_email
         self.bulk_file_url = bulk_file_url
-        self.status = 'CREATED'
+        self.status = Status.BULK_QUEUED.value
         self.createdAt = datetime.utcnow()
         self.updatedAt = datetime.utcnow()
-        self.publisher_service = PublisherService()
+        self.publisher_service = PublisherService(os.getenv("GCP_PROJECT_ID"), os.getenv("GCP_MANUFACTURE_MASSIVE_TOPIC"))
 
     def execute(self):
         try:
@@ -47,6 +49,7 @@ class CreateBulkTask(BaseCommand):
                 'status': self.status,
                 'createdAt': self.createdAt.replace(microsecond=0).isoformat(),
             }
+        
         except SQLAlchemyError as e:
             db.session.rollback()
             traceback.print_exc()

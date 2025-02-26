@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, jsonify
 from flask_restful import Api
 from flask_cors import CORS
@@ -11,9 +12,10 @@ def get_env_variable(var_name, default_value):
 
 db_user = get_env_variable('DB_USER', 'postgres')
 db_password = get_env_variable('DB_PASSWORD', 'postgres')
-db_host = get_env_variable('DB_HOST', 'localhost')
+db_host = get_env_variable('DB_HOSTNAME', 'localhost')
 db_port = get_env_variable('DB_PORT', '5432')
 db_name = get_env_variable('DB_NAME', 'bulktask')
+db_type = get_env_variable('DB_TYPE', 'postgresql')
 
 
 def create_flask_app():
@@ -21,8 +23,12 @@ def create_flask_app():
     _app.register_blueprint(bulk_task_blueprint)
     _app.config['PROPAGATE_EXCEPTIONS'] = True
     _app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    _app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    _app.config['SQLALCHEMY_DATABASE_URI'] = f'{db_type}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
     CORS(_app, origins="*")
+
+    logging.basicConfig()
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
+
     return _app
 
 app = create_flask_app()
