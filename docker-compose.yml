@@ -1,0 +1,48 @@
+version: "3.3"
+
+networks:
+  database:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    profiles: ["resource", "app"]
+    volumes:
+      - ${PWD}/postgres-data_app:/var/lib/postgresql/data_app
+      - ${PWD}/scripts/:/docker-entrypoint-initdb.d/
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: 'user_final'
+      POSTGRES_PASSWORD: 'pass_final'
+      POSTGRES_DB: 'project_final'
+    networks:
+      - database
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user_final -d project_final" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  document_manager:
+    build:
+        context: ./documentManager
+        dockerfile: documentManager.Dockerfile
+    profiles: ["app"]
+    ports:
+      - 5000:5000
+    depends_on:
+      - postgres
+    environment:
+      - APP_ENV=prod
+      - DB_HOSTNAME=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=user_final
+      - DB_PASSWORD=pass_final
+      - DB_NAME=project_final
+      - DB_TYPE=postgresql
+      - INTERNAL_TOKEN=internal_token
+      - GCLOUD_BUCKET=massives
+    networks:
+      - database

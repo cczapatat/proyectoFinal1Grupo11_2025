@@ -19,3 +19,6 @@ scripts
 
 offers
 offers/*
+
+data_app
+data_app/*
