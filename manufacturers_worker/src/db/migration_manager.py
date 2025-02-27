@@ -33,6 +33,9 @@ class MigrationManager:
                 logger.info(f"Executing migration: {os.path.basename(file_path)}")
                 # Use the connection with the correct search path to execute the SQL
                 with db.engine.connect() as connection:
+                    connection.execute(text(f"CREATE SCHEMA IF NOT EXISTS {db_schema}"))
+                    connection.commit()
+
                     connection.execute(text(f"SET search_path TO {db_schema}"))
                     connection.execute(text(sql))
                     connection.commit()

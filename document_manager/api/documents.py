@@ -1,4 +1,5 @@
 import os
+import gc
 import uuid
 from flask import Blueprint, jsonify, request, send_file
 from werkzeug.exceptions import NotFound, BadRequest, Unauthorized
@@ -48,6 +49,7 @@ def create_document():
 
     file_name, destination_blob_name = cloud_storage_repository.generate_path(full_file_name=file.filename)
     bucket_path_result = cloud_storage_repository.upload_file(file, destination_blob_name)
+    gc.collect()
 
     if bucket_path_result is None:
         return jsonify({'message': 'Error uploading file'}), 500

@@ -10,11 +10,11 @@ import os
 def get_env_variable(var_name, default_value):
     return os.environ.get(var_name, default_value)
 
-db_user = get_env_variable('DB_USER', 'postgres')
-db_password = get_env_variable('DB_PASSWORD', 'postgres')
+db_user = get_env_variable('DB_USER', 'user_final')
+db_password = get_env_variable('DB_PASSWORD', 'pass_final')
 db_host = get_env_variable('DB_HOST', 'localhost')
 db_port = get_env_variable('DB_PORT', '5432')
-db_name = get_env_variable('DB_NAME', 'bulktask')
+db_name = get_env_variable('DB_NAME', 'project_final')
 db_type = get_env_variable('DB_TYPE', 'postgresql')
 
 
@@ -45,4 +45,4 @@ def handle_exception(err):
     return jsonify(response), err.code
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(get_env_variable('PORT', 3007)), debug=get_env_variable('DEBUG', 'True').lower() in ['true', '1', 't'])
+    app.run(host='0.0.0.0', port=int(get_env_variable('PORT', 3000)), debug=get_env_variable('DEBUG', 'True').lower() in ['true', '1', 't'])

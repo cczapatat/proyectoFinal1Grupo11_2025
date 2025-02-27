@@ -8,7 +8,8 @@ import io
 import uuid
 from typing import Union
 from google.cloud import pubsub_v1
-from models.attempt import Attempt, ManufactureBatch
+from models.attempt import Attempt
+from models.manufacture_batch import ManufactureBatch
 from models.declarative_base import session
 from models.declarative_base import Base as db
 

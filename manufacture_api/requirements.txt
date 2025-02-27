@@ -1,5 +1,4 @@
 wheel
-Faker
 flask~=2.3.2
 flask_cors==3.0.10
 flask_restful
@@ -16,14 +15,7 @@ sqlalchemy
 exceptiongroup
 requests
 
-pytest~=7.2.0
-pytest-cov~=4.0.0
-pytest-mock~=3.10.0
-pytest-env~=0.8.1
-
 google-api-core==2.18.0
 google-auth==2.29.0
 google-cloud-core==2.4.1
-google-cloud-storage==2.16.0
-google-cloud-secret-manager==2.20.0
 google-cloud-pubsub==2.21.1

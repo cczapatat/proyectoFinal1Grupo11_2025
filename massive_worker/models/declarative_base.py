@@ -6,9 +6,9 @@ from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
 # PostgresSQL configuration
 host = os.environ.get('DB_HOST', 'localhost')
 port = os.environ.get('DB_PORT', 5432)
-user = os.environ.get('DB_USER', 'postgres')
-password = os.environ.get('DB_PASSWORD', 'postgres')
-database_name = os.environ.get('DB_NAME', 'massive_worker')
+user = os.environ.get('DB_USER', 'user_final')
+password = os.environ.get('DB_PASSWORD', 'pass_final')
+database_name = os.environ.get('DB_NAME', 'project_final')
 
 url = URL.create(
     drivername="postgresql",
