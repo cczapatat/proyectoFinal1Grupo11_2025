@@ -14,7 +14,7 @@ bp = Blueprint('document', __name__, url_prefix='/document-manager/document')
 internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
 
 document_repository = DocumentRepository()
-cloud_storage_repository = CloudStorageRepository(bucket_name=os.getenv('GCLOUD_BUCKET', default='massives'))
+cloud_storage_repository = CloudStorageRepository(bucket_name=os.getenv('GCLOUD_BUCKET', default='massive_proyecto_final'))
 
 
 def there_is_token():

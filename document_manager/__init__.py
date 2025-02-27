@@ -9,7 +9,7 @@ from .config.db import create_db, get_uri_db
 def create_app() -> Flask:
     app = Flask(__name__, instance_relative_config=True)
 
-    app.config['TESTING'] = os.getenv('APP_ENV') == 'testing'
+    app.config['TESTING'] = os.getenv('APP_ENV', 'prod') == 'testing'
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = get_uri_db()
