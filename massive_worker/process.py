@@ -5,6 +5,7 @@ import datetime
 import requests
 import csv
 import io
+import uuid
 from typing import Union
 from google.cloud import pubsub_v1
 from models.attempt import Attempt, ManufactureBatch
@@ -91,9 +92,12 @@ def publish_massive_manufactures(process_id, file_id, user_email, json_data):
     total_rows = len(json_data)
     current_batch = 0
     number_of_batches = total_rows / batch_size
+    batch = {}
 
     for i in range(0, total_rows, batch_size):
-        batch = json_data[i:i + batch_size]
+        batch["transaction_id"] = str(uuid.uuid4())
+        batch["batch_number"] = current_batch
+        batch["manufactures"] = json_data[i:i + batch_size]
         print(f"[Process Manufactures] batch: {batch}")
 
         data_str = json.dumps(batch).encode("utf-8")
@@ -103,6 +107,8 @@ def publish_massive_manufactures(process_id, file_id, user_email, json_data):
 
         __create_manufacture_proccessed__(process_id, file_id, user_email, future, current_batch, number_of_batches)
         print(future.result())
+
+        current_batch += 1
 
 def get_json_object_from_document(file_id):
     url = f"{host_document_manager}/{file_id}/file"
