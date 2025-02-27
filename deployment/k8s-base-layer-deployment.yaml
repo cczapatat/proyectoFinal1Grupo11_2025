@@ -370,6 +370,12 @@ apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: manufacturerworker-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3001
+    type: HTTP
+    requestPath: /manufacturerworker/health
 ---
 kind: Service
 apiVersion: v1

@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  manufacturer_db:
+    image: postgres
+    environment:
+      POSTGRES_DB: manufacturer_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    networks:
+      - manufacturer_net
+    ports:
+      - "5433:5432"
+    volumes:
+      - manufacturer_data:/var/lib/postgresql/data
+
+  manufacturers_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DB_NAME: manufacturer_db
+      DB_HOST: manufacturer_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_SCHEMA: manufacturers
+      DB_PASSWORD: postgres
+      GCP_PROJECT_ID: miso-app-native-cloud
+      SUBSCRIPTION_ID: commands_to_manufactures-sub
+      GOOGLE_APPLICATION_CREDENTIALS: './miso-app-native-cloud-ea5616ae247e.json'
+    networks:
+      - manufacturer_net
+    ports:
+      - "3001:3001"
+    depends_on:
+      manufacturer_db:
+        condition: service_healthy
+
+networks:
+  manufacturer_net:
+    driver: bridge
+
+volumes:
+  manufacturer_data:

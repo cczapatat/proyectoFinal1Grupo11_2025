@@ -1,9 +1,25 @@
 import json
 import os
 import logging
+import http.server
+import socketserver
+import select
+import socket
+from threading import Thread
 from google.cloud import pubsub_v1
 from ..services.manufacturer_service import ManufacturerService
 
+class HealthCheckHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/health':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({"status": "healthy"}).encode('utf-8'))
+        else:
+            self.send_response(404)
+            self.end_headers()
+            
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,8 +47,13 @@ class PubSubSubscriber:
         """Start listening for messages from the subscription"""
         logger.info(f"Starting subscription to {self.subscription_path}")
         
+        # Set up HTTP server for health checks
+        server_address = ('0.0.0.0', 3001)
+        self.httpd = http.server.HTTPServer(server_address, HealthCheckHandler)
+        self.httpd.socket.setblocking(0)  # Make socket non-blocking
+        
         # Configure the flow control settings
-        flow_control = pubsub_v1.types.FlowControl(max_messages=10)
+        flow_control = pubsub_v1.types.FlowControl(max_messages=10000)
         
         # Start subscribing
         streaming_pull_future = self.subscriber.subscribe(
@@ -41,13 +62,23 @@ class PubSubSubscriber:
             flow_control=flow_control
         )
         
-        # Keep the main thread alive
+        logger.info("Listening for messages and health checks on port 3001...")
+
+        
         try:
-            streaming_pull_future.result()
+            # Main event loop
+            while True:
+                # Use select to handle both subscription and HTTP requests
+                readable, _, _ = select.select([self.httpd.socket], [], [], 0.1)
+                
+                if readable:
+                    self.httpd.handle_request()
+                    
         except Exception as e:
-            logger.error(f"Listening for messages on {self.subscription_path} raised an exception: {e}")
+            logger.error(f"Error in main loop: {str(e)}")
             streaming_pull_future.cancel()
-            self.subscriber.close()
+            self.httpd.server_close()
+            raise
             
     def _process_message(self, message):
         """Process incoming message from PubSub
