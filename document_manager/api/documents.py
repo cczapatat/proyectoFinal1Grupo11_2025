@@ -9,7 +9,7 @@ from ..dtos.document_dto import DocumentDTO
 from ..infrastructure.document_repository import DocumentRepository
 from ..infrastructure.cloud_storage_repository import CloudStorageRepository
 
-bp = Blueprint('document', __name__, url_prefix='/document')
+bp = Blueprint('document', __name__, url_prefix='/document-manager/document')
 
 internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
 

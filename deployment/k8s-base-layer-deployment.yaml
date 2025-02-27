@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
         - name: manufacturerapi
-          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/manufacture_api:1.0.1
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/manufacture_api:1.0.3
           resources:
             requests:
               memory: "64Mi"
               cpu: "150m"
             limits:
               memory: "128Mi"
-              cpu: "300m"
+              cpu: "310m"
           ports:
             - containerPort: 3000
           env:
@@ -100,11 +100,6 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: SUBSCRIPTION_ID
-            - name: "X_TOKEN"
-              valueFrom:
-                secretKeyRef:
-                  name: appsecrets
-                  key: X_TOKEN 
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
@@ -116,7 +111,7 @@ spec:
     checkIntervalSec: 30
     port: 3000
     type: HTTP
-    requestPath: /manufacturerapi/ping
+    requestPath: /manufacture-api/bulk/ping
 ---
 kind: Service
 apiVersion: v1
@@ -156,7 +151,7 @@ spec:
     spec:
       containers:
         - name: manufacturerworker
-          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/manufacturers_worker:1.0.1
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/manufacturers_worker:1.0.3
           resources:
             requests:
               memory: "64Mi"
@@ -237,11 +232,6 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: SUBSCRIPTION_ID
-            - name: "X_TOKEN"
-              valueFrom:
-                secretKeyRef:
-                  name: appsecrets
-                  key: X_TOKEN
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
@@ -293,7 +283,7 @@ spec:
     spec:
       containers:
         - name: massiveworker
-          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/massive_worker:1.0.1
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/massive_worker:1.0.3
           resources:
             requests:
               memory: "64Mi"
@@ -374,23 +364,12 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: SUBSCRIPTION_ID
-            - name: "X_TOKEN"
-              valueFrom:
-                secretKeyRef:
-                  name: appsecrets
-                  key: X_TOKEN
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
   name: massiveworker-config
-spec:
-  healthCheck:
-    checkIntervalSec: 30
-    port: 3002
-    type: HTTP
-    requestPath: /massiveworker/ping
 ---
 kind: Service
 apiVersion: v1
@@ -430,14 +409,14 @@ spec:
     spec:
       containers:
         - name: documentmanager
-          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/document_manager:1.0.1
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/document_manager:1.0.3
           resources:
             requests:
               memory: "64Mi"
               cpu: "150m"
             limits:
               memory: "128Mi"
-              cpu: "300m"
+              cpu: "310m"
           ports:
             - containerPort: 3003
           env:
@@ -511,11 +490,6 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: SUBSCRIPTION_ID
-            - name: "X_TOKEN"
-              valueFrom:
-                secretKeyRef:
-                  name: appsecrets
-                  key: X_TOKEN     
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
@@ -527,7 +501,7 @@ spec:
     checkIntervalSec: 30
     port: 3003
     type: HTTP
-    requestPath: /documentmanager/ping
+    requestPath: /document-manager/health
 ---
 kind: Service
 apiVersion: v1

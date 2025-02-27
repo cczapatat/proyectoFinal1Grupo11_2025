@@ -27,7 +27,7 @@ def create_app() -> Flask:
     from .api import documents
     app.register_blueprint(documents.bp)
 
-    @app.route('/health')
+    @app.route('/document-manager/health')
     def health():
         return jsonify({'status': 'up'})
 

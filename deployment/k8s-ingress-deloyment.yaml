@@ -11,28 +11,14 @@ spec:
   rules:
     - http:
         paths:
-          - path: /manufacturerapi
+          - path: /manufacture-api
             pathType: Prefix
             backend:
               service:
                 name: manufacturerapi-service
                 port:
                   number: 80
-          - path: /manufacturerworker
-            pathType: Prefix
-            backend:
-              service:
-                name: manufacturerworker-service
-                port:
-                  number: 80
-          - path: /massiveworker
-            pathType: Prefix
-            backend:
-              service:
-                name: massiveworker-service
-                port:
-                  number: 80
-          - path: /documentmanager
+          - path: /document-manager
             pathType: Prefix
             backend:
               service:

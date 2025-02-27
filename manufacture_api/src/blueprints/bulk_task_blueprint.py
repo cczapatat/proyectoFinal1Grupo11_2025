@@ -6,7 +6,7 @@ from commands.filter_command import FilterBulkTaskByUserEmail, FilterBulkTaskByI
 from commands.reset import ResetBulkTask
 from models.BulkTask import BulkTaskSchema
 
-bulk_task_blueprint = Blueprint('bulk_task', __name__)
+bulk_task_blueprint = Blueprint('bulk_task', __name__, url_prefix='/manufacture-api')
 bulk_task_schema = BulkTaskSchema()
 
 def get_json_data(keys):
