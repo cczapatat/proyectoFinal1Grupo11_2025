@@ -1,0 +1,547 @@
+###################################
+# manufactures api
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manufacturerapi
+  labels:
+    app: manufacturerapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manufacturerapi
+  template:
+    metadata:
+      labels:
+        app: manufacturerapi
+    spec:
+      containers:
+        - name: manufacturerapi
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/manufacture_api:1.0.1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 3000
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN                  
+            - name: "GCLOUD_BUCKET"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCLOUD_BUCKET
+            - name: "DOCUMENT_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DOCUMENT_MANAGER_PATH
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_MANUFUCTURE_MASSIVE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_TOPIC
+            - name: "GCP_MANUFUCTURE_MASSIVE_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_SUB
+            - name: "GCP_MANUFUCTURE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_TOPIC
+            - name: "SUBSCRIPTION_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SUBSCRIPTION_ID
+            - name: "X_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: X_TOKEN 
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: manufacturerapi-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3000
+    type: HTTP
+    requestPath: /manufacturerapi/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: manufacturerapi-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "manufacturerapi-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: manufacturerapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+      nodePort: 31019
+---
+
+###################################
+# manufacturers worker
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manufacturerworker
+  labels:
+    app: manufacturerworker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: manufacturerworker
+  template:
+    metadata:
+      labels:
+        app: manufacturerworker
+    spec:
+      containers:
+        - name: manufacturerworker
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/manufacturers_worker:1.0.1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 3001
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN                  
+            - name: "GCLOUD_BUCKET"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCLOUD_BUCKET
+            - name: "DOCUMENT_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DOCUMENT_MANAGER_PATH
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_MANUFUCTURE_MASSIVE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_TOPIC
+            - name: "GCP_MANUFUCTURE_MASSIVE_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_SUB
+            - name: "GCP_MANUFUCTURE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_TOPIC
+            - name: "SUBSCRIPTION_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SUBSCRIPTION_ID
+            - name: "X_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: X_TOKEN
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: manufacturerworker-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3001
+    type: HTTP
+    requestPath: /manufacturerworker/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: manufacturerworker-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "manufacturerworker-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: manufacturerworker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3001
+      nodePort: 31020
+---
+
+###################################
+# massive worker
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: massiveworker
+  labels:
+    app: massiveworker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: massiveworker
+  template:
+    metadata:
+      labels:
+        app: massiveworker
+    spec:
+      containers:
+        - name: massiveworker
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/massive_worker:1.0.1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 3002
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN                  
+            - name: "GCLOUD_BUCKET"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCLOUD_BUCKET
+            - name: "DOCUMENT_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DOCUMENT_MANAGER_PATH
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_MANUFUCTURE_MASSIVE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_TOPIC
+            - name: "GCP_MANUFUCTURE_MASSIVE_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_SUB
+            - name: "GCP_MANUFUCTURE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_TOPIC
+            - name: "SUBSCRIPTION_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SUBSCRIPTION_ID
+            - name: "X_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: X_TOKEN
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: massiveworker-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3002
+    type: HTTP
+    requestPath: /massiveworker/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: massiveworker-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "massiveworker-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: massiveworker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+      nodePort: 31021
+---
+
+###################################
+# document manager
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: documentmanager
+  labels:
+    app: documentmanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: documentmanager
+  template:
+    metadata:
+      labels:
+        app: documentmanager
+    spec:
+      containers:
+        - name: documentmanager
+          image: us-central1-docker.pkg.dev/proyectofinal1v1/repositorio-proyecto-final1/document_manager:1.0.1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 3003
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN                  
+            - name: "GCLOUD_BUCKET"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCLOUD_BUCKET
+            - name: "DOCUMENT_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DOCUMENT_MANAGER_PATH
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_MANUFUCTURE_MASSIVE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_TOPIC
+            - name: "GCP_MANUFUCTURE_MASSIVE_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_MASSIVE_SUB
+            - name: "GCP_MANUFUCTURE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFUCTURE_TOPIC
+            - name: "SUBSCRIPTION_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SUBSCRIPTION_ID
+            - name: "X_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: X_TOKEN     
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: documentmanager-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3003
+    type: HTTP
+    requestPath: /documentmanager/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: documentmanager-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "documentmanager-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: documentmanager
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3003
+      nodePort: 31022
+---
