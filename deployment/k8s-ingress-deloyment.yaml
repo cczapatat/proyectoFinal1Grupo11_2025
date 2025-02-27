@@ -1,0 +1,41 @@
+###################################
+# INGRESS
+###################################
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-ingress-proyecto-final-k8s
+  labels:
+    name: gateway-ingress-proyecto-final-k8s
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /manufacturerapi
+            pathType: Prefix
+            backend:
+              service:
+                name: manufacturerapi-service
+                port:
+                  number: 80
+          - path: /manufacturerworker
+            pathType: Prefix
+            backend:
+              service:
+                name: manufacturerworker-service
+                port:
+                  number: 80
+          - path: /massiveworker
+            pathType: Prefix
+            backend:
+              service:
+                name: massiveworker-service
+                port:
+                  number: 80
+          - path: /documentmanager
+            pathType: Prefix
+            backend:
+              service:
+                name: documentmanager-service
+                port:
+                  number: 80
