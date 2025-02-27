@@ -18,7 +18,7 @@ class PubSubSubscriber:
         """
         self.manufacturer_service = manufacturer_service
         self.app = app
-        self.project_id = os.environ.get('PROJECT_ID')
+        self.project_id = os.environ.get('GCP_PROJECT_ID')
         self.subscription_id = os.environ.get('SUBSCRIPTION_ID')
         
         # Initialize subscriber client

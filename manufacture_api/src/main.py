@@ -12,7 +12,7 @@ def get_env_variable(var_name, default_value):
 
 db_user = get_env_variable('DB_USER', 'postgres')
 db_password = get_env_variable('DB_PASSWORD', 'postgres')
-db_host = get_env_variable('DB_HOSTNAME', 'localhost')
+db_host = get_env_variable('DB_HOST', 'localhost')
 db_port = get_env_variable('DB_PORT', '5432')
 db_name = get_env_variable('DB_NAME', 'bulktask')
 db_type = get_env_variable('DB_TYPE', 'postgresql')

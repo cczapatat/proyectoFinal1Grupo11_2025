@@ -27,8 +27,8 @@ services:
 
   document_manager:
     build:
-        context: ./documentManager
-        dockerfile: documentManager.Dockerfile
+        context: document_manager
+        dockerfile: document_manager/Dockerfile
     profiles: ["app"]
     ports:
       - 5000:5000

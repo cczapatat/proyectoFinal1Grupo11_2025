@@ -26,6 +26,6 @@ ENV FLASK_APP=./src/main.py
 ENV PYTHONUNBUFFERED=1
 
 # Expose the desired port
-EXPOSE 3007
+EXPOSE 3000
 
-CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=3007"]
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0", "--port=3000"]

@@ -11,12 +11,13 @@ from models.attempt import Attempt, ManufactureBatch
 from models.declarative_base import session
 from models.declarative_base import Base as db
 
-project_id = os.environ.get('GCLOUD_PROJECT', 'proyectofinal1v1')
-attemps_subscription_id = os.environ.get('ATTEMPS_NAME_SUB', 'commands_to_massive-sub')
-attemps_name_pub = os.environ.get('ATTEMPS_NAME_PUB', 'commands_to_massive')
-manufactures_name_pub = os.environ.get('MANUFACTURES_NAME_PUB', 'commands_to_manufactures')
-host_document_manager = os.environ.get('HOST_DOCUMENT_MANAGER', 'http://localhost:5004')
-x_token = os.environ.get('X_TOKEN', 'internal_token')
+project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinal1v1')
+attemps_subscription_id = os.environ.get('GCP_MANUFACTURE_MASSIVE_SUB', 'commands_to_massive-sub')
+attemps_name_pub = os.environ.get('GCP_MANUFACTURE_MASSIVE_TOPIC', 'commands_to_massive')
+
+manufactures_name_pub = os.environ.get('GCP_MANUFACTURE_TOPIC', 'commands_to_manufactures')
+host_document_manager = os.environ.get('DOCUMENT_MANAGER_PATH', 'http://localhost:5004')
+x_token = os.environ.get('INTERNAL_TOKEN', 'internal_token')
 
 headers = {
     'x-token': x_token
