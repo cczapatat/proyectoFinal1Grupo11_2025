@@ -7,9 +7,9 @@ SchemaBulkTask = {
     "type": "object",
     "properties": {
         "user_email": {"type": "string", "format": "email"},
-        "bulk_file_url": {"type": "string", "minLength": 1, "maxLength": 256},
+        "file_id": {"type": "string", "minLength": 1, "maxLength": 256},
     },
-    "required": ["bulk_file_url", "user_email"]
+    "required": ["file_id", "user_email"]
 }
 
 def validate_schema(json_data, schema):

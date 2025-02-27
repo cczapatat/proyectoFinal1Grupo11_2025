@@ -10,7 +10,7 @@ class BulkTask(db.Model):
     __tablename__ = "bulk_tasks"
     id = db.Column(UUID(as_uuid=True), primary_key=True)
     user_email = db.Column(db.String(256), nullable=True)
-    bulk_file_url = db.Column(db.String(256), nullable=False)
+    file_id = db.Column(db.String(256), nullable=False)
     status = db.Column(db.String(256), nullable=False)
     createdAt = db.Column(DateTime, nullable=False)
     updatedAt = db.Column(DateTime, nullable=False)

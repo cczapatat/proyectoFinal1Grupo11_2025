@@ -15,7 +15,7 @@ def get_json_data(keys):
 @bulk_task_blueprint.route('/bulk', methods=['POST'])
 def create():
     validate_token(request.headers)
-    data = get_json_data(['user_email', 'bulk_file_url'])
+    data = get_json_data(['user_email', 'file_id'])
     bulk_task = CreateBulkTask(**data)
     creation_response = bulk_task.execute()
     return jsonify(creation_response), 201

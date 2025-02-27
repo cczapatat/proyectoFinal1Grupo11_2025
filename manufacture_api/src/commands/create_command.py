@@ -11,10 +11,10 @@ from .base_command import BaseCommand
 from utilities.publisher_service import PublisherService
 
 class CreateBulkTask(BaseCommand):
-    def __init__(self, user_email, bulk_file_url):
+    def __init__(self, user_email, file_id):
         self.id = uuid.uuid4()
         self.user_email = user_email
-        self.bulk_file_url = bulk_file_url
+        self.file_id = file_id
         self.status = Status.BULK_QUEUED.value
         self.createdAt = datetime.utcnow()
         self.updatedAt = datetime.utcnow()
@@ -25,7 +25,7 @@ class CreateBulkTask(BaseCommand):
             new_bulk_task = BulkTask(
                 id=self.id,
                 user_email=self.user_email,
-                bulk_file_url=self.bulk_file_url,
+                file_id=self.file_id,
                 status=self.status,
                 createdAt=self.createdAt,
                 updatedAt=self.updatedAt
@@ -37,7 +37,7 @@ class CreateBulkTask(BaseCommand):
             published_ok = self.publisher_service.publish_create_command(
                 process_id=self.id,
                 user_email=self.user_email,
-                bulk_file_url=self.bulk_file_url,
+                file_id=self.file_id,
                 creation_time=self.createdAt,
             )
             self.status = 'BULK QUEUED' if published_ok else 'FAILED'
@@ -45,7 +45,7 @@ class CreateBulkTask(BaseCommand):
             return {
                 'id': str(self.id),
                 'user_email': self.user_email,
-                'bulk_file_url': self.bulk_file_url,
+                'file_id': self.file_id,
                 'status': self.status,
                 'createdAt': self.createdAt.replace(microsecond=0).isoformat(),
             }
