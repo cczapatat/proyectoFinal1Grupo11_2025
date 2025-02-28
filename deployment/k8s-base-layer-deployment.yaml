@@ -416,7 +416,7 @@ spec:
     spec:
       containers:
         - name: massiveworker
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.7
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.8
           resources:
             requests:
               memory: "64Mi"

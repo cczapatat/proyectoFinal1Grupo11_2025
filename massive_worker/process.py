@@ -5,7 +5,7 @@ import datetime
 import requests
 import csv
 import io
-import asyncio
+import threading
 from typing import Union
 from google.cloud import pubsub_v1
 from models.attempt import Attempt
@@ -55,7 +55,8 @@ def __create_attempt__(operation, entity, process_id, file_id, user_email) -> bo
         print('[Process Attemps][__create_attemp__] process_id: {}, error {}'.format(str(process_id), str(ex)))
         return False
 
-def __create_attempt_error__(operation, entity, process_id, file_id, user_email, retry_quantity) -> bool:
+
+def __create_attempt_error__(operation, entity, process_id, file_id, user_email, retry_quantity) -> AttemptError | bool:
     try:
         attempt_error = AttemptError(
             operation=operation.upper(),
@@ -80,8 +81,9 @@ def __create_attempt_error__(operation, entity, process_id, file_id, user_email,
         print('[Process Attemps][__create_attemp_error__] process_id: {}, error {}'.format(str(process_id), str(ex)))
         return False
 
+
 def __create_manufacture_proccessed__(process_id, file_id, user_email, future, current_batch,
-                                      number_of_batches) -> bool:
+                                      number_of_batches) -> ManufactureBatch | bool:
     try:
         manufacture_batch = ManufactureBatch(
             operation=OPERATION_BATCH.EXECUTED,
@@ -97,8 +99,9 @@ def __create_manufacture_proccessed__(process_id, file_id, user_email, future, c
         session.add(manufacture_batch)
         session.commit()
 
-        print('[Process Attemps][__create_manufacture_proccessed__] process_id: {}, manufacture_batch: {}'.format(
-            str(process_id), str(manufacture_batch.__dict__)))
+        print(
+            '[Process Attemps][__create_manufacture_proccessed__] process_id: {}, file_id: {}, current_batch: {}'.format(
+                str(process_id), str(file_id), str(current_batch)))
 
         return manufacture_batch
     except Exception as ex:
@@ -106,10 +109,12 @@ def __create_manufacture_proccessed__(process_id, file_id, user_email, future, c
         print('[Process Attemps][__create_manufacture_proccessed__] process_id: {}, error {}'.format(str(process_id),
                                                                                                      str(ex)))
         return False
-    
+
+
 def __get_last_attempt_error_by_process_id__(process_id) -> Union[AttemptError, bool]:
     try:
-        attempt_error = session.query(AttemptError).filter_by(process_id=process_id).order_by(AttemptError.created_at.desc()).first()
+        attempt_error = session.query(AttemptError).filter_by(process_id=process_id).order_by(
+            AttemptError.created_at.desc()).first()
         if attempt_error:
             return attempt_error
         else:
@@ -118,16 +123,18 @@ def __get_last_attempt_error_by_process_id__(process_id) -> Union[AttemptError, 
         print('[Process Attemps][__get_attempt_error__] process_id: {}, error {}'.format(str(process_id), str(ex)))
         return False
 
+
 def __get_last_manufacture_batch_by_process_id__(process_id) -> Union[ManufactureBatch, bool]:
     try:
-        manufacture_batch = session.query(ManufactureBatch).filter_by(process_id=process_id).order_by(ManufactureBatch.created_at.desc()).first()
+        manufacture_batch = session.query(ManufactureBatch).filter_by(process_id=process_id).order_by(
+            ManufactureBatch.created_at.desc()).first()
         if manufacture_batch:
             return manufacture_batch
         else:
             return False
     except Exception as ex:
         print('[Process Attemps][__get_manufacture_batch__] process_id: {}, error {}'.format(str(process_id), str(ex)))
-        return False        
+        return False
 
 
 def __create_and_process__(operation, entity, process_id, file_id, user_email) -> Union[Attempt, bool]:
@@ -145,29 +152,35 @@ def publish_massive_manufactures(process_id, file_id, user_email, json_data):
     batch_size = 100
     total_rows = len(json_data)
     current_batch = 0
+    has_exception = True
 
     last_manufacture_batch = __get_last_manufacture_batch_by_process_id__(process_id)
 
     if last_manufacture_batch:
         current_batch = last_manufacture_batch.current_batch + 1
-    
+        has_exception = False
+
     number_of_batches = total_rows / batch_size
     batch = {}
 
-    for i in range(0, total_rows, batch_size):
+    for i in range((current_batch * batch_size), total_rows, batch_size):
         batch["transaction_id"] = process_id
         batch["batch_number"] = current_batch
         batch["manufacturers"] = json_data[i:i + batch_size]
-        print(f"[Process Manufactures] batch: {batch}")
+        print(
+            f"[Process Manufactures] process_id: {process_id} batch_number: {current_batch} manufacturers: {len(batch['manufacturers'])}")
 
         data_str = json.dumps(batch).encode("utf-8")
-        print(f"[Process Manufactures] Publishing to {topic_path_manufacture} the message: {data_str}")
+        print(f"[Process Manufactures] Publishing to {topic_path_manufacture} from process_id: {process_id}")
 
         future = publisher_manufactures.publish(topic_path_manufacture, data_str)
         result = future.result()
         print(f"[Process Manufactures] process_id: {process_id} future: {result}")
         __create_manufacture_proccessed__(process_id, file_id, user_email, str(result), current_batch,
                                           number_of_batches)
+
+        if current_batch == 4 and has_exception:
+            raise Exception(f"Exception for testing re-synchronization, process_id: {process_id}")
 
         current_batch += 1
 
@@ -187,17 +200,10 @@ def get_json_object_from_document(file_id):
 
     return json_data
 
-async def publish_retry_attempt_with_delay(operation, entity, process_id, file_id, user_email, message):
+
+def publish_retry_attempt_with_delay(message):
     future = publisher_retry_attemp.publish(topic_path_attempt, message.data)
-    print(future.result())
-
-async def publish_rety_attempt_after(time_delay, operation, entity, process_id, file_id, user_email, message):
-    await asyncio.sleep(time_delay)
-    await publish_retry_attempt_with_delay(operation, entity, process_id, file_id, user_email, message) 
-
-
-def schedule_retry_attempt(time_delay, operation, entity, process_id, file_id, user_email, message):
-    asyncio.get_event_loop().create_task(publish_rety_attempt_after(time_delay, operation, entity, process_id, file_id, user_email, message))
+    print(f'[Process Attemps] Retry attempt published: {future.result()}')
 
 
 def process_attemps(message):
@@ -245,9 +251,12 @@ def process_attemps(message):
 
             print('[Process Attemps] json_data_file is None')
 
-            if retry_quantity < 3:
-                attempt_error = __create_attempt_error__(operation, entity, process_id, file_id, user_email, retry_quantity)
-                schedule_retry_attempt(5*retry_quantity, operation, entity, process_id, file_id, user_email, message)
+            if retry_quantity <= 3:
+                __create_attempt_error__(operation, entity, process_id, file_id, user_email, retry_quantity)
+                thread = threading.Timer(5 * retry_quantity, publish_retry_attempt_with_delay, args=(message,))
+                thread.start()
+
+            message.ack()
 
             return
 
@@ -261,11 +270,13 @@ def process_attemps(message):
             f"[Process Attemps] attempt {str(attempt.id)} with process_id {str(attempt.process_id)} by user {attempt.user_email} created")
 
         publish_massive_manufactures(process_id, file_id, user_email, json_data_file)
+        print(f"[Process Attemps] process_id: {process_id} ended")
+        message.ack()
 
     except Exception as ex:
         print(f"[Process Attemps] Error Generate during PubSub, {str(ex)}")
+        message.nack()
 
-    message.ack()
     gc.collect()
 
 
@@ -273,14 +284,12 @@ if __name__ == '__main__':
     subscriber = pubsub_v1.SubscriberClient()
     attemps_subscription_path = subscriber.subscription_path(project_id, attemps_subscription_id)
 
-    flow_control = pubsub_v1.types.FlowControl(max_messages=1)
+    flow_control = pubsub_v1.types.FlowControl(max_messages=10)
 
     streaming_pull_future = subscriber.subscribe(
         attemps_subscription_path,
         callback=process_attemps
     )
-
-    asyncio.get_event_loop().run_forever()
 
     print(f"[Process Attemps] Process_Listening for messages on {attemps_subscription_path}..\n")
 

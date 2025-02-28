@@ -18,7 +18,7 @@ class ManufactureBatch(Base):
     id = Column(Integer(), primary_key=True)
     operation = Column(Enum(OPERATION_BATCH), nullable=False)
     file_id = Column(String(255), nullable=False)
-    process_id = Column(UUID(as_uuid=True), nullable=False)
+    process_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     user_email = Column(String(255), nullable=False)
     future = Column(String(255), nullable=False)
     current_batch = Column(Integer(), nullable=False)

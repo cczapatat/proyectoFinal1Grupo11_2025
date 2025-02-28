@@ -1,8 +1,8 @@
-import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Enum, DateTime, UUID
 
 from .declarative_base import Base
+from .attempt import OPERATION, ENTITY
 
 class AttemptError(Base):
     __tablename__ = 'attempt_errors'
@@ -12,7 +12,7 @@ class AttemptError(Base):
     operation = Column(Enum(OPERATION), nullable=False)
     entity = Column(Enum(ENTITY), nullable=False)
     file_id = Column(String(255), nullable=False)
-    process_id = Column(UUID(as_uuid=True), nullable=False)
+    process_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     user_email = Column(String(255), nullable=False)
     retry_quantity = Column(Integer(), default=0)
     created_at = Column(DateTime(), default=datetime.now)
