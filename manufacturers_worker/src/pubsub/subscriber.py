@@ -11,7 +11,7 @@ from ..services.manufacturer_service import ManufacturerService
 
 class HealthCheckHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/health':
+        if self.path == '/manufacture-worker/health':
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
@@ -34,7 +34,7 @@ class PubSubSubscriber:
         """
         self.manufacturer_service = manufacturer_service
         self.app = app
-        self.project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinal1v1')
+        self.project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinalmiso2025')
         self.subscription_id = os.environ.get('SUBSCRIPTION_ID', 'commands_to_manufactures-sub')
         
         # Initialize subscriber client

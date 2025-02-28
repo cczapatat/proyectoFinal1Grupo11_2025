@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: manufacturerapi
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacture_api:1.0.5
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacture_api:1.0.7
           resources:
             requests:
               memory: "64Mi"
@@ -151,7 +151,7 @@ spec:
     spec:
       containers:
         - name: documentmanager
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/document_manager:1.0.5
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/document_manager:1.0.7
           resources:
             requests:
               memory: "64Mi"
@@ -283,7 +283,7 @@ spec:
     spec:
       containers:
         - name: manufacturerworker
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacturers_worker:1.0.5
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacturers_worker:1.0.7
           resources:
             requests:
               memory: "64Mi"
@@ -375,7 +375,7 @@ spec:
     checkIntervalSec: 30
     port: 3001
     type: HTTP
-    requestPath: /manufacturerworker/health
+    requestPath: /manufacture-worker/health
 ---
 kind: Service
 apiVersion: v1
@@ -392,4 +392,131 @@ spec:
       port: 80
       targetPort: 3001
       nodePort: 31020
+---
+
+
+###################################
+# massive worker
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: massiveworker
+  labels:
+    app: massiveworker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: massiveworker
+  template:
+    metadata:
+      labels:
+        app: massiveworker
+    spec:
+      containers:
+        - name: massiveworker
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.7
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 3002
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "GCLOUD_BUCKET"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCLOUD_BUCKET
+            - name: "DOCUMENT_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DOCUMENT_MANAGER_PATH
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_MANUFACTURE_MASSIVE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFACTURE_MASSIVE_TOPIC
+            - name: "GCP_MANUFACTURE_MASSIVE_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFACTURE_MASSIVE_SUB
+            - name: "GCP_MANUFACTURE_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_MANUFACTURE_TOPIC
+            - name: "SUBSCRIPTION_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SUBSCRIPTION_ID
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: massiveworker-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: massiveworker-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "massiveworker-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: massiveworker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3002
+      nodePort: 31021
 ---

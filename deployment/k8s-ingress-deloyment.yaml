@@ -25,3 +25,10 @@ spec:
                 name: documentmanager-service
                 port:
                   number: 80
+          - path: /manufacture-worker
+            pathType: Prefix
+            backend:
+              service:
+                name: manufacturerworker-service
+                port:
+                  number: 80

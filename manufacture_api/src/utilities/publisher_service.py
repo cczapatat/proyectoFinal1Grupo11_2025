@@ -3,12 +3,11 @@ import os
 from google.cloud import pubsub_v1
 from datetime import datetime
 from typing import Optional
-from enum import Enum
 from models.Operations import Operation
 
 class PublisherService:
     def __init__(self, project_id: Optional[str] = None, topic_id: Optional[str] = None):
-        self.project_id = project_id or "proyectofinal1v1"
+        self.project_id = project_id or os.environ.get('GCP_PROJECT_ID', 'proyectofinalmiso2025')
         self.topic_id = topic_id or "commands_to_massive"
      
         self.publisher = pubsub_v1.PublisherClient()

@@ -5,8 +5,8 @@ from sqlalchemy import Column, Integer, String, Enum, DateTime, UUID
 from .declarative_base import Base
 
 
-class OPERATION(enum.Enum):
-    PROCESSED = 'PROCESSED'
+class OPERATION_BATCH(enum.Enum):
+    EXECUTED = 'EXECUTED'
     ##UPDATE = 'update'
     ##DELETE = 'delete'
 
@@ -16,7 +16,7 @@ class ManufactureBatch(Base):
     __table_args__ = {'schema': 'massive_worker'}  
 
     id = Column(Integer(), primary_key=True)
-    operation = Column(Enum(OPERATION), nullable=False)
+    operation = Column(Enum(OPERATION_BATCH), nullable=False)
     file_id = Column(String(255), nullable=False)
     process_id = Column(UUID(as_uuid=True), nullable=False)
     user_email = Column(String(255), nullable=False)

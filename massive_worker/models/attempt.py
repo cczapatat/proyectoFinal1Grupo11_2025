@@ -11,7 +11,7 @@ class OPERATION(enum.Enum):
     ##DELETE = 'delete'
 
 class ENTITY(enum.Enum):
-    MANUFACTURES = 'MANUFACTURES'
+    MANUFACTURE = 'MANUFACTURE'
     ##PRODUCTS = 'products'
     ##CLIENTS = 'clients'
 
