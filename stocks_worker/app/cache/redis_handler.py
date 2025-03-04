@@ -13,3 +13,4 @@ def update_stock_cache(stock_id: str, quantity_in_stock: int):
     key = f"stock:{stock_id}"
     data = {"id": stock_id, "quantity_in_stock": quantity_in_stock}
     redis_client.set(key, json.dumps(data))
+    print(f"Actualizado en redis caché: {key} -> {data}")

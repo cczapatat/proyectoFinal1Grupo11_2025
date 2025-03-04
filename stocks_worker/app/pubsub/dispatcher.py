@@ -17,6 +17,7 @@ def dispatch_stock_updated_event(stock_id: str, product_name: str, last_quantity
     }
     message_data = json.dumps(message_dict).encode("utf-8")
     try:
+        print(f"Publicando evento de stock actualizado para producto {stock_id}...")
         future = publisher_client.publish(topic_path, data=message_data)
         future.result()
         return True

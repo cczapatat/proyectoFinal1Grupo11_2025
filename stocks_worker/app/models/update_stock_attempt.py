@@ -14,6 +14,7 @@ class UpdateStatus(enum.Enum):
 class UpdateStockAttempt(Base):
     __tablename__ = "update_stock_attempts"
     transaction_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    product_id = Column(UUID(as_uuid=True), nullable=False)
     last_update_date = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
     creation_date = Column(DateTime, default=datetime.datetime.utcnow)
     status = Column(Enum(UpdateStatus), nullable=False)

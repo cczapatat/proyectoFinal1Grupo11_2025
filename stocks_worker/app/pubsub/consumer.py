@@ -13,14 +13,16 @@ subscription_path = subscriber.subscription_path(GCP_PROJECT_ID, STOCK_UPDATE_SU
 
 def callback(message):
     try:
+        print(" === Inicia actualizacion de stocks ====" )
         payload_str = message.data.decode("utf-8")
+        print(f" > Mensaje recibido: {payload_str}")
         payload = json.loads(payload_str)
         # Mapear el mensaje a una lista de ProductUpdateDTO
         product_updates = map_pubsub_message_to_product_updates(payload)
         with UnitOfWork() as uow:
             repo = StockRepository(uow.session)
             results = repo.update_stocks(product_updates)
-            print("Resultados de actualización por lotes:", results)
+            print(" === Actualización de stocks completada ====" )
         message.ack()
     except Exception as e:
         print(f"Error al procesar mensaje: {e}")
