@@ -25,7 +25,7 @@ cd .. && rm document_manager/credentials.json
 
 ```shell
 cp data_app/credentials.json massive_worker/credentials.json && cd massive_worker && \
-docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.5 . && \
-docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.5 && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.9 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.9 && \
 cd .. && rm massive_worker/credentials.json
 ```

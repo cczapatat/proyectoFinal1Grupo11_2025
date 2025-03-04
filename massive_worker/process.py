@@ -6,6 +6,7 @@ import requests
 import csv
 import io
 import threading
+import random
 from typing import Union
 from google.cloud import pubsub_v1
 from models.attempt import Attempt
@@ -153,6 +154,7 @@ def publish_massive_manufactures(process_id, file_id, user_email, json_data):
     total_rows = len(json_data)
     current_batch = 0
     has_exception = True
+    fallar_en_batch = random.randint(1, 20)
 
     last_manufacture_batch = __get_last_manufacture_batch_by_process_id__(process_id)
 
@@ -179,7 +181,7 @@ def publish_massive_manufactures(process_id, file_id, user_email, json_data):
         __create_manufacture_proccessed__(process_id, file_id, user_email, str(result), current_batch,
                                           number_of_batches)
 
-        if current_batch == 4 and has_exception:
+        if current_batch == fallar_en_batch and has_exception:
             raise Exception(f"Exception for testing re-synchronization, process_id: {process_id}")
 
         current_batch += 1
