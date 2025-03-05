@@ -26,8 +26,9 @@ def there_is_token():
 @bp.route('/all', methods=('GET',))
 def get_stocks_paginate():
     there_is_token()
-    page = request.args.get('page', default=1, type=int)
-    per_page = request.args.get('per_page', default=10, type=int)
+
+    page = max(1, request.args.get('page', default=1, type=int))
+    per_page = min(max(1, request.args.get('per_page', default=10, type=int)), 50)
 
     stocks = stock_repository.get_documents(page=page, per_page=per_page)
 
