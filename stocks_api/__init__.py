@@ -24,6 +24,8 @@ def create_app() -> Flask:
 
     create_db(app)
 
+    from .config.cache import cache
+
     from .api import stocks
     app.register_blueprint(stocks.bp)
 

@@ -19,11 +19,11 @@ class Stock(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': str(self.id),
             'product_name': self.product_name,
-            'quantity_in_stock': self.quantity_in_stock,
-            'last_quantity': self.last_quantity,
+            'quantity_in_stock': int(self.quantity_in_stock),
+            'last_quantity': int(self.last_quantity),
             'enabled': self.enabled,
-            'update_date': self.update_date,
-            'creation_date': self.creation_date,
+            'update_date': self.update_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'creation_date': self.creation_date.strftime('%Y-%m-%d %H:%M:%S'),
         }
