@@ -9,6 +9,11 @@ from app.models.stock import Stock
 
 router = APIRouter()
 
+'''
+Los endpoints expuestos en este archivo son utilitiarios para probar la funcionalidad de actualización de stock
+y realizar una carga masiva de productos en stock inicial.
+'''
+
 @router.get("/health")
 def health_check():
     return {"estado": "ok"}
