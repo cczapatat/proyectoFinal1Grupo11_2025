@@ -29,3 +29,10 @@ docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-pro
 docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.9 && \
 cd .. && rm massive_worker/credentials.json
 ```
+
+```shell
+cp data_app/credentials.json stocks_api/credentials.json && cd stocks_api && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_api:1.0.0 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_api:1.0.0 && \
+cd .. && rm stocks_api/credentials.json
+```
