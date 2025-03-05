@@ -3,6 +3,10 @@ import io
 import uuid
 from datetime import datetime
 
+'''
+Utilitario para cargar un archivo CSV con productos y cantidades en stock
+'''
+
 def process_bulk_file(file_bytes: bytes):
     file_str = file_bytes.decode("utf-8")
     reader = csv.DictReader(io.StringIO(file_str))
