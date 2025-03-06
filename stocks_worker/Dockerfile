@@ -1,5 +1,9 @@
-# Use Python 3.9 as base image
-FROM python:3.9-slim
+FROM --platform=linux/amd64 python:3.10.16
+
+RUN mkdir .config_app
+COPY credentials.json /.config_app/credentials.json
+RUN export GOOGLE_APPLICATION_CREDENTIALS="/.config_app/credentials.json"
+ENV GOOGLE_APPLICATION_CREDENTIALS="/.config_app/credentials.json"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -20,6 +24,7 @@ COPY . .
 
 # Set Python path
 ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
 
 # Expose port 8000
 EXPOSE 8000
