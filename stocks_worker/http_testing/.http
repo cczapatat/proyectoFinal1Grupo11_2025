@@ -1,0 +1,60 @@
+### Prueba del endpoint de salud
+GET http://localhost:8000/health
+Content-Type: application/json
+
+###
+
+### Prueba del endpoint update_stock_test
+POST http://localhost:8000/update_stock_test
+Content-Type: application/json
+
+[
+    {
+        "product_id": "1b1cbf8e-8f94-45e2-bb9b-05ddcdb720d9",
+        "units": 10
+    },
+    {
+        "product_id": "d78f1bf4-6132-42c6-b063-9849c753a0c5",
+        "units": 10
+    }
+]
+
+###
+
+### Prueba del endpoint upload_bulk
+POST http://localhost:8000/upload_bulk
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="bulk_products.csv"
+Content-Type: text/csv
+
+product_name,quantity_in_stock
+product_name,quantity_in_stock
+Camiseta Roja,120
+Pantalón Azul,80
+Zapatos Deportivos,50
+Reloj Inteligente,30
+Auriculares Bluetooth,70
+Laptop Dell Inspiron,25
+Smartphone Samsung Galaxy,40
+Tablet Apple iPad,15
+Cámara Digital Canon,10
+Bicicleta de Montaña,5
+Silla de Oficina,200
+Mesa de Comedor,60
+Lámpara de Escritorio,150
+Impresora HP LaserJet,12
+Monitor LG 27",22
+Teclado Mecánico,85
+Ratón Inalámbrico,90
+Altavoz Portátil,35
+Mochila Escolar,110
+Gafas de Sol Ray-Ban,45
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+
+### Prueba del endpoint reset
+POST http://localhost:8000/reset
+Content-Type: application/json
