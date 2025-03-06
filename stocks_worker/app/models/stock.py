@@ -7,7 +7,7 @@ from app.core.db import Base
 class Stock(Base):
     __tablename__ = "stocks"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    product_name = Column(String, nullable=False)
+    product_name = Column(String(255), nullable=False)
     quantity_in_stock = Column(Integer, nullable=False)
     last_quantity = Column(Integer, nullable=True)
     enabled = Column(Boolean, default=True)

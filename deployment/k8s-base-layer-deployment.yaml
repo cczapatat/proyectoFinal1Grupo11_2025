@@ -520,3 +520,334 @@ spec:
       targetPort: 3002
       nodePort: 31021
 ---
+
+###################################
+# order
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+  labels:
+    app: order
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+        - name: order
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/order:1.0.2
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "305m"
+          ports:
+            - containerPort: 3006
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_STOCKS_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_STOCKS_TOPIC
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: order-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3006
+    type: HTTP
+    requestPath: /orders/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: order-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "order-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: order
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3006
+      nodePort: 31023
+---
+
+###################################
+# stocks-api
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stocks-api
+  labels:
+    app: stocks-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stocks-api
+  template:
+    metadata:
+      labels:
+        app: stocks-api
+    spec:
+      containers:
+        - name: order
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_api:1.0.0
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "320m"
+          ports:
+            - containerPort: 3010
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "REDIS_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: REDIS_HOST
+            - name: "REDIS_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: REDIS_PORT
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: stocks-api-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3010
+    type: HTTP
+    requestPath: /stocks-api/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: stocks-api-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "stocks-api-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: stocks-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3010
+      nodePort: 31024
+---
+
+###################################
+# stocks-worker
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stocks-worker
+  labels:
+    app: stocks-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stocks-worker
+  template:
+    metadata:
+      labels:
+        app: stocks-worker
+    spec:
+      containers:
+        - name: order
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_worker:1.0.1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "325m"
+          ports:
+            - containerPort: 3020
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "REDIS_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: REDIS_HOST
+            - name: "REDIS_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: REDIS_PORT
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_STOCKS_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_STOCKS_SUB
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: stocks-worker-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3020
+    type: HTTP
+    requestPath: /stocks-worker/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: stocks-worker-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "stocks-worker-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: stocks-worker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3020
+      nodePort: 31025
+---

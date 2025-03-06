@@ -11,6 +11,6 @@ redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, passwo
 
 def update_stock_cache(stock_id: str, quantity_in_stock: int):
     key = f"stock:{stock_id}"
-    data = {"id": stock_id, "quantity_in_stock": quantity_in_stock}
+    data = {"id": str(stock_id), "quantity_in_stock": int(quantity_in_stock)}
     redis_client.set(key, json.dumps(data))
     print(f"Actualizado en redis caché: {key} -> {data}")

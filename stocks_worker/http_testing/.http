@@ -1,11 +1,11 @@
 ### Prueba del endpoint de salud
-GET http://localhost:8000/health
+GET http://localhost:8000/stocks-worker/health
 Content-Type: application/json
 
 ###
 
 ### Prueba del endpoint update_stock_test
-POST http://localhost:8000/update_stock_test
+POST http://localhost:8000/stocks-worker/update_stock_test
 Content-Type: application/json
 
 [
@@ -22,7 +22,7 @@ Content-Type: application/json
 ###
 
 ### Prueba del endpoint upload_bulk
-POST http://localhost:8000/upload_bulk
+POST http://localhost:8000/stocks-worker/upload_bulk
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -56,5 +56,5 @@ Gafas de Sol Ray-Ban,45
 ###
 
 ### Prueba del endpoint reset
-POST http://localhost:8000/reset
+POST http://localhost:8000/stocks-worker/reset
 Content-Type: application/json

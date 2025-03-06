@@ -14,11 +14,11 @@ Los endpoints expuestos en este archivo son utilitiarios para probar la funciona
 y realizar una carga masiva de productos en stock inicial.
 '''
 
-@router.get("/health")
+@router.get("/stocks-worker/health")
 def health_check():
     return {"estado": "ok"}
 
-@router.post("/update_stock_test")
+@router.post("/stocks-worker/update_stock_test")
 def update_stock_test(request: List[ProductUpdateDTO]):
     try:
         with UnitOfWork() as uow:
@@ -28,7 +28,7 @@ def update_stock_test(request: List[ProductUpdateDTO]):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
 
-@router.post("/upload_bulk")
+@router.post("/stocks-worker/upload_bulk")
 async def upload_bulk(file: UploadFile = File(...)):
     file_bytes = await file.read()
     products_data = process_bulk_file(file_bytes)
@@ -44,7 +44,7 @@ async def upload_bulk(file: UploadFile = File(...)):
     finally:
         session.close()
 
-@router.post("/reset")
+@router.post("/stocks-worker/reset")
 def reset():
     session = SessionLocal()
     try:

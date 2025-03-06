@@ -5,9 +5,9 @@ from sqlalchemy.orm import sessionmaker, declarative_base, scoped_session
 
 DB_HOST = os.environ.get('DB_HOST', 'localhost')
 DB_PORT = os.environ.get('DB_PORT', 5432)
-DB_USER = os.environ.get('DB_USER', 'postgres')
-DB_PASSWORD = os.environ.get('DB_PASSWORD', 'postgres')
-DB_NAME = os.environ.get('DB_NAME', 'stocks_db')
+DB_USER = os.environ.get('DB_USER', 'user_final')
+DB_PASSWORD = os.environ.get('DB_PASSWORD', 'pass_final')
+DB_NAME = os.environ.get('DB_NAME', 'project_final')
 DB_TYPE = os.environ.get('DB_TYPE', 'postgresql')
 
 database_url = URL.create(

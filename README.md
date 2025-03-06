@@ -36,3 +36,17 @@ docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-pro
 docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_api:1.0.0 && \
 cd .. && rm stocks_api/credentials.json
 ```
+
+```shell
+cp data_app/credentials.json stocks_worker/credentials.json && cd stocks_worker && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_worker:1.0.1 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_worker:1.0.1 && \
+cd .. && rm stocks_worker/credentials.json
+```
+
+```shell
+cp data_app/credentials.json order/credentials.json && cd order && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/order:1.0.2 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/order:1.0.2 && \
+cd .. && rm order/credentials.json
+```

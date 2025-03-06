@@ -18,6 +18,6 @@ class OrderProduct(db.Model):
 
     def to_dict(self):
         return {
-            'product_id': str(self.product_id),
-            'units': self.units,
+            "product_id": str(self.product_id),
+            "units": self.units,
         }

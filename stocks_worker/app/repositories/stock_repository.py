@@ -8,6 +8,7 @@ from app.dtos.product_update_dto import ProductUpdateDTO
 from app.pubsub.dispatcher import dispatch_stock_updated_event
 from app.cache.redis_handler import update_stock_cache
 
+
 class StockRepository:
     def __init__(self, session: Session):
         self.session = session
@@ -33,6 +34,7 @@ class StockRepository:
                     stock = self.session.query(Stock).filter(Stock.id == product_id).first()
                     if not stock:
                         update_attempt.status = UpdateStatus.ROLLED_BACK
+                        ## TODO: Comando de rollback a la order
                         update_attempt.last_update_date = datetime.utcnow()
                         print(f" > Producto {product_id} no encontrado")
                         results.append({"product_id": str(product_id), "error": "Producto no encontrado"})
@@ -53,7 +55,8 @@ class StockRepository:
                     update_attempt.status = UpdateStatus.COMMITTED
                     update_attempt.last_update_date = datetime.utcnow()
 
-                    print(f" > Stock actualizado para producto {product_id}, unidades restantes: {stock.quantity_in_stock}, unidades solicitadas: {requested_units}")
+                    print(
+                        f" > Stock actualizado para producto {product_id}, unidades restantes: {stock.quantity_in_stock}, unidades solicitadas: {requested_units}")
                 # Hacer flush para obtener el ID del intento de actualización
                 self.session.flush()
 
@@ -87,12 +90,12 @@ class StockRepository:
                 thread_redis.start()
 
                 # Despachar evento de stock actualizado
-                thread = Thread(
-                    target=dispatch_stock_updated_event,
-                    args=(result["product_id"], result["product_name"], result["last_quantity"], result["new_quantity"]),
-                    daemon=True
-                )
-                thread.start()
+                #thread = Thread(
+                #    target=dispatch_stock_updated_event,
+                #    args=(result["product_id"], result["product_name"], result["last_quantity"], result["new_quantity"]),
+                #    daemon=True
+                #)
+                #thread.start()
 
             except Exception as e:
                 print(f" > Error al actualizar stock para producto {product_id}: {e}")

@@ -1,3 +1,4 @@
+import json
 import os
 import gc
 import uuid
@@ -36,7 +37,7 @@ def there_is_token():
 
 def publish_order_created(order_data):
     order_id = order_data['id']
-    data = str(order_data['products']).encode('utf-8')
+    data = json.dumps(order_data['products']).encode('utf-8')
     
     print(f"[Order Created] Publishing to {topic_path_stocks} from order_id: {order_id}, data: {data}")
 

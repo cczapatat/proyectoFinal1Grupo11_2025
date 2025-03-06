@@ -14,9 +14,9 @@ subscription_path = subscriber.subscription_path(GCP_PROJECT_ID, STOCK_UPDATE_SU
 def callback(message):
     try:
         print(" === Inicia actualizacion de stocks ====" )
-        payload_str = message.data.decode("utf-8")
-        print(f" > Mensaje recibido: {payload_str}")
-        payload = json.loads(payload_str)
+        print(f" > Mensaje recibido: {message.data}")
+        payload = json.loads(message.data.decode("utf-8"))
+        print(f" > Mensaje payload: {payload}")
         # Mapear el mensaje a una lista de ProductUpdateDTO
         product_updates = map_pubsub_message_to_product_updates(payload)
         with UnitOfWork() as uow:
@@ -26,7 +26,7 @@ def callback(message):
         message.ack()
     except Exception as e:
         print(f"Error al procesar mensaje: {e}")
-        message.nack()
+        message.ack() ## TODO controlar NACK
 
 def consume_messages():
     streaming_pull_future = subscriber.subscribe(subscription_path, callback=callback)

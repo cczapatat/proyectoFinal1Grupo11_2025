@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Numeric, Boolean
+from sqlalchemy import Column, String, DateTime, Integer, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 
 from ..config.db import db
@@ -11,11 +11,11 @@ class Stock(db.Model):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     product_name = Column(String(255), nullable=False)
-    quantity_in_stock = Column(Numeric(), nullable=False)
-    last_quantity = Column(Numeric(), nullable=False)
-    enabled = Column(Boolean(), nullable=False)
-    update_date = Column(DateTime(), default=datetime.now)
-    creation_date = Column(DateTime(), default=datetime.now)
+    quantity_in_stock = Column(Integer(), nullable=False)
+    last_quantity = Column(Integer(), nullable=False)
+    enabled = Column(Boolean(), default=False)
+    update_date = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    creation_date = Column(DateTime, default=datetime.utcnow)
 
     def to_dict(self):
         return {

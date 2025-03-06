@@ -11,6 +11,20 @@ spec:
   rules:
     - http:
         paths:
+          - path: /orders
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 80
+          - path: /stocks-api
+            pathType: Prefix
+            backend:
+              service:
+                name: stocks-api-service
+                port:
+                  number: 80
           - path: /manufacture-api
             pathType: Prefix
             backend:
