@@ -19,3 +19,11 @@ class CacheRepository:
     @staticmethod
     def set(key: str, value, timeout: int = 300) -> None:
         cache.set(key, json.dumps(value), ex=timeout)
+
+    @staticmethod
+    def delete(key: str) -> None:
+        cache.delete(key)
+
+    @staticmethod
+    def delete_multiple(keys: list[str]) -> None:
+        cache.delete(*keys)
