@@ -1,0 +1,8 @@
+psycopg2-binary==2.9.9
+SQLAlchemy==2.0.38
+Flask==3.1.0
+Flask-RESTful==0.3.10
+flask-cors==5.0.1
+Flask-SQLAlchemy==3.1.1
+google-cloud-pubsub==2.10.0
+Werkzeug==3.1.3
