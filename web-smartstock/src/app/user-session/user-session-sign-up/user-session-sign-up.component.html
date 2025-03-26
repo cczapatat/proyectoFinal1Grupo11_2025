@@ -1,0 +1,132 @@
+<div class="sign-up-space">
+  <form id="formSignUp" [formGroup]="this.finalForm" (ngSubmit)="registrarUsuario(this.finalForm.value)">
+    <div class="sign-up">
+      <div class="group form-check-inline">
+        <label class="label" for="inlineRadio1">Tipo de Usuario</label>
+        <ng-container *ngFor="let item of userTypeList; let i = index;">
+          <input   class="form-check-input" type="radio" value="{{item.name}}" name="userType" id="inlineRadio1" class="type-user"
+          (change)="onItemChange(i)" [checked]="isVisible === i">
+          <label class="label-radio" for="inlineRadio1">{{item.name}}</label>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="this.isVisible == 1">
+        <div class="group">
+          <label for="nombre" class="label">Nombre</label>
+          <input novalidate class="input" id="nombre" type="text" formControlName="nombre" placeholder="Nombre" />
+        </div>
+        <div id="nombre-requerido"
+          *ngIf="finalForm.get('nombre')?.hasError('required') && finalForm.get('nombre')?.touched">
+          <p class="alert-message">Debe ingresar un nombre para registrarse</p>
+        </div>
+        <div id="tamano-nombre-excedido"
+          *ngIf="finalForm.get('nombre')?.hasError('maxlength')">
+          <p class="alert-message">El nombre no debe exceder los 50 carácteres</p>
+        </div>
+        <div class="group">
+          <label for="telefono" class="label">Telefono</label>
+          <input id="telefono" formControlName="telefono" type="text" class="input" placeholder="Telefono">
+        </div>
+        <div id="telefono-requerido"
+          *ngIf="finalForm.get('telefono')?.hasError('required') && finalForm.get('telefono')?.touched">
+          <p class="alert-message">Debe ingresar un telefono para registrarse</p>
+        </div>
+        <div id="tamano-telefono-excedido"
+          *ngIf="finalForm.get('telefono')?.hasError('maxlength')">
+          <p class="alert-message">El telefono no debe exceder los 15 carácteres</p>
+        </div>
+        <div class="group">
+          <label for="banco" class="label">Banco</label>
+          <select id="banco" formControlName="banco" class="select" placeholder="Banco">
+            <option [ngValue]="null" [disabled]="true" [selected]="true" class="select-default">Seleccionar Banco</option>
+            <option *ngFor="let banco of listaBancos" [ngValue]="banco">{{banco}}</option>
+          </select>
+        </div>
+        <div id="banco-requerido"
+          *ngIf="finalForm.get('banco')?.hasError('required') && finalForm.get('banco')?.touched">
+          <p class="alert-message">Debe ingresar un banco para registrarse</p>
+        </div>
+
+        <div class="group">
+          <label for="cuenta" class="label">Cuenta</label>
+          <input id="cuenta" formControlName="cuenta" type="text" class="input" placeholder="Cuenta">
+        </div>
+        <div id="cuenta-requerida"
+          *ngIf="finalForm.get('cuenta')?.hasError('required') && finalForm.get('cuenta')?.touched">
+          <p class="alert-message">Debe ingresar una cuenta para registrarse</p>
+        </div>
+        <div id="tamano-cuenta-excedida"
+          *ngIf="finalForm.get('cuenta')?.hasError('maxlength')">
+          <p class="alert-message">La cuenta no debe exceder los 20 carácteres</p>
+        </div>
+        <div class="group">
+          <label for="correo" class="label">Correo</label>
+          <input id="correo" formControlName="correo" type="text" class="input" placeholder="Correo" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+        </div>
+        <div id="correo-requerido"
+          *ngIf="finalForm.get('correo')?.hasError('required') && finalForm.get('correo')?.touched">
+          <p class="alert-message">Debe ingresar un correo para registrarse</p>
+        </div>
+        <div id="correo-invalido"
+          *ngIf="finalForm.get('correo')?.hasError('pattern')">
+          <p class="alert-message">El correo no tiene un formato valido</p>
+        </div>
+      </ng-container>
+
+      <div class="group">
+        <label for="usuario" class="label">Usuario</label>
+        <input id=usuario formControlName="usuario" type="text" class="input" placeholder="Usuario">
+      </div>
+      <div id="usuario-requerido"
+        *ngIf="finalForm.get('usuario')?.hasError('required') && finalForm.get('usuario')?.touched">
+        <p class="alert-message">Debe ingresar un usuario para registrarse</p>
+      </div>
+      <div id="tamano-usuario-excedido"
+        *ngIf="finalForm.get('usuario')?.hasError('maxlength')">
+        <p class="alert-message">El usuario no debe exceder los 50 carácteres</p>
+      </div>
+      <div class="group">
+        <label for="contrasena" class="label">Contraseña</label>
+        <input id="contrasena" formControlName="contrasena" type="password" class="input" placeholder="*********"> 
+      </div>
+      <div id="contrasena-requerida"
+        *ngIf="finalForm.get('contrasena')?.hasError('required') && finalForm.get('contrasena')?.touched">
+        <p class="alert-message">Debe ingresar una contraseña para registrarse</p>
+      </div>
+      <div id="tamano-contrasena-excedido"
+        *ngIf="finalForm.get('contrasena')?.hasError('maxlength')">
+        <p class="alert-message">La contraseña no debe exceder los 50 carácteres</p>
+      </div>
+      <div id="tamano-contrasena-minimo-requerido"
+        *ngIf="finalForm.get('contrasena')?.hasError('minlength')">
+        <p class="alert-message">La contraseña debe tener más de 4 carácteres</p>
+      </div>
+      <div class="group">
+        <label for="confirmarContrasena" class="label">Confirmar contraseña</label>
+        <input id="confirmar-contrasena" formControlName="confirmarContrasena" type="password" class="input" placeholder="*********">
+      </div>
+      <div id="confirmar-contrasena-requerida"
+        *ngIf="finalForm.get('confirmarContrasena')?.hasError('required') && finalForm.get('confirmarContrasena')?.touched">
+        <p class="alert-message">Debe ingresar una contraseña para registrarse</p>
+      </div>
+      <div id="tamano-confirmar-contrasena-excedido"
+        *ngIf="finalForm.get('confirmarContrasena')?.hasError('maxlength')">
+        <p class="alert-message">La contraseña no debe exceder los 50 carácteres</p>
+      </div>
+      <div id="tamano-confirmar-contrasena-minimo-requerido"
+        *ngIf="finalForm.get('confirmarContrasena')?.hasError('minlength')">
+        <p class="alert-message">La contraseña debe tener más de 4 carácteres</p>
+      </div>
+      <div id="contrasena-no-coincide"
+        *ngIf="finalForm.get('confirmarContrasena')?.value !== finalForm.get('contrasena')?.value">
+        <p class="alert-message">Las contraseñas no coinciden</p>
+      </div>
+      <div class="group">
+        <button type="submit" class="btn btn-info col-8"
+          [disabled]="!finalForm.valid || finalForm.get('confirmarContrasena')?.value !== finalForm.get('contrasena')?.value">Registrarse</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+
