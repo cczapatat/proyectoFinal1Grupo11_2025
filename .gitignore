@@ -64,3 +64,5 @@ data_app/*
 .DS_Store
 **/Thumbs.db
 **/.angular
+
+**/.coverage
