@@ -1,0 +1,39 @@
+.table {
+  border: 0.5px solid black;
+  border-radius: 5px;
+  border-collapse: inherit !important;
+  border-spacing:0
+}
+
+
+
+.details-block {
+  border: 0.5px solid black;
+  border-radius: 5px;
+  border-collapse: inherit !important;
+}
+
+thead tr button {
+  background-color: #ffc107;
+}
+
+th, td {
+  border: 0.5px solid black;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  border-collapse: inherit !important;
+}
+.table-header{
+  border-top: none;
+  vertical-align: middle;
+  font-weight: bold;
+}
+.table-header-button{
+  text-align: start;
+  border-top: none;
+  vertical-align: middle;
+}
+.btn {
+  font-size: small;
+}
