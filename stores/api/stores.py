@@ -2,8 +2,8 @@ import os
 import uuid
 from flask import Blueprint, jsonify, request
 from werkzeug.exceptions import Unauthorized, BadRequest, NotFound
-from flask_validate_json import validate_json, ValidationError
-from sqlalchemy.exc import IntegrityError
+from flask_validate_json import validate_json
+from sqlalchemy.exc import IntegrityError, DataError
 
 from ..dtos.store_in_dto import StoreInDTO
 from ..manager.store_manager import StoreManager
@@ -70,17 +70,13 @@ def _dict_to_store_in_dto(data: dict) -> StoreInDTO:
 @bp.errorhandler(401)
 @bp.errorhandler(404)
 def handle_validation_error(error):
-    if isinstance(error.description, ValidationError):
-        return jsonify({
-            'message': str(error.description.message)
-        }), 400
-
     return jsonify({
         'message': str(error.description)
     }), error.code
 
 
 @bp.errorhandler(IntegrityError)
+@bp.errorhandler(DataError)
 def handle_integrity_error(error):
     if 'unique_email' in str(error):
         return jsonify({
@@ -88,5 +84,5 @@ def handle_integrity_error(error):
         }), 400
 
     return jsonify({
-        'message': 'Database integrity error'
-    }), 400
+        'message': f'Database integrity error. {str(error.code)}'
+    }), 409
