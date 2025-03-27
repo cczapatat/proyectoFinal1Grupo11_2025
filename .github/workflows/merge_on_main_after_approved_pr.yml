@@ -1,0 +1,27 @@
+name: Merge On Main After Approved PR.
+on:
+  pull_request_review:
+    types: [submitted]
+
+  workflow_dispatch:
+    inputs:
+      pull-request:
+        description: Pull Request Number
+        required: false
+      review:
+        description: Review ID
+        required: false
+
+jobs:
+  merge_on_main:
+    name: Merge On Main After Approved PR.
+    if: ${{ github.event.pull_request.base.ref == 'main'
+        && (
+            startsWith(github.event.pull_request.head.ref, 'feature/HU')
+                || startsWith(github.event.pull_request.head.ref, 'fix/HU')
+        )
+      }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run and validate last Push On Feature/Fix Branch.
+        uses: ./.github/workflows/push_feature_fix_branch.yml
