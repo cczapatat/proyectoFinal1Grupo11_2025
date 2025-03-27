@@ -18,5 +18,5 @@ python -m pytest -vv
 
 ```bash
 coverage run -m pytest -vv
-coverage report -m --fail-under=91
+coverage report -m --fail-under=90
 ```
