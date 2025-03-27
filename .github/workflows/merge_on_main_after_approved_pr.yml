@@ -1,0 +1,18 @@
+name: Merge On Main After Approved PR.
+on:
+  pull_request_review:
+    types: [submitted, edited]
+
+  workflow_dispatch:
+    inputs:
+      pull-request:
+        description: Pull Request Number
+        required: false
+
+jobs:
+  merge_on_main:
+    name: Merge On Main After Approved PR.
+    uses: cczapatat/proyectoFinal1Grupo11_2025/.github/workflows/push_feature_fix_branch.yml@main
+    with:
+      pull-request: ${{ github.event.inputs.pull-request || '' }}
+
