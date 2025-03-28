@@ -5,14 +5,54 @@ on:
 
   workflow_dispatch:
     inputs:
-      pull-request:
-        description: Pull Request Number
+      any:
+        description: any
         required: false
 
 jobs:
-  merge_on_main:
+  validate_pr_status:
+    name: Validate PR Status
+    if: ${{ github.event.review.state == 'APPROVED'
+      && github.event.review.user.id != github.event.pull_request.user.id
+      && github.event.pull_request.base.ref == 'main'
+      }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR Status
+        run: echo "PR Status is Approved"
+  validate_all_coverage:
     name: Merge On Main After Approved PR.
+    needs: validate_pr_status
     uses: cczapatat/proyectoFinal1Grupo11_2025/.github/workflows/push_feature_fix_branch.yml@main
     with:
-      pull-request: ${{ github.event.inputs.pull-request || '' }}
-
+      command: 'run_on_merge'
+  process_merging:
+    name: Process Merging
+    needs: validate_all_coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Process Merging
+        run: echo "Merging Process"
+      - name: Checkout de repositorio
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup user git
+        run: |
+          git config user.name "cczapatat"
+          git config user.email "c.zapatat@uniandes.edu.co"
+      - name: Sync Main to ${{ github.event.pull_request.head.ref }}
+        run: |
+          git fetch
+          git checkout main
+          git branch --show-current
+          git pull
+      - name: Message Pre-Merge
+        run: echo "Merge to Main - ${{ github.event.pull_request.head.ref }}"
+      - name: Merge ${{ github.event.pull_request.head.ref }} -> Main
+        uses: tukasz/direct-merge-action@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          source-branch: ${{ github.event.pull_request.head.ref }}
+          target-branch: main
+          commit-message: "Merge to Main - ${{ github.event.pull_request.head.ref }}"

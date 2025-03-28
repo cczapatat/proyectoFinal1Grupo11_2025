@@ -6,14 +6,40 @@ on:
       - 'fix/HU**'
   workflow_call:
     inputs:
-      pull-request:
+      command:
         required: false
         type: string
 
 jobs:
+  start_validation_coverage:
+    name: Start Validation Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: start validation coverage
+        run: echo "Starting validation coverage"
+      - name: Print Head Commit Message / Command
+        run: |
+          echo ${{ github.event.head_commit.message }}
+          echo ${{ github.event_name }}
+          echo ${{ github.events.inputs.command }}
+
+  start_continue_validation_coverage:
+    name: Start Continue Validation Coverage
+    needs: start_validation_coverage
+    if: ${{ contains(github.event.head_commit.message, '[HU') 
+        || contains(github.event.head_commit.message, '[fix') 
+        || github.event_name == 'workflow_call'
+        || github.event_name == 'workflow_dispatch'
+        || github.event_name == 'pull_request_review'
+        || github.events.inputs.command == 'run_on_merge' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: start continue validation coverage
+        run: echo "Accepted conditions to continue validation coverage"
+
   stores_coverage:
     name: Stores Coverage
-    if: ${{ contains(github.event.head_commit.message, '[HU') }}
+    needs: start_continue_validation_coverage
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -50,3 +76,4 @@ jobs:
         run: |
           cd stores
           coverage report -m --fail-under=90
+
