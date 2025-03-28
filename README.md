@@ -57,3 +57,10 @@ docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-pro
 docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stores:1.0.0 && \
 cd .. && rm stores/credentials.json
 ```
+
+```shell
+cp data_app/credentials.json product/credentials.json && cd product && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/product:1.0.0 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/product:1.0.0 && \
+cd .. && rm product/credentials.json
+```
