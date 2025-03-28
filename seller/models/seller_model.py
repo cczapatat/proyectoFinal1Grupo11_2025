@@ -20,12 +20,10 @@ class SELLER_ZONE(enum.Enum):
     EAST = "EAST"
     WEST = "WEST"
     CENTER = "CENTER"
-    NORTHEAST = "NOTRHEAST"
+    NORTHEAST = "NORTHEAST"
     NORTHWEST = "NORTHWEST"
     SOUTHEAST = "SOUTHEAST"
     SOUTHWEST = "SOUTHWEST"
-    
-
 
 class Seller(db.Model):
     __tablename__ = 'sellers'
@@ -34,7 +32,7 @@ class Seller(db.Model):
         UniqueConstraint('phone', name='unique_seller_phone'),
         UniqueConstraint('email', name='unique_seller_email'),
         CheckConstraint(
-            "email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'",
+            "email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'",
             name='valid_seller_email_format'
         ),
         CheckConstraint(
@@ -49,7 +47,6 @@ class Seller(db.Model):
             "quartely_target > 0",
             name='positive_seller_quartely_target'
         ),
-
     )
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -79,6 +76,6 @@ class Seller(db.Model):
             'quartely_target': self.quartely_target,
             'currency_target': self.currency_target.value,
             'performance_recomendations': self.performance_recomendations,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }

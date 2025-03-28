@@ -1,48 +1,24 @@
-from datetime import datetime
-from sqlalchemy.exc import IntegrityError
-from flask import jsonify, make_response
-
-from ..config.db import db
+from uuid import UUID, uuid4
+from sqlalchemy.orm import Session
 from ..models.seller_model import Seller
-from ..dtos.seller_dto import SellerDTO
-
 
 class SellerRepository:
+    def __init__(self, session: Session):
+        self._session = session
 
-    @staticmethod
-    def create_seller(seller_dto: SellerDTO) -> Seller:
-        seller = Seller()
-        seller.user_id = seller_dto.user_id
-        seller.name = seller_dto.name
-        seller.phone = seller_dto.phone
-        seller.email = seller_dto.email
-        seller.zone = seller_dto.zone
-        seller.quota_expected = seller_dto.quota_expected
-        seller.currency_quota = seller_dto.currency_quota
-        seller.quartely_target = seller_dto.quartely_target
-        seller.currency_target = seller_dto.currency_target
-        seller.performance_recomendations = seller_dto.performance_recomendations
-        seller.created_at = datetime.now()
-        seller.updated_at = datetime.now()
+    def create_seller(self, seller_data: dict) -> Seller:
+        # Convert string UUIDs to UUID objects
+        seller_data['id'] = uuid4()
+        if isinstance(seller_data.get('user_id'), str):
+            seller_data['user_id'] = UUID(seller_data['user_id'])
 
-        try:
-            db.session.add(seller)
-            db.session.commit()
-        except IntegrityError as e:
-            db.session.rollback()
-            response = make_response(
-                jsonify({"error": "Integrity error", "message": str(e.orig)}), 400
-            )
-            return response
-        except Exception as e:
-            db.session.rollback()
-            response = make_response(
-                jsonify({"error": "Internal server error", "message": str(e)}), 500
-            )
-            return response
-
+        seller = Seller(**seller_data)
+        self._session.add(seller)
+        self._session.flush()
         return seller
-    
-    @staticmethod
-    def get_seller_by_user_id(user_id: int) -> Seller:
-        return Seller.query.filter_by(user_id=user_id).first()
+
+    def get_seller_by_user_id(self, user_id) -> Seller:
+        if isinstance(user_id, UUID):
+            user_id = str(user_id)
+        user_id_uuid = UUID(user_id)
+        return self._session.query(Seller).filter(Seller.user_id == user_id_uuid).first()
