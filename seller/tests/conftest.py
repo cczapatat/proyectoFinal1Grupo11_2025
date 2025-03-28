@@ -8,7 +8,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 def app():
     app = create_app()
     app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
     
     with app.app_context():
         _db.create_all()
