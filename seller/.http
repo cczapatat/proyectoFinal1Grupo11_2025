@@ -1,0 +1,44 @@
+### Test Creating a Seller (Success Case)
+POST http://127.0.0.1:3007/sellers/create
+Content-Type: application/json
+x-token: internal_token
+
+{
+    "user_id": "72a36cdb-497c-45e7-a944-06226c4d21b6",
+    "name": "Alice",
+    "phone": "+575551234",
+    "email": "alice@example.com",
+    "zone": "NORTH",                    
+    "quota_expected": 1000,            
+    "currency_quota": "USD",              
+    "quartely_target": 250,             
+    "currency_target": "USD",             
+    "performance_recomendations": "Keep improving" 
+}
+
+### Test Retrieving a Seller by User ID (Success Case)
+GET http://127.0.0.1:3007/sellers/72a36cdb-497c-45e7-a944-06226c4d21b6
+Content-Type: application/json
+x-token: internal_token
+
+### Test Creating a Seller Without a Token (Unauthorized)
+POST http://127.0.0.1:3007/sellers/create
+Content-Type: application/json
+
+{
+    "user_id": "72a36cdb-497c-45e7-a944-06226c4d21b6",
+    "name": "Alice",
+    "phone": "+575551234",
+    "email": "alice@example.com",
+    "zone": "NORTH",                    
+    "quota_expected": 1000,            
+    "currency_quota": "USD",              
+    "quartely_target": 250,             
+    "currency_target": "USD",             
+    "performance_recomendations": "Keep improving" 
+}
+
+### Test Retrieving a Seller with an Invalid Token
+GET http://127.0.0.1:3007/sellers/abc123
+Content-Type: application/json
+x-token: wrong_token
