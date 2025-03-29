@@ -2,12 +2,12 @@ import os
 import requests
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, current_user, jwt_required
-from user_session_manager.models.data_classes import LoginIn
 from werkzeug.exceptions import Unauthorized
 
 from ..dtos.user_session_dto import UserSessionDTO
 from ..infrastructure.user_session_repository import UserSessionRepository
 from ..models.user_session_model import UserSession
+from ..models.data_classes import LoginIn
 
 bp = Blueprint('user_sessions', __name__, url_prefix='/user_sessions')
 host_seller = os.environ.get('SELLERS_PATH', 'http://localhost:3007')

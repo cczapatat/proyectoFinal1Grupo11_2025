@@ -46,3 +46,31 @@ spec:
                 name: manufacturerworker-service
                 port:
                   number: 80
+          - path: /stores
+            pathType: Prefix
+            backend:
+              service:
+                name: stores-service
+                port:
+                  number: 80
+          - path: /products
+            pathType: Prefix
+            backend:
+              service:
+                name: product-service
+                port:
+                  number: 80
+          - path: /sellers
+            pathType: Prefix
+            backend:
+              service:
+                name: seller-service
+                port:
+                  number: 80
+          - path: /user_sessions
+            pathType: Prefix
+            backend:
+              service:
+                name: user-session-manager-service
+                port:
+                  number: 80

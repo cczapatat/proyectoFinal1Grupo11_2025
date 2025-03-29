@@ -66,8 +66,15 @@ cd .. && rm product/credentials.json
 ```
 
 ```shell
+cp data_app/credentials.json seller/credentials.json && cd seller && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/seller:1.0.0 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/seller:1.0.0 && \
+cd .. && rm seller/credentials.json
+```
+
+```shell
 cp data_app/credentials.json user_session_manager/credentials.json && cd user_session_manager && \
-docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.0.0 . && \
-docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.0.0 && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.0.1 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.0.1 && \
 cd .. && rm user_session_manager/credentials.json
 ```
