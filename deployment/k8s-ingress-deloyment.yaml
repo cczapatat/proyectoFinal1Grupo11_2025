@@ -67,6 +67,13 @@ spec:
                 name: seller-service
                 port:
                   number: 80
+          - path: /clients
+            pathType: Prefix
+            backend:
+              service:
+                name: client-service
+                port:
+                  number: 80
           - path: /user_sessions
             pathType: Prefix
             backend:
