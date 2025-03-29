@@ -64,3 +64,10 @@ docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-pro
 docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/product:1.0.0 && \
 cd .. && rm product/credentials.json
 ```
+
+```shell
+cp data_app/credentials.json user_session_manager/credentials.json && cd user_session_manager && \
+docker build -t us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.0.0 . && \
+docker push us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.0.0 && \
+cd .. && rm user_session_manager/credentials.json
+```
