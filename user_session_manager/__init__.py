@@ -1,10 +1,12 @@
 import os
+import ast
 import logging
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 from .config.db import create_db, get_uri_db
+from .models.data_classes import LoginIn
 
 
 def create_app() -> Flask:
@@ -22,6 +24,12 @@ def create_app() -> Flask:
     CORS(app, origins='*')
 
     jwt = JWTManager(app)
+
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        sub = jwt_data["sub"]
+        data = ast.literal_eval(sub)
+        return LoginIn(**data)
 
     logging.basicConfig()
     logging.getLogger('sqlalchemy.engine').setLevel(logging.DEBUG)
