@@ -89,6 +89,27 @@ def get_client_by_user_id(user_id: str):
 
     return jsonify(get_client_response.to_dict()), 200
 
+
+@bp.route('/seller-info/<user_id>', methods=('GET',))
+def get_client_by_user_id_with_seller(user_id: str):
+    there_is_token()
+    get_client_response = client_repository.get_client_by_user_id_with_seller(user_id=user_id)
+    if get_client_response is None:
+        return jsonify({'message': 'client not found'}), 404
+
+    return jsonify(get_client_response), 200
+
+@bp.route('/seller/<string:seller_id>', methods=['GET'])
+def get_seller_clients(seller_id):
+    there_is_token()
+    """Get all clients for a specific seller"""
+    clients = get_clients_by_seller_id(seller_id)
+
+    if clients is None:
+        return jsonify({'message': 'clients not found'}), 404
+
+    return jsonify(clients), 200
+
 @bp.errorhandler(400)
 @bp.errorhandler(401)
 @bp.errorhandler(404)

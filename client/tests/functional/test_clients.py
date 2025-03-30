@@ -233,3 +233,127 @@ def test_invalid_token(client):
 
     assert response.status_code == 401
     assert data['message'] == 'authorization required'
+
+
+def test_get_clients_by_seller_success(client, headers):
+    """Test getting all clients for a specific seller"""
+
+    # Create a seller_id and multiple clients
+    seller_id = str(uuid4())
+
+    # Create test clients for this seller
+    client_data_one = {
+        "user_id": str(uuid4()),
+        "seller_id": seller_id,
+        "name": "Test Client",
+        "phone": "+5730170851",
+        "email": "duplicate30@example.com",
+        "address": "Test Address 122",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+    }
+    client_data_two = {
+        "user_id": str(uuid4()),
+        "seller_id": seller_id,
+        "name": "Test Client",
+        "phone": "+5730170861",
+        "email": "duplicate40@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+    }
+
+    # Create two clients for the same seller
+    response1 = client.post('/clients/create',
+                            json=client_data_one,
+                            headers=headers)
+    assert response1.status_code == 201
+
+    response2 = client.post('/clients/create',
+                            json=client_data_two,
+                            headers=headers)
+    assert response2.status_code == 201
+
+    # Get all clients for this seller
+    response = client.get(f'/clients/seller/{seller_id}',
+                          headers=headers)
+
+    # Verify response
+    assert response.status_code == 200
+    clients = json.loads(response.data)
+    assert isinstance(clients, list)
+    assert len(clients) == 2
+
+    # Verify client data
+    for client_data in clients:
+        assert 'id' in client_data
+        assert 'user_id' in client_data
+        assert 'name' in client_data
+        assert 'email' in client_data
+        assert 'client_type' in client_data
+        assert 'zone' in client_data
+        # Verify seller_id is not in the response
+        assert 'seller_id' not in client_data
+
+def test_get_clients_by_seller_empty(client, headers):
+    """Test getting all clients for a specific seller"""
+
+    # Create a seller_id and multiple clients
+    seller_id = str(uuid4())
+
+    # Get all clients for this seller
+    response = client.get(f'/clients/seller/{seller_id}',
+                          headers=headers)
+
+    # Verify response
+    assert response.status_code == 200
+    clients = json.loads(response.data)
+    assert isinstance(clients, list)
+    assert len(clients) == 0
+
+def test_get_clients_by_seller_wrong_id(client, headers):
+    """Test getting all clients for a specific seller"""
+
+    # Create a seller_id and multiple clients
+    seller_id = str(uuid4()) + 'a'
+
+    # Get all clients for this seller
+    response = client.get(f'/clients/seller/{seller_id}',
+                          headers=headers)
+    data = json.loads(response.data)
+    # Verify response
+    assert response.status_code == 409
+    assert 'Database integrity error.' in data['message']
+
+def test_get_client_with_seller_by_id_success(client, headers):
+    seller_id = str(uuid4())
+    client_data = {
+        "user_id": str(uuid4()),
+        "seller_id": seller_id,
+        "name": "Test Client",
+        "phone": "+57301708493",
+        "email": "test40@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+
+    response = client.post('/clients/create', json=client_data, headers=headers)
+    created_client = json.loads(response.data)
+    response = client.get(f'/clients/seller-info/{created_client["user_id"]}', headers=headers)
+    data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert data['user_id'] == created_client['user_id']
+    assert data['name'] == client_data['name']
+    assert data['seller_id'] == client_data['seller_id']
+
+def test_get_client_with_seller_by_id_no_client(client, headers):
+    user_id = str(uuid4())
+
+    response = client.get(f'/clients/seller-info/{user_id}', headers=headers)
+    data = json.loads(response.data)
+
+    assert response.status_code == 404
+    assert data['message'] == 'client not found'
