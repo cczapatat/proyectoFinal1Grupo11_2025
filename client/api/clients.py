@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify, request
 from werkzeug.exceptions import Unauthorized
 
 from ..dtos.client_dto import ClientDTO
-from ..infrastructure.client_repository import ClientRepository
+from ..infrastructure.client_repository import ClientRepository, get_clients_by_seller_id
 from ..models.client_model import Client
 from sqlalchemy.exc import IntegrityError, DataError
 
