@@ -41,34 +41,49 @@ class ClientRepository:
         return Client.query.filter_by(user_id=user_id).first()
 
     @staticmethod
+    def get_client_by_user_id_with_seller(user_id: int):
+        client = Client.query.filter_by(user_id=user_id).first()
+
+        if client:
+            return get_client_with_seller(client.id)
+        return None
+
+    @staticmethod
     def clean_transactions() -> None:
         db.session.rollback()
 
+def get_clients_by_seller_id(seller_id):
+    """Get all clients for a specific seller"""
+    clients = db.session.query(Client). \
+        join(ClientSeller, Client.id == ClientSeller.client_id). \
+        filter(ClientSeller.seller_id == seller_id). \
+        all()
+
+    return [client.to_dict() for client in clients]
 
 def get_client_with_seller(client_id):
     """Helper function to get client with seller information"""
-    try:
-        result = db.session.query(Client, ClientSeller). \
-            join(ClientSeller, Client.id == ClientSeller.client_id). \
-            filter(Client.id == client_id). \
-            first()
 
-        if result:
-            client, client_seller = result
-            return {
-                'id': client.id,
-                'user_id': client.user_id,
-                'name': client.name,
-                'phone': client.phone,
-                'email': client.email,
-                'address': client.address,
-                'client_type': client.client_type,
-                'zone': client.zone,
-                'created_at': client.created_at,
-                'updated_at': client.updated_at,
-                'seller_id': client_seller.seller_id
-            }
-        return None
-    except Exception as e:
-        db.session.rollback()
-        raise e
+    result = db.session.query(Client, ClientSeller). \
+        join(ClientSeller, Client.id == ClientSeller.client_id). \
+        filter(Client.id == client_id). \
+        first()
+
+    if result:
+        client, client_seller = result
+        temp_client = client.to_dict()
+
+        return {
+            'id': client.id,
+            'user_id': client.user_id,
+            'name': client.name,
+            'phone': client.phone,
+            'email': client.email,
+            'address': client.address,
+            'client_type': temp_client['client_type'],
+            'zone': temp_client['zone'],
+            'created_at': client.created_at,
+            'updated_at': client.updated_at,
+            'seller_id': client_seller.seller_id
+        }
+    return None
