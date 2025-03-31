@@ -6,7 +6,7 @@ from werkzeug.exceptions import Unauthorized
 
 from ..dtos.product_dto import ProductDTO
 from ..infrastructure.product_repository import ProductRepository
-from ..models.product_model import Product
+from ..models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT, Product
 
 
 bp = Blueprint('products', __name__, url_prefix='/products')
@@ -100,3 +100,21 @@ def create_seller():
         return jsonify(create_product_response.to_dict()), 201
     
     return create_product_response
+
+@bp.route('/categories', methods=('GET',))
+def get_all_categories():
+    there_is_token()
+    
+    categories = [{"key": category.name, "value": category.value} for category in CATEGORY_PRODUCT]
+
+
+    return jsonify(categories), 200
+
+@bp.route('/currencies', methods=('GET',))
+def get_all_currencies():
+    there_is_token
+
+    currencies = [
+        {"key": currency.name, "value": currency.value} for currency in CURRENCY_PRODUCT
+    ]
+    return jsonify(currencies), 200
