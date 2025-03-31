@@ -1,6 +1,7 @@
 import json
 from faker import Faker
 from product import application as app
+from product.models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT
 
 
 class TestProduct:
@@ -149,3 +150,27 @@ class TestProduct:
 
         json_response = json.loads(response.data)
         assert json_response['id'] is not None
+    
+    def test_get_all_categories(self):
+        response = self.test_client.get('/products/categories', headers={
+            'x-token': 'internal_token',
+            'content-type': 'application/json'
+        })
+
+        assert response.status_code == 200
+
+        json_response = json.loads(response.data)
+        assert json_response is not None
+        assert len(json_response) == CATEGORY_PRODUCT.__len__()
+    
+    def test_get_all_currencies(self):
+        response = self.test_client.get('/products/currencies', headers={
+            'x-token': 'internal_token',
+            'content-type': 'application/json'
+        })
+
+        assert response.status_code == 200
+
+        json_response = json.loads(response.data)
+        assert json_response is not None
+        assert len(json_response) == CURRENCY_PRODUCT.__len__()
