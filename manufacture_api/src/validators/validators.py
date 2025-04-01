@@ -1,7 +1,11 @@
+import os
 from errors.errors import BadRequest
 from jsonschema import validate
+from werkzeug.exceptions import Unauthorized
 import jsonschema
 import traceback
+
+internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
 
 SchemaBulkTask = {
     "type": "object",
@@ -20,5 +24,10 @@ def validate_schema(json_data, schema):
         raise BadRequest(f"Invalid data: {e.message}")
     
 def validate_token(headers):
-    #TODO: Implement token validation
-    pass
+    token = headers.get('x-token', None)
+
+    if token is None:
+        raise Unauthorized(description='authorization required')
+
+    if token != internal_token:
+        raise Unauthorized(description='authorization required')

@@ -1,6 +1,6 @@
 from .base_command import BaseCommand
 from errors.errors import ApiError
-from models.BulkTask import db, BulkTask
+from models.Models import db, BulkTask
 from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 import traceback

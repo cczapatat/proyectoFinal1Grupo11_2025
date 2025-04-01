@@ -1,7 +1,7 @@
 from sqlalchemy.exc import SQLAlchemyError
 from .base_command import BaseCommand
 from errors.errors import ApiError
-from models.BulkTask import BulkTask
+from models.Models import BulkTask
 
 
 class FilterBulkTaskByUserEmail(BaseCommand):
