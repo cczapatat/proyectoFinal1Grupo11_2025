@@ -1,76 +1,93 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { JwtHelperService } from "@auth0/angular-jwt";
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { UserSessionService } from '../user-session.service';
+import { SessionManager } from '../../services/session-manager.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserSession } from '../user-session';
 
 @Component({
   selector: 'app-user-session-login',
   templateUrl: './user-session-login.component.html',
-  styleUrls: ['./user-session-login.component.css']
+  styleUrls: ['./user-session-login.component.css'],
 })
-
 export class UserSesionLoginComponent implements OnInit {
-
-  error: string = "";
-  helper = new JwtHelperService();
+  error: string = '';
   loginForm: FormGroup;
   formSelected: String;
 
   constructor(
-    private userSessionService: UserSessionService,
+    private userSessionService: SessionManager,
     private formBuilder: FormBuilder,
     private toastrService: ToastrService,
     private router: Router,
-    private cdr:ChangeDetectorRef) {
-      this.loginForm = new FormGroup('')
-     }
+    private cdr: ChangeDetectorRef
+  ) {
+    this.loginForm = new FormGroup('');
+  }
 
   ngOnInit() {
-    this.formSelected = 'login'
-    sessionStorage.setItem('decodedToken', '');
-    sessionStorage.setItem('token', '');
-    sessionStorage.setItem('userId', '');
-    sessionStorage.setItem('type', 'SELLER');
-
+    this.error = '';
+    this.formSelected = 'login';
     this.initial();
   }
 
   initial() {
+    // Valida si la sesión ya está activa y, si es válida, redirige a home
+    console.log('Sesion activa: ' + this.userSessionService.esSesionActiva());
+    this.userSessionService.esSesionValida().subscribe((isValid) => {
+      console.log('Sesion valida: ' + isValid);
+      if (this.userSessionService.esSesionActiva() && isValid) {
+        this.router.navigate([`/home`]);
+      }
+    });
+  
     this.loginForm = this.formBuilder.group({
-      email: ["", [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
-      password: ["", [Validators.required, Validators.maxLength(50), Validators.minLength(4)]],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$'),
+        ],
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(50),
+          Validators.minLength(4),
+        ],
+      ],
     });
   }
 
   loginUser(userSession: UserSession) {
-    this.error = ""
+    this.userSessionService.login(userSession).subscribe({
+      next: (res) => {
+        this.userSessionService.guardarSesion(res.token, res.userId, res.type);
+        this.toastrService.success(
+          `Login successful as ${res.type}`,
+          'Information',
+          { closeButton: true }
+        );
 
-    this.userSessionService.login(userSession)
-      .subscribe({
-        next: res => {
-          sessionStorage.setItem('decodedToken', this.helper.decodeToken(res.token));
-          sessionStorage.setItem('token', res.token);
-          sessionStorage.setItem('userId', res.id);
-          sessionStorage.setItem('type', res.isAdmin);
-          this.toastrService.success(
-            `Login successful as ${res.type}`
-            , "Information", 
-            { closeButton: true }
-          );
-          
-          //TODO
-          this.router.navigate([`/home`])
-        },
-        error: () => {
-          this.error = "Incorrect email or password";
-        },
-      })
+        // Redirige a la página de inicio después de iniciar sesión
+        this.router.navigate([`/home`]);
+      },
+      error: (err: Error) => {
+        if (err.message === 'invalid credentials') {
+          this.error = 'Credentials provided are not valid';
+        }
+      },
+    });
   }
 
-  redirectToSignUp(){
-    this.formSelected = 'signup'
+  redirectToSignUp() {
+    this.formSelected = 'signup';
   }
 }

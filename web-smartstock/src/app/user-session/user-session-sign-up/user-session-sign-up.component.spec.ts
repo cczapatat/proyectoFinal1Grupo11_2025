@@ -7,7 +7,7 @@ import { UserSessionSignUpComponent } from './user-session-sign-up.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
-import { UserSessionService } from '../user-session.service';
+import { SessionManager } from '../../services/session-manager.service';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { UserSession } from '../user-session';
 import { of } from 'rxjs';
@@ -18,7 +18,7 @@ describe('UsuarioRegistroComponent', () => {
   let fixture: ComponentFixture<UserSessionSignUpComponent>;
   let debug: DebugElement;
 
-  let usuarioService: jasmine.SpyObj<UserSessionService>;
+  let usuarioService: jasmine.SpyObj<SessionManager>;
   let enumsService: jasmine.SpyObj<EnumsService>;
 
   let dummyUsuarios: UserSession[];
@@ -36,7 +36,7 @@ describe('UsuarioRegistroComponent', () => {
         ReactiveFormsModule,
       ],
       providers: [
-        UserSessionService,
+        SessionManager,
         FormBuilder,
         {
           provide: EnumsService,
@@ -50,7 +50,7 @@ describe('UsuarioRegistroComponent', () => {
     component = fixture.componentInstance;
     debug = fixture.debugElement;
 
-    usuarioService = TestBed.inject(UserSessionService) as jasmine.SpyObj<UserSessionService>;
+    usuarioService = TestBed.inject(SessionManager) as jasmine.SpyObj<SessionManager>;
     enumsService = TestBed.inject(EnumsService) as jasmine.SpyObj<EnumsService>;
   });
 

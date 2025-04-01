@@ -2,17 +2,17 @@
 
 import { TestBed, inject } from '@angular/core/testing';
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { UserSessionService } from './user-session.service';
+import { SessionManager } from '../services/session-manager.service';
 
 describe('Service: Usuario', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [UserSessionService]
+      providers: [SessionManager]
     });
   });
 
-  it('should ...', inject([UserSessionService], (service: UserSessionService) => {
+  it('should ...', inject([SessionManager], (service: SessionManager) => {
     expect(service).toBeTruthy();
   }));
 });

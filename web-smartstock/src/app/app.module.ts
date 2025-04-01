@@ -13,6 +13,7 @@ import { HeaderAppModule } from './header-app/header-app.module';
 import { UsuarioRoutingModule } from './user-session/user-session-routing-module';
 import { HttpErrorInterceptorService } from './interceptors/http-error-interceptor.service';
 import { PropiedadRoutingModule } from './home-app/home-routing-module';
+import { SessionInterceptorService } from './interceptors/session-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,11 @@ import { PropiedadRoutingModule } from './home-app/home-routing-module';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: SessionInterceptorService,
       multi: true,
     },
     HttpClientModule,

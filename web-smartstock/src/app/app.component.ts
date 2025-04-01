@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'WebSTA';
+  title = 'SmartStock';
   loggedIn = false;
 
   constructor (private router: Router) {
@@ -19,7 +19,7 @@ export class AppComponent {
   }
 
   private isLoggedIn(): boolean {
-    const token = sessionStorage.getItem('token');
+    const token = localStorage.getItem('token');
     const isLoggedIn = !!token;
 
     return isLoggedIn;
