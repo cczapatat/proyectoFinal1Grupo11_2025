@@ -16,8 +16,11 @@ import { UserSession } from '../user-session';
   templateUrl: './user-session-login.component.html',
   styleUrls: ['./user-session-login.component.css'],
 })
-export class UserSesionLoginComponent implements OnInit {
-  error: string = '';
+
+export class UserSessionLoginComponent implements OnInit {
+
+  error: string = "";
+
   loginForm: FormGroup;
   formSelected: String;
 

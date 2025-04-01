@@ -5,15 +5,15 @@ import { faker } from '@faker-js/faker';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { UserSesionLoginComponent } from './user-session-login.component';
+
 import { SessionManager } from '../../services/session-manager.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { UserSession } from '../user-session';
+import { UserSesionLoginComponent } from './user-session-login.component';
 
-describe('UsuarioLoginComponent', () => {
+describe('UserLoginComponent', () => {
   let component: UserSesionLoginComponent;
   let fixture: ComponentFixture<UserSesionLoginComponent>;
   let debug: DebugElement;

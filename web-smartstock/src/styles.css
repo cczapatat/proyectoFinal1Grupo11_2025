@@ -1,8 +1,16 @@
+/* Importar las fuentes de Google Fonts si se desea usar una fuente específica */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Estilos globales */
+* {
+  font-family: 'Manrope', sans-serif;
+}
+
 /* You can add global styles to this file, and also import other style files */
 .content {
     max-width: 960px;
     margin: auto;
-  }
+}
 
 td {
     text-align: center;
