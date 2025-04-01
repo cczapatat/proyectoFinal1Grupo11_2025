@@ -5,7 +5,7 @@ import { faker } from '@faker-js/faker';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { UserSesionLoginComponent } from './user-session-login.component';
+import { UserSessionLoginComponent } from './user-session-login.component';
 import { UserSessionService } from '../user-session.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -13,9 +13,9 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { UserSession } from '../user-session';
 
-describe('UsuarioLoginComponent', () => {
-  let component: UserSesionLoginComponent;
-  let fixture: ComponentFixture<UserSesionLoginComponent>;
+describe('UserLoginComponent', () => {
+  let component: UserSessionLoginComponent;
+  let fixture: ComponentFixture<UserSessionLoginComponent>;
   let debug: DebugElement;
 
   let userSessionService: jasmine.SpyObj<UserSessionService>;
@@ -42,10 +42,10 @@ describe('UsuarioLoginComponent', () => {
         },
         FormBuilder,
       ],
-      declarations: [UserSesionLoginComponent]
+      declarations: [UserSessionLoginComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UserSesionLoginComponent);
+    fixture = TestBed.createComponent(UserSessionLoginComponent);
     component = fixture.componentInstance;
     debug = fixture.debugElement;
     userSessionService = TestBed.inject(UserSessionService) as jasmine.SpyObj<UserSessionService>;

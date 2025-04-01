@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 
@@ -7,15 +8,34 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  isMenuVisible = false;
+  isAdmin = false;
 
   constructor(
+    private router: Router,
     private toastrService: ToastrService,
-  ) { }
+  ) {}
 
   ngOnInit() {
+    this.isAdmin = this._isAdmin();
+  }
+
+  toggleMenu() {
+    this.isMenuVisible = !this.isMenuVisible;
+  }
+
+  hideMenu() {
+    this.isMenuVisible = false;
   }
 
   logOut() {
+    localStorage.removeItem('decodedToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('type');
+
+    this.router.navigate([`/user-sessions/login`]);
+
     this.toastrService.success(
       `Log Out successfully`
       , "Information", 
@@ -23,4 +43,10 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+  private _isAdmin(): boolean {
+    const type = localStorage.getItem('type');
+    const isAdmin = type === 'ADMIN';
+
+    return isAdmin;
+  }
 }

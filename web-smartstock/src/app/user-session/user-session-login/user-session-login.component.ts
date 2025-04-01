@@ -12,7 +12,7 @@ import { UserSession } from '../user-session';
   styleUrls: ['./user-session-login.component.css']
 })
 
-export class UserSesionLoginComponent implements OnInit {
+export class UserSessionLoginComponent implements OnInit {
 
   error: string = "";
   helper = new JwtHelperService();
@@ -30,10 +30,10 @@ export class UserSesionLoginComponent implements OnInit {
 
   ngOnInit() {
     this.formSelected = 'login'
-    sessionStorage.setItem('decodedToken', '');
-    sessionStorage.setItem('token', '');
-    sessionStorage.setItem('userId', '');
-    sessionStorage.setItem('type', 'SELLER');
+    localStorage.setItem('decodedToken', '');
+    localStorage.setItem('token', '');
+    localStorage.setItem('userId', '');
+    localStorage.setItem('type', 'SELLER');
 
     this.initial();
   }
@@ -51,10 +51,10 @@ export class UserSesionLoginComponent implements OnInit {
     this.userSessionService.login(userSession)
       .subscribe({
         next: res => {
-          sessionStorage.setItem('decodedToken', this.helper.decodeToken(res.token));
-          sessionStorage.setItem('token', res.token);
-          sessionStorage.setItem('userId', res.id);
-          sessionStorage.setItem('type', res.isAdmin);
+          localStorage.setItem('decodedToken', this.helper.decodeToken(res.token));
+          localStorage.setItem('token', res.token);
+          localStorage.setItem('userId', res.id);
+          localStorage.setItem('type', res.type);
           this.toastrService.success(
             `Login successful as ${res.type}`
             , "Information", 

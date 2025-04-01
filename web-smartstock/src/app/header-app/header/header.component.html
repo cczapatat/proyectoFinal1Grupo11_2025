@@ -1,15 +1,176 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/">Web STA</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      </ul>
-      <div class="d-flex">
-        <a class="btn btn-secondary" routerLink="/" (click)="logOut()">Log Out</a>
-      </div>
-    </div>
+<!-- Toggle Button -->
+<button class="menu-toggle" [class.d-none]="isMenuVisible" (click)="toggleMenu()">
+  <i class="bi bi-list"></i>
+</button>
+
+<!-- Overlay -->
+<div class="menu-overlay" [class.show]="isMenuVisible" (click)="hideMenu()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" [class.show]="isMenuVisible">
+  <div class="logo">
+    <h2><i class="bi bi-box"></i> SmartStock</h2>
   </div>
-</nav>
+  
+  <nav class="nav-menu">
+    <ng-container *ngIf="isAdmin">
+      <div class="menu-section">
+        <h3><i class="bi bi-gear"></i> Admin</h3>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/salespeople/assign-customers">
+              <i class="bi bi-people"></i> Asignar clientes
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#productosSubmenu" role="button">
+              <i class="bi bi-box-seam"></i> Productos
+            </a>
+            <div class="collapse" id="productosSubmenu">
+              <ul class="nav flex-column ms-3">
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/product/create">
+                    <i class="bi bi-plus-circle"></i> Registrar
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/product/edit">
+                    <i class="bi bi-pencil"></i> Modificar
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#masivosSubmenu" role="button">
+              <i class="bi bi-collection"></i> Masivos
+            </a>
+            <div class="collapse" id="masivosSubmenu">
+              <ul class="nav flex-column ms-3">
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/massive/manufacture">
+                    <i class="bi bi-building"></i> Registrar Fabricantes
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/massive/product/create">
+                    <i class="bi bi-boxes"></i> Registrar productos
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/massive/product/edit">
+                    <i class="bi bi-pencil-square"></i> Modificar productos
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/salespeople/register">
+              <i class="bi bi-person-badge"></i> Vendedores
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/store/register">
+              <i class="bi bi-building"></i> Bodegas
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="store/assign-product">
+              <i class="bi bi-box-arrow-right"></i> Asignar productos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#idiomasSubmenu" role="button">
+              <i class="bi bi-translate"></i> Idiomas
+            </a>
+            <div class="collapse" id="idiomasSubmenu">
+              <ul class="nav flex-column ms-3">
+                <li class="nav-item">
+                  <a class="nav-link">
+                    <i class="bi bi-globe"></i> EN
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link">
+                    <i class="bi bi-globe"></i> ES
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link">
+                    <i class="bi bi-globe"></i> PT
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </ng-container>
+
+    <div class="menu-section">
+      <h3><i class="bi bi-person"></i> Vendedor</h3>
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/order/create">
+            <i class="bi bi-cart-plus"></i> Crear pedido
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#clientesSubmenu" role="button">
+            <i class="bi bi-people"></i> Clientes
+          </a>
+          <div class="collapse" id="clientesSubmenu">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/salespeople/list-customers">
+                  <i class="bi bi-list-ul"></i> Listar
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/manufacturers/list-products">
+                  <i class="bi bi-search"></i> Consultar
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/alarm/create">
+            <i class="bi bi-bell"></i> Crear Alarma
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#idiomasSubmenu" role="button">
+            <i class="bi bi-translate"></i> Idiomas
+          </a>
+          <div class="collapse" id="idiomasSubmenu">
+            <ul class="nav flex-column ms-3">
+              <li class="nav-item">
+                <a class="nav-link">
+                  <i class="bi bi-globe"></i> EN
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link">
+                  <i class="bi bi-globe"></i> ES
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link">
+                  <i class="bi bi-globe"></i> PT
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="logout">
+    <button (click)="logOut()" class="btn-logout">
+      <i class="bi bi-download rotate-left"></i> Cerrar
+    </button>
+  </div>
+</div>
