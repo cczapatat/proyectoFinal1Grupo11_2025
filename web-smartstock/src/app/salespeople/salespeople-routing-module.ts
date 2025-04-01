@@ -3,21 +3,22 @@ import { Routes, RouterModule } from '@angular/router';
 import { SalespeopleAssignCustomersComponent } from './salespeople-assign-customers/salespeople-assign-customers.component';
 import { SalespeopleRegisterComponent } from './salespeople-register/salespeople-register.component';
 import { SalespeopleListCustomersComponent } from './salespeople-list-customers/salespeople-list-customers.component';
+import { AuthGuard } from '../guards/auth.guard';
 
 const routes: Routes = [{
   path: 'salespeople',
   children: [
     {
       path: 'assign-customers',
-      component: SalespeopleAssignCustomersComponent
+      component: SalespeopleAssignCustomersComponent, canActivate: [AuthGuard],
     },
     {
       path: 'register',
-      component: SalespeopleRegisterComponent
+      component: SalespeopleRegisterComponent, canActivate: [AuthGuard],
     },
     {
       path: 'list-customers',
-      component: SalespeopleListCustomersComponent
+      component: SalespeopleListCustomersComponent, canActivate: [AuthGuard],
     }
   ]
 }];

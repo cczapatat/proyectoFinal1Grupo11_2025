@@ -37,6 +37,7 @@ export class HeaderComponent implements OnInit {
       , "Information", 
       { closeButton: true }
     );
+   
   }
 
   private _isAdmin(): boolean {

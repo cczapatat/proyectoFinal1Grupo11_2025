@@ -6,6 +6,8 @@ import { UserSession } from '../user-session/user-session';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
+
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +25,7 @@ export class SessionManager {
   private temporizadorCierreSesion: any;
 
 
-  constructor(private http: HttpClient, private jwtHelper: JwtHelperService) {}
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService, private router: Router) {}
 
   // Método para iniciar sesión (llamada a la API)
   login(userSession: UserSession): Observable<any> {
@@ -137,6 +139,8 @@ validarToken(): Observable<boolean> {
     localStorage.removeItem('type');
     localStorage.removeItem('decodedToken');
     this.limpiarContadorSesion();
+
+    this.router.navigate(['/user-sessions/login']);
   }
 
   //Cambia la duración de la sesión en minutos.
