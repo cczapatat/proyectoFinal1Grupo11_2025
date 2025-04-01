@@ -109,9 +109,9 @@ def create_user_session():
     )
 
     create_user_session_response = user_session_repository.create_user_session(user_session_dto=user_session_dto)
+    user_session = create_user_session_response.to_dict()
 
     if isinstance(create_user_session_response, UserSession):
-        user_session = create_user_session_response.to_dict()
 
         if user_session['type'] == 'SELLER':
             seller = create_seller(request, user_session['id'])
@@ -138,7 +138,7 @@ def create_user_session():
 
             return client, 201
 
-    return create_user_session_response
+    return user_session
 
 
 @bp.route('/login', methods=('POST',))

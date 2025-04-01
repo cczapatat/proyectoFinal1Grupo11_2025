@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { PropiedadListaComponent } from './home/home.component';
+import { HomeComponent } from './home/home.component';
 import { RouterModule } from '@angular/router';
-import { PropiedadRoutingModule } from './home-routing-module';
+import { HomeRoutingModule } from './home-routing-module';
 
 
 @NgModule({
@@ -11,13 +11,13 @@ import { PropiedadRoutingModule } from './home-routing-module';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    PropiedadRoutingModule,
+    HomeRoutingModule,
   ],
   declarations: [
-    PropiedadListaComponent,
+    HomeComponent,
   ],
   exports: [
-    PropiedadListaComponent,
+    HomeComponent,
   ]
 })
 export class HomeModule { }

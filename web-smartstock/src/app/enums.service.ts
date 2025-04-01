@@ -15,21 +15,21 @@ export class EnumsService {
 
   bancos(): Observable<Banco[]> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     })
     return this.http.get<Banco[]>(`${this.apiUrl}/bancos`, { headers: headers });
   }
 
   tiposMovimiento(): Observable<TipoMovimiento[]> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     })
     return this.http.get<Banco[]>(`${this.apiUrl}/tipo-movimientos`, { headers: headers });
   }
 
   categoriaMovimiento(): Observable<CategoriaMovimiento[]> {
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     })
     return this.http.get<CategoriaMovimiento[]>(`${this.apiUrl}/categoria-movimientos`, { headers: headers });
   }
@@ -37,7 +37,7 @@ export class EnumsService {
   obtenerTiposMantenimiento(): Observable<TipoMantenimiento[]> {
     return this.http.get<TipoMantenimiento[]>(`${this.apiUrl}/tipo-mantenimientos`, {
       headers: new HttpHeaders({
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       }),
     });
   }
@@ -45,7 +45,7 @@ export class EnumsService {
   obtenerEstadosMantenimiento(): Observable<EstadoMantenimiento[]> {
     return this.http.get<EstadoMantenimiento[]>(`${this.apiUrl}/estado-mantenimientos`, {
       headers: new HttpHeaders({
-        'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       }),
     });
   }

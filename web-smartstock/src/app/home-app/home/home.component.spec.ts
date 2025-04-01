@@ -6,13 +6,13 @@ import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
-import { PropiedadListaComponent } from './home.component';
+import { HomeComponent } from './home.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 describe('HomeComponent', () => {
-  let component: PropiedadListaComponent;
-  let fixture: ComponentFixture<PropiedadListaComponent>;
+  let component: HomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
   let debug: DebugElement;
 
   beforeEach(async () => {
@@ -33,10 +33,10 @@ describe('HomeComponent', () => {
           },
         }
       ],
-      declarations: [PropiedadListaComponent]
+      declarations: [HomeComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PropiedadListaComponent);
+    fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     debug = fixture.debugElement;
   });
