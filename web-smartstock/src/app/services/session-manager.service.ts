@@ -21,7 +21,7 @@ export class SessionManager {
   });
 
   // Variables para manejar la duración de la sesión y el temporizador de cierre de sesión.
-  private duracionSesionMinutos: number = 1; //Duración de la sesión en minutos.
+  private duracionSesionMinutos: number = 30; //Duración de la sesión en minutos.
   private temporizadorCierreSesion: any;
 
 
