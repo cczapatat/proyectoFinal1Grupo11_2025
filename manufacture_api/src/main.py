@@ -3,8 +3,9 @@ from flask import Flask, jsonify
 from flask_restful import Api
 from flask_cors import CORS
 from blueprints.bulk_task_blueprint import bulk_task_blueprint
+from blueprints.manufacturer_blueprint import manufacturer_blueprint
 from errors.errors import ApiError
-from models.BulkTask import db
+from models.Models import db
 import os
 
 def get_env_variable(var_name, default_value):
@@ -21,6 +22,7 @@ db_type = get_env_variable('DB_TYPE', 'postgresql')
 def create_flask_app():
     _app = Flask(__name__)
     _app.register_blueprint(bulk_task_blueprint)
+    _app.register_blueprint(manufacturer_blueprint)
     _app.config['PROPAGATE_EXCEPTIONS'] = True
     _app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     _app.config['SQLALCHEMY_DATABASE_URI'] = f'{db_type}://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'

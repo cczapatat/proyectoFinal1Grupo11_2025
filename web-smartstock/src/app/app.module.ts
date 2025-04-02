@@ -62,6 +62,8 @@ import { SessionInterceptorService } from './interceptors/session-interceptor.se
     ManufactureRoutingModule,
     AlarmRoutingModule,
 
+    ProductModule,
+    ProductRoutingModule,
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: 'toast-bottom-right',
