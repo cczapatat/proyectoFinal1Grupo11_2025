@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 
 import { StoreService } from 'src/app/services/store.service';
@@ -20,6 +21,7 @@ export class StoreRegisterComponent implements OnInit {
   constructor(
     private toastr: ToastrService,
     private fb: FormBuilder,
+    private translate: TranslateService,
     private storeService: StoreService,
   ) { }
 
@@ -42,7 +44,11 @@ export class StoreRegisterComponent implements OnInit {
         this.securityLevels = response.securityLevels;
       },
       error: (error) => {
-        this.toastr.error('Error al obtener los datos', 'Error', { closeButton: true });
+        this.toastr.success(
+          this.translate.instant('STORE.REGISTER_ENUMS_ERROR_MESSAGE'),
+          this.translate.instant('STORE.REGISTER_ENUMS_ERROR_TITLE'),
+          { closeButton: true },
+        );
       }
     });
   }
@@ -76,11 +82,19 @@ export class StoreRegisterComponent implements OnInit {
 
     this.storeService.registerStore(storeData).subscribe({
       next: (response) => {
-        this.toastr.success(`El bodega ${response.name} ha sido creada exitosamente`, 'Éxito', { closeButton: true });
+        this.toastr.success(
+          this.translate.instant('STORE.REGISTER_SUCCESS_MESSAGE'),
+          this.translate.instant('STORE.REGISTER_SUCCESS_TITLE'),
+          { closeButton: true },
+        );
         this.storeForm.reset();
       },
       error: (error) => {
-        this.toastr.error('Ha ocurrido un error: no se puede registrar la bodega', 'Error', { closeButton: true });
+        this.toastr.success(
+          this.translate.instant('STORE.REGISTER_ERROR_MESSAGE'),
+          this.translate.instant('STORE.REGISTER_ERROR_TITLE'),
+          { closeButton: true },
+        );
       }
     })
   }

@@ -4,7 +4,10 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
-import { ModalModule } from 'ngx-bootstrap/modal'
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClient } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { HeaderAppModule } from './header-app/header-app.module';
@@ -31,6 +34,10 @@ import { AlarmRoutingModule } from './alarm/alarm-routing-module';
 import { HttpErrorInterceptorService } from './interceptors/http-error-interceptor.service';
 
 import { SessionInterceptorService } from './interceptors/session-interceptor.service';
+
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -71,6 +78,14 @@ import { SessionInterceptorService } from './interceptors/session-interceptor.se
     }),
     BrowserAnimationsModule,
     ModalModule.forRoot(),
+    TranslateModule.forRoot({
+      defaultLanguage: 'es-CO',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     {

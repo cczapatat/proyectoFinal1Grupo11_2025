@@ -2,6 +2,7 @@ import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { SessionManager } from 'src/app/services/session-manager.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-header',
@@ -11,12 +12,17 @@ import { SessionManager } from 'src/app/services/session-manager.service';
 export class HeaderComponent implements OnInit {
   isMenuVisible = false;
   isAdmin = false;
+  currentLang: string = 'es-CO';
+  availableLangs = ['en-UK', 'es-AR', 'es-CO'];
 
   constructor(
     private router: Router,
     private toastrService: ToastrService,
-    private sessionManager: SessionManager
-  ) { }
+    private sessionManager: SessionManager,
+    private translate: TranslateService
+  ) {
+    this.initializeLanguage();
+  }
 
   ngOnInit() {
     this.isAdmin = this._isAdmin();
@@ -38,8 +44,8 @@ export class HeaderComponent implements OnInit {
   logOut() {
     this.sessionManager.cerrarSesion();
     this.toastrService.success(
-      'Log Out successfully',
-      'Information',
+      this.translate.instant('NAV.LOGOUT_MESSAGE'),
+      this.translate.instant('NAV.LOGOUT'),
       { closeButton: true }
     );
   }
@@ -49,5 +55,18 @@ export class HeaderComponent implements OnInit {
     const isAdmin = type === 'ADMIN';
 
     return isAdmin;
+  }
+
+  private initializeLanguage() {
+    const browserLang = navigator.language;
+    const matchedLang = this.availableLangs.find(lang => lang === browserLang);
+    this.currentLang = matchedLang || 'es-CO';
+    this.translate.setDefaultLang('es-CO');
+    this.translate.use(this.currentLang);
+  }
+
+  changeLanguage(lang: string) {
+    this.currentLang = lang;
+    this.translate.use(lang);
   }
 }
