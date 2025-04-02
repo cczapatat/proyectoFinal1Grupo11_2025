@@ -1,6 +1,7 @@
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { SessionManager } from 'src/app/services/session-manager.service';
 
 @Component({
   selector: 'app-header',
@@ -14,7 +15,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     private toastrService: ToastrService,
-  ) {}
+    private sessionManager: SessionManager
+  ) { }
 
   ngOnInit() {
     this.isAdmin = this._isAdmin();
@@ -29,18 +31,13 @@ export class HeaderComponent implements OnInit {
   }
 
   logOut() {
-    localStorage.removeItem('decodedToken');
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('type');
-
-    this.router.navigate([`/user-sessions/login`]);
-
+    this.sessionManager.cerrarSesion();
     this.toastrService.success(
       `Log Out successfully`
       , "Information", 
       { closeButton: true }
     );
+   
   }
 
   private _isAdmin(): boolean {

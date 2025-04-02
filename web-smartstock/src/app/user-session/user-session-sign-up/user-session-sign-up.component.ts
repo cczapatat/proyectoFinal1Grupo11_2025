@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { UserSessionService } from '../user-session.service';
+import { SessionManager } from '../../services/session-manager.service';
 import { UserSession } from '../user-session';
 import { EnumsService } from 'src/app/enums.service';
 import { Banco } from 'src/app/enums';
@@ -30,7 +30,7 @@ export class UserSessionSignUpComponent implements OnInit {
   listaBancos: Banco[] = [];
 
   constructor(
-    private usuarioService: UserSessionService,
+    private usuarioService: SessionManager,
     private formBuilder: FormBuilder,
     private router: Router,
     private toastrService: ToastrService,

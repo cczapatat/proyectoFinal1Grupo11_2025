@@ -30,6 +30,8 @@ import { AlarmRoutingModule } from './alarm/alarm-routing-module';
 
 import { HttpErrorInterceptorService } from './interceptors/http-error-interceptor.service';
 
+import { SessionInterceptorService } from './interceptors/session-interceptor.service';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -72,6 +74,11 @@ import { HttpErrorInterceptorService } from './interceptors/http-error-intercept
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptorService,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: SessionInterceptorService,
       multi: true,
     },
     HttpClientModule,

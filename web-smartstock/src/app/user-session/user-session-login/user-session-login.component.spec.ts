@@ -5,20 +5,20 @@ import { faker } from '@faker-js/faker';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { UserSessionLoginComponent } from './user-session-login.component';
-import { UserSessionService } from '../user-session.service';
+
+import { SessionManager } from '../../services/session-manager.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { UserSession } from '../user-session';
+import { UserSesionLoginComponent } from './user-session-login.component';
 
 describe('UserLoginComponent', () => {
-  let component: UserSessionLoginComponent;
-  let fixture: ComponentFixture<UserSessionLoginComponent>;
+  let component: UserSesionLoginComponent;
+  let fixture: ComponentFixture<UserSesionLoginComponent>;
   let debug: DebugElement;
 
-  let userSessionService: jasmine.SpyObj<UserSessionService>;
+  let userSessionService: jasmine.SpyObj<SessionManager>;
   let router: Router;
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('UserLoginComponent', () => {
       ],
       providers: [
         {
-          provide: UserSessionService,
+          provide: SessionManager,
           useValue: usuarioServiceSpy,
         },
         {
@@ -42,13 +42,13 @@ describe('UserLoginComponent', () => {
         },
         FormBuilder,
       ],
-      declarations: [UserSessionLoginComponent]
+      declarations: [UserSesionLoginComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UserSessionLoginComponent);
+    fixture = TestBed.createComponent(UserSesionLoginComponent);
     component = fixture.componentInstance;
     debug = fixture.debugElement;
-    userSessionService = TestBed.inject(UserSessionService) as jasmine.SpyObj<UserSessionService>;
+    userSessionService = TestBed.inject(SessionManager) as jasmine.SpyObj<SessionManager>;
     router = TestBed.get(Router); 
   });
 
