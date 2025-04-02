@@ -2,30 +2,28 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { UserSession } from '../user-session/user-session';
+import { UserSession } from '../dtos/user-session';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { environment } from '../../environments/environment';
+import { BaseService } from './base.service';
 import { Router } from '@angular/router';
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class SessionManager {
+export class SessionManager  extends BaseService {
   private apiUserSessionUrl = environment.apiUserSessionUrl;
-
-  private defaultHeaders = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'x-token': 'internal_token',
-  });
 
   // Variables para manejar la duración de la sesión y el temporizador de cierre de sesión.
   private duracionSesionMinutos: number = 30; //Duración de la sesión en minutos.
   private temporizadorCierreSesion: any;
 
 
-  constructor(private http: HttpClient, private jwtHelper: JwtHelperService, private router: Router) {}
+  constructor(private http: HttpClient, private jwtHelper: JwtHelperService, private router: Router) {
+    super();
+  }
 
   // Método para iniciar sesión (llamada a la API)
   login(userSession: UserSession): Observable<any> {

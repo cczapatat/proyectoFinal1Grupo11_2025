@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+
+import { StoreService } from 'src/app/services/store.service';
+import { StoreDto } from 'src/app/dtos/store.dto';
 
 @Component({
   selector: 'app-store-register',
@@ -7,8 +12,76 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./store-register.component.css']
 })
 export class StoreRegisterComponent implements OnInit {
-  constructor(private toastr: ToastrService) {}
+  public states: string[] = [];
+  public securityLevels: string[] = [];
+
+  public storeForm: FormGroup;
+
+  constructor(
+    private toastr: ToastrService,
+    private fb: FormBuilder,
+    private storeService: StoreService,
+  ) { }
 
   ngOnInit(): void {
+    this.getEnums();
+    this.initializeForm();
+  }
+
+  get formControls() {
+    return this.storeForm.controls;
+  }
+
+  getEnums(): void {
+    forkJoin({
+      states: this.storeService.getStates(),
+      securityLevels: this.storeService.getSecurityLevels()
+    }).subscribe({
+      next: (response) => {
+        this.states = response.states;
+        this.securityLevels = response.securityLevels;
+      },
+      error: (error) => {
+        this.toastr.error('Error al obtener los datos', 'Error', { closeButton: true });
+      }
+    });
+  }
+
+  initializeForm(): void {
+    this.storeForm = this.fb.group({
+      name: ['', Validators.required],
+      phone: ['', [Validators.required, Validators.pattern(/\d{11,15}$/)]],
+      email: ['', [Validators.required, Validators.email]],
+      address: ['', Validators.required],
+      capacity: ['', [Validators.required, Validators.min(1)]],
+      state: ['', Validators.required],
+      securityLevel: ['', Validators.required]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.storeForm.invalid) {
+      return;
+    }
+
+    const storeData: StoreDto = new StoreDto(
+      this.storeForm.value.name,
+      this.storeForm.value.phone,
+      this.storeForm.value.email,
+      this.storeForm.value.address,
+      this.storeForm.value.capacity,
+      this.storeForm.value.state,
+      this.storeForm.value.securityLevel,
+    );
+
+    this.storeService.registerStore(storeData).subscribe({
+      next: (response) => {
+        this.toastr.success(`El bodega ${response.name} ha sido creada exitosamente`, 'Éxito', { closeButton: true });
+        this.storeForm.reset();
+      },
+      error: (error) => {
+        this.toastr.error('Ha ocurrido un error: no se puede registrar la bodega', 'Error', { closeButton: true });
+      }
+    })
   }
 }

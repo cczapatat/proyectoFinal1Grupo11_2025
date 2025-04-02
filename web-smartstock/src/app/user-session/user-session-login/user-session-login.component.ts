@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { SessionManager } from '../../services/session-manager.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserSession } from '../user-session';
+import { UserSession } from '../../dtos/user-session';
 
 @Component({
   selector: 'app-user-session-login',

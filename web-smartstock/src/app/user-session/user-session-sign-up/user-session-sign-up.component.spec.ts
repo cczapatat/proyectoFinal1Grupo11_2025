@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { SessionManager } from '../../services/session-manager.service';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
-import { UserSession } from '../user-session';
+import { UserSession } from '../../dtos/user-session';
 import { of } from 'rxjs';
 import { EnumsService } from 'src/app/enums.service';
 

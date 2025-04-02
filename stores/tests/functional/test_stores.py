@@ -131,3 +131,24 @@ def test_invalid_token(client):
 
     assert response.status_code == 401
     assert data['message'] == 'authorization required'
+
+
+def test_all_states(client, headers):
+    response = client.get('/stores/all-states', headers=headers)
+    data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert len(data) == 2
+    assert 'ACTIVE' in data
+    assert 'INACTIVE' in data
+
+
+def test_all_security_levels(client, headers):
+    response = client.get('/stores/all-security-levels', headers=headers)
+    data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert len(data) == 3
+    assert 'LOW' in data
+    assert 'MEDIUM' in data
+    assert 'HIGH' in data
