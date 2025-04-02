@@ -5,26 +5,30 @@ import { faker } from '@faker-js/faker';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 
-
 import { SessionManager } from '../../services/session-manager.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { UserSesionLoginComponent } from './user-session-login.component';
+import { UserSessionLoginComponent } from './user-session-login.component';
 
-describe('UserLoginComponent', () => {
-  let component: UserSesionLoginComponent;
-  let fixture: ComponentFixture<UserSesionLoginComponent>;
+describe('UserSessionLoginComponent', () => {
+  let component: UserSessionLoginComponent;
+  let fixture: ComponentFixture<UserSessionLoginComponent>;
   let debug: DebugElement;
-
-  let userSessionService: jasmine.SpyObj<SessionManager>;
+  let sessionManager: jasmine.SpyObj<SessionManager>;
   let router: Router;
 
-  beforeEach(() => {
-    const usuarioServiceSpy = jasmine.createSpyObj('UsuarioService', ['login']);
+  beforeEach(async () => {
+    // Create the spy for SessionManager with the required methods.
+    const sessionManagerSpy = jasmine.createSpyObj('SessionManager', [
+      'login',
+      'guardarSesion',
+      'esSesionValida',
+      'esSesionActiva',
+    ]);
 
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([]),
         HttpClientTestingModule,
@@ -32,34 +36,33 @@ describe('UserLoginComponent', () => {
         ReactiveFormsModule,
       ],
       providers: [
-        {
-          provide: SessionManager,
-          useValue: usuarioServiceSpy,
-        },
-        {
-          provide: ToastrService,
-          useValue: { success: jasmine.createSpy()}
-        },
+        { provide: SessionManager, useValue: sessionManagerSpy },
+        { provide: ToastrService, useValue: { success: jasmine.createSpy() } },
         FormBuilder,
       ],
-      declarations: [UserSesionLoginComponent]
+      declarations: [UserSessionLoginComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UserSesionLoginComponent);
+    // Set default spy return values BEFORE creating the component.
+    sessionManager = TestBed.inject(SessionManager) as jasmine.SpyObj<SessionManager>;
+    router = TestBed.inject(Router);
+    sessionManager.login.and.returnValue(
+      of({
+        mensaje: 'Inicio de sesion exitoso',
+        token: 'sample-token',
+        userId: '1',
+        type: 'true',
+      })
+    );
+    // By default, have esSesionValida and esSesionActiva return false.
+    sessionManager.esSesionValida.and.returnValue(of(false));
+    sessionManager.esSesionActiva.and.returnValue(false);
+
+    fixture = TestBed.createComponent(UserSessionLoginComponent);
     component = fixture.componentInstance;
     debug = fixture.debugElement;
-    userSessionService = TestBed.inject(SessionManager) as jasmine.SpyObj<SessionManager>;
-    router = TestBed.get(Router); 
-  });
 
-  beforeEach(() => {
-    userSessionService.login.and.returnValue(of({
-      mensaje: 'Inicio de sesion exitoso',
-      token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwODM5MTI2NywianRpIjoiNDBlOTlmMDMtOWI4Ny00ZTUxLTgyMTktZjQwNDhlNDk0NjM2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6eyJpZCI6MSwiaWRfcHJvcGlldGFyaW8iOjAsImlzX2FkbWluIjp0cnVlfSwibmJmIjoxNzA4MzkxMjY3LCJjc3JmIjoiZjI5NzA1NTQtYTY0Ny00NzFlLTg1NDMtZWJjYmQ0OWVmMGFjIiwiZXhwIjoxNzA4MzkyMTY3fQ.dmoVsRgj2KAscG0EDpRLVZv21D3qzhkv-TOqvKnJ0og',
-      id: 1,
-      idPropietario: 0,
-      isAdmin: true,
-    }));
+    // Now trigger ngOnInit and initial() with our spy methods in place.
     fixture.detectChanges();
   });
 
@@ -67,88 +70,78 @@ describe('UserLoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("Component has a title and description", () => {
-    let title = debug.query(By.css('h2.my-2')).nativeElement;
-    expect(title.innerHTML).toBe("Corta Estancia");
-
-    let description = debug.query(By.css('p.my-2')).nativeElement;
-    expect(description.innerHTML).toBe("Administrador de propiedades de corta estancia");
+  it('should display the title "Sign Up As Seller"', () => {
+    const titleElem = debug.query(By.css('h2.my-2')).nativeElement;
+    expect(titleElem.textContent).toContain('Sign Up As Seller');
   });
 
-  it("Component has 1 <input.tab-1> with id tab-1 element", () => {
-    expect(debug.queryAll(By.css('#tab-1'))).toHaveSize(1);
+  it('should have an input for email with id="email"', () => {
+    const emailField = debug.query(By.css('#email'));
+    expect(emailField).toBeTruthy();
   });
 
-  it("Component has 1 <input.tab-2> with id tab-2 element", () => {
-    expect(debug.queryAll(By.css('#tab-2'))).toHaveSize(1);
-  });
-
-  it("Component has 1 <input.form-control> with id usuario element", () => {
-    expect(debug.queryAll(By.css('#usuario'))).toHaveSize(1);
-  });
-
-  it("Should see usuario-requerido label", () => {
-    expect(debug.queryAll(By.css('#usuario-requerido'))).toHaveSize(0);
-    component.loginForm.controls['usuario'].setValue('');
-    component.loginForm.controls['usuario'].markAsTouched();
-
-    const usuario = component.loginForm.controls['usuario'];
-    expect(usuario.valid).toBeFalsy();
-
-    fixture.detectChanges();
-    expect(usuario.hasError('required')).toBeTruthy();
-    expect(debug.query(By.css('#usuario')).nativeElement.value).toEqual('');
-    expect(debug.queryAll(By.css('#usuario-requerido'))).toHaveSize(1);
-  });
-
-  it("Component has 1 <input.form-control> with id contrasena element", () => {
-    expect(debug.queryAll(By.css('#contrasena'))).toHaveSize(1);
-  });
-
-  it("Should see contrasena-requerida label", () => {
-    expect(debug.queryAll(By.css('#contrasena-requerida'))).toHaveSize(0);
-    component.loginForm.controls['contrasena'].setValue('');
-    component.loginForm.controls['contrasena'].markAsTouched();
-
-    const contrasena = component.loginForm.controls['contrasena'];
-    expect(contrasena.valid).toBeFalsy();
-
-    fixture.detectChanges();
-    expect(contrasena.hasError('required')).toBeTruthy();
-    expect(debug.query(By.css('#contrasena')).nativeElement.value).toEqual('');
-    expect(debug.queryAll(By.css('#contrasena-requerida'))).toHaveSize(1);
-  });
-
-  it("Component has 1 <button.btn.btn-info.col-8>  for signin usuario", () => {
-    expect(debug.queryAll(By.css('button.btn.btn-info.col-8'))).toHaveSize(1);
-  });
-
-  it("Should see error-login label", () => {
-    expect(debug.queryAll(By.css('#error-login'))).toHaveSize(0);
-    component.error = "unexpected error"
-
+  it('should display #email-required error when email is empty and touched', () => {
+    component.loginForm.controls['email'].setValue('');
+    component.loginForm.controls['email'].markAsTouched();
     fixture.detectChanges();
 
-    expect(debug.queryAll(By.css('#error-login'))).toHaveSize(1);
+    const emailCtrl = component.loginForm.controls['email'];
+    expect(emailCtrl.hasError('required')).toBeTrue();
+
+    const emailRequiredElem = debug.query(By.css('#email-required'));
+    expect(emailRequiredElem).toBeTruthy();
   });
 
-  it("Should login correct", fakeAsync(() => {
-    const navigateSpy = spyOn(router, 'navigate')
+  it('should have an input for password with id="password"', () => {
+    const passwordField = debug.query(By.css('#password'));
+    expect(passwordField).toBeTruthy();
+  });
 
-    const userNick = faker.hacker.phrase();
-    const password = faker.hacker.verb();
-    component.loginForm.controls['usuario'].setValue(userNick);
-    component.loginForm.controls['contrasena'].setValue(password);
-
+  it('should display #password-required error when password is empty and touched', () => {
+    component.loginForm.controls['password'].setValue('');
+    component.loginForm.controls['password'].markAsTouched();
     fixture.detectChanges();
 
-    const button = debug.nativeElement.querySelector('#doLogin');
-    button.click();
+    const passCtrl = component.loginForm.controls['password'];
+    expect(passCtrl.hasError('required')).toBeTrue();
+
+    const passwordReqElem = debug.query(By.css('#password-required'));
+    expect(passwordReqElem).toBeTruthy();
+  });
+
+  it('should have a login button with id="doLogin"', () => {
+    const loginButton = debug.query(By.css('#doLogin'));
+    expect(loginButton).toBeTruthy();
+  });
+
+  it('should display #error-login when error is set', () => {
+    expect(debug.query(By.css('#error-login'))).toBeFalsy(); // Initially hidden
+    component.error = 'Some login error';
+    fixture.detectChanges();
+
+    const errorElem = debug.query(By.css('#error-login'));
+    expect(errorElem).toBeTruthy();
+  });
+
+  it('should perform login and navigate to "/home" if session is valid', fakeAsync(() => {
+    const navigateSpy = spyOn(router, 'navigate');
+    // Make the session checks pass.
+    sessionManager.esSesionValida.and.returnValue(of(true));
+    sessionManager.esSesionActiva.and.returnValue(true);
+
+    const testEmail = faker.internet.email();
+    const testPassword = faker.internet.password();
+    component.loginForm.controls['email'].setValue(testEmail);
+    component.loginForm.controls['password'].setValue(testPassword);
+    fixture.detectChanges();
+
+    const loginButton = debug.nativeElement.querySelector('#doLogin');
+    loginButton.click();
     tick();
 
-    expect(sessionStorage.getItem('idUsuario')).toEqual('1');
-    expect(sessionStorage.getItem('idPropietario')).toEqual('0');
-    expect(sessionStorage.getItem('isAdmin')).toEqual('true');
-    expect(navigateSpy).toHaveBeenCalledWith(['/propiedades']);
+    // Verify that guardarSesion is called with the expected parameters.
+    expect(sessionManager.guardarSesion).toHaveBeenCalledWith('sample-token', '1', 'true');
+    // Verify navigation to '/home'.
+    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
   }));
 });
