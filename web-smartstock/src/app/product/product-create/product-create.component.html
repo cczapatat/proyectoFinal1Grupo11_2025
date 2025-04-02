@@ -1,264 +1,152 @@
-<div class="container align-items-center">
-  <div class="row align-items-center">
-    <div class="col-md-6 mx-auto card px-2 ">
-    </div>
-    <div class="row">
-      <div class="col-md-8 mx-auto p-0">
-        <div class="card-crete">
-          <div class="create-box">
-            <div class="create-snip">
-              <h4 class="font-weight-bold title">Create Product</h4>
-              <form [formGroup]="productForm" (ngSubmit)="createProduct(productForm.value)">
-
-                <!--Name-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="product_name">Name</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <input novalidate id="product_name" class="form-control" formControlName="name"
-                        placeholder="Name" />
-                      <div id="product_name_required" class="custom-alert show" *ngIf="
-                (productForm.get('name')!.hasError('required') &&
-                productForm.get('name')!.touched)
-                ">
-                        Name is required
-                      </div>
-                      <div id="product_name_exceed" *ngIf="productForm.get('name')?.hasError('maxlength')">
-                        <p class="alert-message">Name must not have more than 255 characters</p>
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-
-
-                </div>
-
-                <!--Description-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="description">Description</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <input novalidate id="description" class="form-control" formControlName="description"
-                        placeholder="Description" />
-                      <div id="product_description_required" class="custom-alert show" *ngIf="
-                      productForm.get('description')!.hasError('required') &&
-                      productForm.get('description')!.touched
-                ">
-                        Description is Required
-                      </div>
-                      <div id="product_description_exceed"
-                        *ngIf="productForm.get('description')?.hasError('maxlength')">
-                        <p class="alert-message">Description must not have more than 255 characters</p>
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-
-
-                </div>
-
-                <!--Category-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="category">Category</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <select id="category" formControlName="category" class="form-control">
-                        <option [ngValue]="null" [selected]="true" disabled>Select a Category</option>
-                        <option *ngFor="let category of categories" [ngValue]="category.key">
-                          {{category.value}}</option>
-                      </select>
-                      <div id="product_category_required" class="custom-alert show"
-                        *ngIf="productForm.get('category')!.hasError('required') && productForm.get('category')!.touched">
-                        You must select a category
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <!--Manufacturer-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="manufacturer_id">Manufacturer</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <select id="manufacturer" formControlName="manufacturer_id" class="form-control">
-                        <option [ngValue]="null" [selected]="true" disabled>Select a Manufacturer</option>
-                        <option *ngFor="let manufacturer of manufacturerList" [ngValue]="manufacturer.id">
-                          {{manufacturer.name}}</option>
-                      </select>
-                      <div id="product_manufactuer_required" class="custom-alert show"
-                        *ngIf="productForm.get('manufacturer_id')!.hasError('required') && productForm.get('manufacturer_id')!.touched">
-                        You must select a manufacturer
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <!--Unit Price-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="unit_price">Unit Price</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <input novalidate id="unit_price" class="form-control" formControlName="unit_price"
-                        placeholder="Unit Price" />
-                      <div id="product_unit_price_required" class="custom-alert show" *ngIf="
-                      productForm.get('unit_price')!.hasError('required') &&
-                      productForm.get('unit_price')!.touched
-                ">
-                        Unit Price is Required
-                      </div>
-                      <div id="product_unit_price_invalid" class="custom-alert show" *ngIf="
-                      productForm.get('unit_price')!.hasError('notPositive') &&
-                      productForm.get('unit_price')!.touched
-                ">
-                        Unit Price must be a positive number
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-
-                <!--Currency-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="currency">Currency</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <select id="currency" formControlName="currency_price" class="form-control">
-                        <option [ngValue]="null" [selected]="true" disabled>Select a Currency</option>
-                        <option *ngFor="let currency of currencies" [ngValue]="currency.key">
-                          {{currency.key}}</option>
-                      </select>
-                      <div id="product_currency_required" class="custom-alert show"
-                        *ngIf="productForm.get('currency_price')!.hasError('required') && productForm.get('currency_price')!.touched">
-                        You must select a currency
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <!--is promotion-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="is_promotion">Promotion</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <input type="checkbox" id="is_promotion" class="form-check-input"
-                        formControlName="is_promotion" />
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <!--Discount Price-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="discount_price">Discount Price</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <input novalidate id="discount_price" class="form-control" formControlName="discount_price"
-                        placeholder="Discount Price" />
-                      <div id="product_discount_price_required" class="custom-alert show" *ngIf="
-                      productForm.get('discount_price')!.hasError('required') &&
-                      productForm.get('discount_price')!.touched
-                ">
-                        Discount Price is Required
-                      </div>
-                      <div id="product_discount_price_invalid" class="custom-alert show" *ngIf="
-                      productForm.get('discount_price')!.hasError('notPositive') &&
-                      productForm.get('discount_price')!.touched
-                ">
-                        Discount Price must be a positive number
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <!--Expired At-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="expired_at">Expired At</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <input novalidate id="expired_at" class="form-control" formControlName="expired_at" type="date"
-                        placeholder="Expired At" [min]="minDate" />
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <!--Url Photo-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="url_photo">Url Photo</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <input novalidate id="url_photo" class="form-control" formControlName="url_photo"
-                        placeholder="Url Photo" />
-                      <div id="product_url_photo_required" class="custom-alert show" *ngIf="
-                      productForm.get('url_photo')!.hasError('required') &&
-                      productForm.get('url_photo')!.touched
-                ">
-                        Url Photo is Required
-                      </div>
-                      <div id="product_url_photo_invalid" class="custom-alert show"
-                        *ngIf="productForm.get('url_photo')?.hasError('pattern')">
-                        Url Photo is not valid
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <!--Store Conditions-->
-                <div class="form-group mx-sm-3 mb-2">
-                  <div class="row">
-                    <div class="col-4 col-sm-3 label-field">
-                      <label for="store_conditions">Store Conditions</label>
-                    </div>
-                    <div class="col-8 col-sm-8">
-                      <textarea novalidate id="store_conditions" class="form-control" formControlName="store_conditions"
-                        placeholder="Store Conditions" rows="3"></textarea>
-                      <div id="product_store_conditions_required" class="custom-alert show" *ngIf="
-                      productForm.get('store_conditions')!.hasError('required') &&
-                      productForm.get('store_conditions')!.touched
-                ">
-                        Store Conditions are Required
-                      </div>
-                    </div>
-                    <div class="col-0 col-sm-1"></div>
-                  </div>
-                </div>
-
-                <br />
-                <div class="button-container">
-                  <button type="submit" class="btn btn-success" [disabled]="!productForm.valid">Create</button>&nbsp;
-                  <button type="button" class="btn btn-danger ml-3" (click)="cancelProduct()">Cancel</button>
-                </div>
-              </form>
-            </div>
+<div class="container">
+  <h4 class="text-center title">Create Product</h4>
+  <div class="form-container">
+    <form [formGroup]="productForm" (ngSubmit)="createProduct(productForm.value)">
+      <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+          <label for="product_name" class="form-label">Name</label>
+          <input novalidate id="product_name" class="form-control" formControlName="name" placeholder="Name" />
+          <div id="product_name_required" class="text-danger" *ngIf="
+      (productForm.get('name')!.hasError('required') &&
+      productForm.get('name')!.touched)
+      ">
+            Name is required</div>
+          <div id="product_name_exceed" class="text-danger" *ngIf="productForm.get('name')?.hasError('maxlength')">
+            Name must not have more than 255 characters</div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="description">Description</label>
+          <input novalidate id="description" class="form-control" formControlName="description"
+            placeholder="Description" />
+          <div id="product_description_required" class="text-danger" *ngIf="
+          productForm.get('description')!.hasError('required') &&
+          productForm.get('description')!.touched
+    ">
+            Description is Required
+          </div>
+          <div id="product_description_exceed" *ngIf="productForm.get('description')?.hasError('maxlength')"
+            class="text-danger">
+            Description must not have more than 255 characters
           </div>
         </div>
       </div>
-    </div>
+
+      <div class="row  mb-4">
+        <div class="col-md-3 mb-3">
+          <label for="unit_price" class="form-label">Unit Price</label>
+          <input novalidate id="unit_price" class="form-control" formControlName="unit_price"
+              placeholder="Unit Price" />
+              <div id="product_unit_price_required" class="text-danger" *ngIf="
+              productForm.get('unit_price')!.hasError('required') &&
+              productForm.get('unit_price')!.touched
+        ">
+                Unit Price is Required
+              </div>
+              <div id="product_unit_price_invalid" class="text-danger" *ngIf="
+              productForm.get('unit_price')!.hasError('notPositive') &&
+              productForm.get('unit_price')!.touched
+        ">
+                Unit Price must be a positive number
+              </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <label class="form-label" for="currency">Currency</label>
+          <select id="currency" formControlName="currency_price" class="form-control">
+            <option value="" disabled>Select</option>
+            <option *ngFor="let currency of currencies" [ngValue]="currency.key">
+              {{currency.key}}</option>
+          </select>
+          <div id="product_currency_required" class="text-danger"
+              *ngIf="productForm.get('currency_price')!.hasError('required') && productForm.get('currency_price')!.touched">
+              You must select a currency
+          </div>
+        </div>
+        <div class="col-md-7 mb-3">
+          <label class="form-label" for="category">Category</label>
+          <select id="category" formControlName="category" class="form-control">
+            <option value="" disabled>Select a Category</option>
+            <option *ngFor="let category of categories" [ngValue]="category.key">
+              {{category.value}}</option>
+          </select>
+          <div id="product_category_required" class="text-danger"
+              *ngIf="productForm.get('category')!.hasError('required') && productForm.get('category')!.touched">
+              You must select a category
+          </div>
+        </div>
+      </div>
+
+      <div class="row  mb-4">
+        <div class="col-md-2 mb-3">
+          <label class="form-label" for="is_promotion">Promotion</label>
+          <br>
+          <input type="checkbox" id="is_promotion" class="form-check-input" formControlName="is_promotion" />
+        </div>
+        <div class="col-md-3 mb-3">
+          <label class="form-label" for="discount_price">Discount Price</label>
+          <input novalidate id="discount_price" class="form-control" formControlName="discount_price"
+              placeholder="Discount Price" />
+            <div id="product_discount_price_required" class="text-danger" *ngIf="
+            productForm.get('discount_price')!.hasError('required') &&
+            productForm.get('discount_price')!.touched
+      ">
+              Discount Price is Required
+            </div>
+            <div id="product_discount_price_invalid" class="text-danger" *ngIf="
+            productForm.get('discount_price')!.hasError('notPositive') &&
+            productForm.get('discount_price')!.touched
+      ">
+              Discount Price must be a positive number
+            </div>
+        </div>
+        <div class="col-md-7 mb-3">
+          <label class="form-label" for="manufacturer_id">Manufacturer</label>
+          <select id="manufacturer" formControlName="manufacturer_id" class="form-control">
+            <option value="" disabled>Select a Manufacturer</option>
+            <option *ngFor="let manufacturer of manufacturerList" [ngValue]="manufacturer.id">
+              {{manufacturer.name}}</option>
+          </select>
+          <div id="product_manufactuer_required" class="text-danger" *ngIf="productForm.get('manufacturer_id')!.hasError('required') && productForm.get('manufacturer_id')!.touched">
+            You must select a manufacturer
+          </div>
+        </div>
+      </div>
+
+      <div class="row  mb-4">
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="expired_at">Expired At</label>
+          <input novalidate id="expired_at" class="form-control" formControlName="expired_at" type="date"
+              placeholder="Expired At" [min]="minDate" />
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label" for="url_photo">Url Photo</label>
+          <input novalidate id="url_photo" class="form-control" formControlName="url_photo" placeholder="Url Photo" />
+            <div id="product_url_photo_required" class="text-danger" *ngIf="
+            productForm.get('url_photo')!.hasError('required') &&
+            productForm.get('url_photo')!.touched
+      ">
+              Url Photo is Required
+            </div>
+            <div id="product_url_photo_invalid" class="text-danger"
+              *ngIf="productForm.get('url_photo')?.hasError('pattern')">
+              Url Photo is not valid
+            </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="store_conditions">Store Conditions</label>
+        <textarea novalidate id="store_conditions" class="form-control" formControlName="store_conditions"
+              placeholder="Store Conditions" rows="6"></textarea>
+            <div id="product_store_conditions_required" class="text-danger" *ngIf="
+            productForm.get('store_conditions')!.hasError('required') &&
+            productForm.get('store_conditions')!.touched
+      ">
+              Store Conditions are Required
+            </div>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn register-btn" [disabled]="!productForm.valid" [ngClass]="{'register-btn-active': !productForm.invalid}">Create</button>&nbsp;
+      </div>
+    </form>
   </div>
 </div>
