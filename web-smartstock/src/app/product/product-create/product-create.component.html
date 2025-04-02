@@ -1,151 +1,151 @@
 <div class="container">
-  <h4 class="text-center title">Create Product</h4>
+  <h4 class="text-center title">{{ 'PRODUCT.TITLE_CREATE' | translate }}</h4>
   <div class="form-container">
     <form [formGroup]="productForm" (ngSubmit)="createProduct(productForm.value)">
       <div class="row mb-4">
         <div class="col-md-6 mb-3">
-          <label for="product_name" class="form-label">Name</label>
-          <input novalidate id="product_name" class="form-control" formControlName="name" placeholder="Name" />
+          <label for="product_name" class="form-label">{{ 'PRODUCT.NAME' | translate }}</label>
+          <input novalidate id="product_name" class="form-control" formControlName="name" placeholder="{{ 'PRODUCT.NAME_PLACEHOLDER' | translate }}" />
           <div id="product_name_required" class="text-danger" *ngIf="
       (productForm.get('name')!.hasError('required') &&
       productForm.get('name')!.touched)
       ">
-            Name is required</div>
+        {{ 'PRODUCT.NAME_REQUIRED' | translate }}</div>
           <div id="product_name_exceed" class="text-danger" *ngIf="productForm.get('name')?.hasError('maxlength')">
-            Name must not have more than 255 characters</div>
+            {{ 'PRODUCT.NAME_MAX_LENGHT' | translate }}</div>
         </div>
         <div class="col-md-6 mb-3">
-          <label class="form-label" for="description">Description</label>
+          <label class="form-label" for="description">{{ 'PRODUCT.DESCRIPTION' | translate }}</label>
           <input novalidate id="description" class="form-control" formControlName="description"
-            placeholder="Description" />
+            placeholder="{{ 'PRODUCT.DESCRIPTION_PLACEHOLDER' | translate }}" />
           <div id="product_description_required" class="text-danger" *ngIf="
           productForm.get('description')!.hasError('required') &&
           productForm.get('description')!.touched
     ">
-            Description is Required
+          {{ 'PRODUCT.DESCRIPTION_REQUIRED' | translate }}
           </div>
           <div id="product_description_exceed" *ngIf="productForm.get('description')?.hasError('maxlength')"
             class="text-danger">
-            Description must not have more than 255 characters
+            {{ 'PRODUCT.DESCRIPTION_MAX_LENGTH' | translate }}
           </div>
         </div>
       </div>
 
       <div class="row  mb-4">
         <div class="col-md-3 mb-3">
-          <label for="unit_price" class="form-label">Unit Price</label>
+          <label for="unit_price" class="form-label">{{ 'PRODUCT.UNIT_PRICE' | translate }}</label>
           <input novalidate id="unit_price" class="form-control" formControlName="unit_price"
-              placeholder="Unit Price" />
+              placeholder="{{ 'PRODUCT.UNIT_PRICE_PLACEHOLDER' | translate }}" />
               <div id="product_unit_price_required" class="text-danger" *ngIf="
               productForm.get('unit_price')!.hasError('required') &&
               productForm.get('unit_price')!.touched
         ">
-                Unit Price is Required
+              {{ 'PRODUCT.UNIT_PRICE_REQUIRED' | translate }}
               </div>
               <div id="product_unit_price_invalid" class="text-danger" *ngIf="
               productForm.get('unit_price')!.hasError('notPositive') &&
               productForm.get('unit_price')!.touched
         ">
-                Unit Price must be a positive number
+              {{ 'PRODUCT.UNIT_PRICE_INVALID' | translate }}
               </div>
         </div>
         <div class="col-md-2 mb-3">
-          <label class="form-label" for="currency">Currency</label>
+          <label class="form-label" for="currency">{{ 'PRODUCT.CURRENCY' | translate }}</label>
           <select id="currency" formControlName="currency_price" class="form-control">
-            <option value="" disabled>Select</option>
+            <option value="" disabled>{{ 'PRODUCT.CURRENCY_SELECTED' | translate }}</option>
             <option *ngFor="let currency of currencies" [ngValue]="currency.key">
               {{currency.key}}</option>
           </select>
           <div id="product_currency_required" class="text-danger"
               *ngIf="productForm.get('currency_price')!.hasError('required') && productForm.get('currency_price')!.touched">
-              You must select a currency
+              {{ 'PRODUCT.CURRENCY_REQUIRED' | translate }}
           </div>
         </div>
         <div class="col-md-7 mb-3">
-          <label class="form-label" for="category">Category</label>
+          <label class="form-label" for="category">{{ 'PRODUCT.CATEGORY' | translate }}</label>
           <select id="category" formControlName="category" class="form-control">
-            <option value="" disabled>Select a Category</option>
+            <option value="" disabled>{{ 'PRODUCT.CATEGORY_SELECTED' | translate }}</option>
             <option *ngFor="let category of categories" [ngValue]="category.key">
               {{category.value}}</option>
           </select>
           <div id="product_category_required" class="text-danger"
               *ngIf="productForm.get('category')!.hasError('required') && productForm.get('category')!.touched">
-              You must select a category
+              {{ 'PRODUCT.CATEGORY_REQUIRED' | translate }}
           </div>
         </div>
       </div>
 
       <div class="row  mb-4">
         <div class="col-md-2 mb-3">
-          <label class="form-label" for="is_promotion">Promotion</label>
+          <label class="form-label" for="is_promotion">{{ 'PRODUCT.IS_PROMOTION' | translate }}</label>
           <br>
           <input type="checkbox" id="is_promotion" class="form-check-input" formControlName="is_promotion" />
         </div>
         <div class="col-md-3 mb-3">
-          <label class="form-label" for="discount_price">Discount Price</label>
+          <label class="form-label" for="discount_price">{{ 'PRODUCT.DISCOUNT_PRICE' | translate }}</label>
           <input novalidate id="discount_price" class="form-control" formControlName="discount_price"
-              placeholder="Discount Price" />
+              placeholder="{{ 'PRODUCT.DISCOUNT_PRICE_PLACEHOLDER' | translate }}" />
             <div id="product_discount_price_required" class="text-danger" *ngIf="
             productForm.get('discount_price')!.hasError('required') &&
             productForm.get('discount_price')!.touched
       ">
-              Discount Price is Required
+            {{ 'PRODUCT.DISCOUNT_PRICE_REQUIRED' | translate }}
             </div>
             <div id="product_discount_price_invalid" class="text-danger" *ngIf="
             productForm.get('discount_price')!.hasError('notPositive') &&
             productForm.get('discount_price')!.touched
       ">
-              Discount Price must be a positive number
+            {{ 'PRODUCT.DISCOUNT_PRICE_INVALID' | translate }}
             </div>
         </div>
         <div class="col-md-7 mb-3">
-          <label class="form-label" for="manufacturer_id">Manufacturer</label>
+          <label class="form-label" for="manufacturer_id">{{ 'PRODUCT.MANUFACTURER' | translate }}</label>
           <select id="manufacturer" formControlName="manufacturer_id" class="form-control">
-            <option value="" disabled>Select a Manufacturer</option>
+            <option value="" disabled>{{ 'PRODUCT.MANUFACTURER_SELECTED' | translate }}</option>
             <option *ngFor="let manufacturer of manufacturerList" [ngValue]="manufacturer.id">
               {{manufacturer.name}}</option>
           </select>
           <div id="product_manufactuer_required" class="text-danger" *ngIf="productForm.get('manufacturer_id')!.hasError('required') && productForm.get('manufacturer_id')!.touched">
-            You must select a manufacturer
+            {{ 'PRODUCT.MANUFACTURER_REQUIRED' | translate }}
           </div>
         </div>
       </div>
 
       <div class="row  mb-4">
         <div class="col-md-6 mb-3">
-          <label class="form-label" for="expired_at">Expired At</label>
+          <label class="form-label" for="expired_at">{{ 'PRODUCT.EXPIRED_AT' | translate }}</label>
           <input novalidate id="expired_at" class="form-control" formControlName="expired_at" type="date"
-              placeholder="Expired At" [min]="minDate" />
+              placeholder="{{ 'PRODUCT.EXPIRED_AT_PLACEHOLDER' | translate }}" [min]="minDate" />
         </div>
         <div class="col-md-6 mb-3">
-          <label class="form-label" for="url_photo">Url Photo</label>
-          <input novalidate id="url_photo" class="form-control" formControlName="url_photo" placeholder="Url Photo" />
+          <label class="form-label" for="url_photo">{{ 'PRODUCT.URL_PHOTO' | translate }}</label>
+          <input novalidate id="url_photo" class="form-control" formControlName="url_photo" placeholder="{{ 'PRODUCT.URL_PHOTO_PLACEHOLDER' | translate }}" />
             <div id="product_url_photo_required" class="text-danger" *ngIf="
             productForm.get('url_photo')!.hasError('required') &&
             productForm.get('url_photo')!.touched
       ">
-              Url Photo is Required
+            {{ 'PRODUCT.URL_PHOTO_REQUIRED' | translate }}
             </div>
             <div id="product_url_photo_invalid" class="text-danger"
               *ngIf="productForm.get('url_photo')?.hasError('pattern')">
-              Url Photo is not valid
+            {{ 'PRODUCT.URL_PHOTO_INVALID' | translate }}
             </div>
         </div>
       </div>
 
       <div class="mb-3">
-        <label class="form-label" for="store_conditions">Store Conditions</label>
+        <label class="form-label" for="store_conditions">{{ 'PRODUCT.STORE_CONDITONS' | translate }}</label>
         <textarea novalidate id="store_conditions" class="form-control" formControlName="store_conditions"
-              placeholder="Store Conditions" rows="6"></textarea>
+              placeholder="{{ 'PRODUCT.STORE_CONDITONS_PLACEHOLDER' | translate }}" rows="6"></textarea>
             <div id="product_store_conditions_required" class="text-danger" *ngIf="
             productForm.get('store_conditions')!.hasError('required') &&
             productForm.get('store_conditions')!.touched
       ">
-              Store Conditions are Required
+            {{ 'PRODUCT.STORE_CONDITONS_REQUIRED' | translate }}
             </div>
       </div>
       <div class="text-center">
-        <button type="submit" class="btn register-btn" [disabled]="!productForm.valid" [ngClass]="{'register-btn-active': !productForm.invalid}">Create</button>&nbsp;
+        <button type="submit" class="btn register-btn" [disabled]="!productForm.valid" [ngClass]="{'register-btn-active': !productForm.invalid}">{{ 'PRODUCT.CREATE_BUTTON' | translate }}</button>&nbsp;
       </div>
     </form>
   </div>
