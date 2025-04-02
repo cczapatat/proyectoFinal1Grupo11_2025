@@ -8,6 +8,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { SessionManager } from 'src/app/services/session-manager.service';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -21,11 +22,13 @@ describe('HeaderComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         ToastrModule.forRoot(),
+        TranslateModule.forRoot(),
       ],
       providers: [
         SessionManager,
         JwtHelperService,
-        { provide: JWT_OPTIONS, useValue: {} }
+        { provide: JWT_OPTIONS, useValue: {} },
+        TranslateService
       ],
       declarations: [ HeaderComponent ]
     })
