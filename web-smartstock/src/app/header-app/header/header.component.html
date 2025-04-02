@@ -11,14 +11,14 @@
   <div class="logo">
     <h2><i class="bi bi-box"></i> SmartStock</h2>
   </div>
-  
+
   <nav class="nav-menu">
     <ng-container *ngIf="isAdmin">
       <div class="menu-section">
         <h3><i class="bi bi-gear"></i> Admin</h3>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/salespeople/assign-customers">
+            <a class="nav-link" (click)="navigate('/salespeople/assign-customers')">
               <i class="bi bi-people"></i> Asignar clientes
             </a>
           </li>
@@ -29,12 +29,12 @@
             <div class="collapse" id="productosSubmenu">
               <ul class="nav flex-column ms-3">
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/product/create">
+                  <a class="nav-link" (click)="navigate('/product/create')">
                     <i class="bi bi-plus-circle"></i> Registrar
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/product/edit">
+                  <a class="nav-link" (click)="navigate('/product/edit')">
                     <i class="bi bi-pencil"></i> Modificar
                   </a>
                 </li>
@@ -48,17 +48,17 @@
             <div class="collapse" id="masivosSubmenu">
               <ul class="nav flex-column ms-3">
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/massive/manufacture">
+                  <a class="nav-link" (click)="navigate('/massive/manufacture')">
                     <i class="bi bi-building"></i> Registrar Fabricantes
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/massive/product/create">
+                  <a class="nav-link" (click)="navigate('/massive/product/create')">
                     <i class="bi bi-boxes"></i> Registrar productos
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" routerLink="/massive/product/edit">
+                  <a class="nav-link" (click)="navigate('/massive/product/edit')">
                     <i class="bi bi-pencil-square"></i> Modificar productos
                   </a>
                 </li>
@@ -66,43 +66,19 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/salespeople/register">
+            <a class="nav-link" (click)="navigate('/salespeople/register')">
               <i class="bi bi-person-badge"></i> Vendedores
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/store/register">
+            <a class="nav-link" (click)="navigate('/store/register')">
               <i class="bi bi-building"></i> Bodegas
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="store/assign-product">
+            <a class="nav-link" (click)="navigate('store/assign-product')">
               <i class="bi bi-box-arrow-right"></i> Asignar productos
             </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#idiomasSubmenu" role="button">
-              <i class="bi bi-translate"></i> Idiomas
-            </a>
-            <div class="collapse" id="idiomasSubmenu">
-              <ul class="nav flex-column ms-3">
-                <li class="nav-item">
-                  <a class="nav-link">
-                    <i class="bi bi-globe"></i> EN
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link">
-                    <i class="bi bi-globe"></i> ES
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link">
-                    <i class="bi bi-globe"></i> PT
-                  </a>
-                </li>
-              </ul>
-            </div>
           </li>
         </ul>
       </div>
@@ -112,7 +88,7 @@
       <h3><i class="bi bi-person"></i> Vendedor</h3>
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/order/create">
+          <a class="nav-link" (click)="navigate('/order/create')">
             <i class="bi bi-cart-plus"></i> Crear pedido
           </a>
         </li>
@@ -123,12 +99,12 @@
           <div class="collapse" id="clientesSubmenu">
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
-                <a class="nav-link" routerLink="/salespeople/list-customers">
+                <a class="nav-link" (click)="navigate('/salespeople/list-customers')">
                   <i class="bi bi-list-ul"></i> Listar
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" routerLink="/manufacturers/list-products">
+                <a class="nav-link" (click)="navigate('/manufacturers/list-products')">
                   <i class="bi bi-search"></i> Consultar
                 </a>
               </li>
@@ -136,10 +112,16 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/alarm/create">
+          <a class="nav-link" (click)="navigate('/alarm/create')">
             <i class="bi bi-bell"></i> Crear Alarma
           </a>
         </li>
+      </ul>
+    </div>
+
+    <div class="menu-section">
+      <h3><i class="bi bi-sliders"></i> Configuraciones</h3>
+      <ul class="nav flex-column">
         <li class="nav-item">
           <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#idiomasSubmenu" role="button">
             <i class="bi bi-translate"></i> Idiomas
@@ -148,17 +130,17 @@
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
                 <a class="nav-link">
-                  <i class="bi bi-globe"></i> EN
+                    <img src="assets/flags/GB.svg" alt="EN - UK" class="flag-icon"> EN - UK
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link">
-                  <i class="bi bi-globe"></i> ES
+                  <img src="assets/flags/AR.svg" alt="ES - AR" class="flag-icon"> ES - AR
                 </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link">
-                  <i class="bi bi-globe"></i> PT
+                  <img src="assets/flags/CO.svg" alt="ES - CO" class="flag-icon"> ES - CO
                 </a>
               </li>
             </ul>

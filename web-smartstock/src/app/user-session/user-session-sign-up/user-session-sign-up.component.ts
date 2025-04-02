@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { SessionManager } from '../../services/session-manager.service';
-import { UserSession } from '../user-session';
+import { UserSession } from '../../dtos/user-session';
 import { EnumsService } from 'src/app/enums.service';
 import { Banco } from 'src/app/enums';
 

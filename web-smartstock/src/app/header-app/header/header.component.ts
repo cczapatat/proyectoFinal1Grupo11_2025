@@ -30,14 +30,18 @@ export class HeaderComponent implements OnInit {
     this.isMenuVisible = false;
   }
 
+  navigate(route: string) {
+    this.router.navigate([route]);
+    this.hideMenu();
+  }
+
   logOut() {
     this.sessionManager.cerrarSesion();
     this.toastrService.success(
-      `Log Out successfully`
-      , "Information", 
+      'Log Out successfully',
+      'Information',
       { closeButton: true }
     );
-   
   }
 
   private _isAdmin(): boolean {

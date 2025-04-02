@@ -1,3 +1,65 @@
 <div class="container">
-  <h2>Registrar Bodega</h2>
+  <h2 class="text-center title">Registrar Bodega</h2>
+  <div class="form-container">
+    <form [formGroup]="this.storeForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-control" formControlName="name" placeholder="Nombre">
+        <div *ngIf="this.formControls?.['name'].invalid && this.formControls?.['name'].touched" class="text-danger">El
+          nombre es requerido.</div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Teléfono</label>
+          <input type="text" class="form-control" formControlName="phone" placeholder="Teléfono">
+          <div *ngIf="formControls?.['phone'].invalid && formControls?.['phone'].touched" class="text-danger">Formato de
+            teléfono incorrecto.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Correo Electrónico</label>
+          <input type="email" class="form-control" formControlName="email" placeholder="Correo Electrónico">
+          <div *ngIf="formControls?.['email'].invalid && formControls?.['email'].touched" class="text-danger">Correo
+            electrónico inválido.</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Dirección</label>
+          <input type="text" class="form-control" formControlName="address" placeholder="Dirección">
+          <div *ngIf="formControls?.['address'].invalid && formControls?.['address'].touched" class="text-danger">La
+            dirección es requerida.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Capacidad</label>
+          <input type="number" class="form-control" formControlName="capacity" placeholder="Capacidad en M3">
+          <div *ngIf="formControls?.['capacity'].invalid && formControls?.['capacity'].touched" class="text-danger">La
+            capacidad debe ser un número positivo.</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Estado</label>
+          <select class="form-select" formControlName="state">
+            <option value="">Seleccione un Estado</option>
+            <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+          </select>
+          <div *ngIf="formControls?.['state'].invalid && formControls?.['state'].touched" class="text-danger">El state es
+            requerido.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Nivel de Seguridad</label>
+          <select class="form-select" formControlName="securityLevel">
+            <option value="">Seleccione el Nivel de Seguridad</option>
+            <option *ngFor="let securityLevel of securityLevels" [value]="securityLevel">{{ securityLevel }}</option>
+          </select>
+          <div *ngIf="formControls?.['securityLevel'].invalid && formControls?.['securityLevel'].touched"
+            class="text-danger">El nivel de seguridad es requerido.</div>
+        </div>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn register-btn" [ngClass]="{'register-btn-active': !storeForm.invalid}"
+          [disabled]="storeForm.invalid">Registrar</button>
+      </div>
+    </form>
+  </div>
 </div>

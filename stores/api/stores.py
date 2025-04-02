@@ -54,6 +54,18 @@ def create_store():
     return jsonify(store), 201
 
 
+@bp.route('/all-states', methods=('GET',))
+def get_states():
+    there_is_token()
+    return jsonify([state.name for state in STATE]), 200
+
+
+@bp.route('/all-security-levels', methods=('GET',))
+def get_security_levels():
+    there_is_token()
+    return jsonify([security_level.name for security_level in SECURITY_LEVEL]), 200
+
+
 def _dict_to_store_in_dto(data: dict) -> StoreInDTO:
     return StoreInDTO(
         name=data.get('name'),
