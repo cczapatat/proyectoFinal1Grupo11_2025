@@ -1,77 +1,71 @@
-.card {
-	border: transparent;
-}
-
-.card-create{
-	width: 850px;
-	height: 750px;
-}
-
-.create-box{
-	width:100%;
-	margin:auto;
-    min-width: 850px;
-	min-height:750px;
-	position:relative;
-	background: white;
-	border: solid #999999;
-}
-
-.create-snip{
-	width:100%;
-	height:100%;
-	position:relative;
-	padding:10% 10% 10% 10%;
-	
-}
-
-.title{
-    font-size:16px;
-    font-weight: bold;
-    color:black;
-    margin-bottom: 30px;
-}
-
-.label-field{
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    padding-right: 0;
-    margin-right: 50px;
-    color:black;
-	margin-left: 5px;
-	width: 100px;
-}
-
-:-ms-input-placeholder,
-::-webkit-input-placeholder,
-:-moz-placeholder,
-::placeholder,
-select
-{
-    font-size: 14px;
-    color: rgb(155, 155, 155);
-    border:1px solid #999999;
-}
-
-.button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
   }
-.custom-alert{
-    font-size: 12px;
-    color: #dc3545;
+  
+  .container {
+    max-width: 800px;
+    margin-top: 40px;
+  }
+  
+  .title {
+    font-size: 28px;
     font-weight: bold;
+    color: #5a2d0c;
     margin-bottom: 20px;
-}
-
-input, select {
-    margin-bottom: 20px;
-}
-
-button {
-    margin-right: 30px;
-    margin-left: 30px;
-    width: 150px;
-}
+  }
+  
+  .form-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-label {
+    font-weight: bold;
+    color: #984C0C;
+  }
+  
+  .form-control, .form-select, .form-check-input {
+    border: 2px solid #984C0C;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  
+  .form-control:focus, .form-select:focus {
+    border-color: #653208;
+    box-shadow: 0 0 0 .25rem rgba(101, 50, 8, 0.25);
+  }
+  
+  .register-btn {
+    background-color: #6C757D;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .register-btn-active {
+    background-color: #FD7E14 !important;
+  }
+  
+  .register-btn:hover {
+    font-weight: bold;
+  }
+  
+  /* Estilos para placeholder */
+  ::placeholder {
+    color: #9FA1A9 !important;
+  }
+  
+  :-ms-input-placeholder {
+    color: #9FA1A9 !important;
+  }
+  
+  ::-ms-input-placeholder{
+    color: #9FA1A9 !important;
+  }
+  
