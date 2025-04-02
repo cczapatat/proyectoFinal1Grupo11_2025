@@ -4,7 +4,7 @@ from commands.create_command import CreateBulkTask
 from commands.update_command import BulkTaskUpdate
 from commands.filter_command import FilterBulkTaskByUserEmail, FilterBulkTaskById
 from commands.reset import ResetBulkTask
-from models.BulkTask import BulkTaskSchema
+from models.Models import BulkTaskSchema
 
 bulk_task_blueprint = Blueprint('bulk_task', __name__, url_prefix='/manufacture-api')
 bulk_task_schema = BulkTaskSchema()

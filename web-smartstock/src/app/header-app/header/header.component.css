@@ -95,6 +95,11 @@
   margin-top: 8px;
 }
 
+.nav-link.active {
+  color: #191D23;
+  background-color: rgba(101, 50, 8, 0.25);
+}
+
 .collapse ul {
   border-left: 1px solid rgba(255, 255, 255, 0.1);
 }

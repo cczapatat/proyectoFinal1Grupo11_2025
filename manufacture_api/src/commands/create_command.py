@@ -5,7 +5,7 @@ import uuid
 
 from models.Operations import Status
 from sqlalchemy.exc import SQLAlchemyError
-from models.BulkTask import db, BulkTask
+from models.Models import db, BulkTask
 from errors.errors import ApiError
 from .base_command import BaseCommand
 from utilities.publisher_service import PublisherService
