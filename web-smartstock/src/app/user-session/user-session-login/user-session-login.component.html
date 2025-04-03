@@ -1,50 +1,45 @@
 <div class="container align-items-center">
   <div class="row align-items-center">
-    <div class="col-md-6 mx-auto card px-2 ">
+    <div class="col-md-6 mx-auto card px-2">
       <div class="card-body text-center">
-        <h2 class="my-2">Sign Up As Seller</h2>
+        <h2 class="my-2">{{ 'LOGIN.TITLE' | translate }}</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-md-6 mx-auto p-0">
-          <form id="formLogin" [formGroup]="this.loginForm" (ngSubmit)="loginUser(this.loginForm.value)">
-            <div class="group">
-              <label for="email" class="label">Email</label>
-              <input id="email" type="text" class="input" formControlName="email" placeholder="Email">
-            </div>
-            <div id="email-required"
-              *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
-              <p class="alert-message">You must enter a username to log in</p>
-            </div>
-            <div id="correo-invalido"
-            *ngIf="loginForm.get('email')?.hasError('pattern')">
-            <p class="alert-message">The email does not have a valid format.</p>
+        <form id="formLogin" [formGroup]="loginForm" (ngSubmit)="loginUser(loginForm.value)">
+          <div class="group">
+            <label for="email">{{ 'LOGIN.EMAIL_LABEL' | translate }}</label>
+            <input id="email" type="text" formControlName="email" placeholder="{{ 'LOGIN.EMAIL_PLACEHOLDER' | translate }}">
           </div>
-            <div class="group">
-              <label for="password" class="label">Password</label>
-              <input id="password" type="password" class="input" data-type="password"
-                formControlName="password" placeholder="*********">
-            </div>
-            <div id="password-required"
-              *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
-              <p class="alert-message">You must enter a password to log in.</p>
-            </div>
-            <div id="size-password-exceeded"
-            *ngIf="loginForm.get('password')?.hasError('maxlength')">
-            <p class="alert-message">The password must not exceed 50 characters.</p>
+          <div id="email-required" *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+            <p class="alert-message">{{ 'LOGIN.EMAIL_REQUIRED' | translate }}</p>
           </div>
-          <div id="size-password-min-length-required"
-            *ngIf="loginForm.get('password')?.hasError('minlength')">
-            <p class="alert-message">The password must be longer than 4 characters.</p>
+          <div id="correo-invalido" *ngIf="loginForm.get('email')?.hasError('pattern')">
+            <p class="alert-message">{{ 'LOGIN.EMAIL_INVALID' | translate }}</p>
           </div>
-            <div class="group">
-              <button id="doLogin" type="submit" class="btn btn-info col-8">Log In</button>
-            </div>
-            <div id="error-login" *ngIf="error !=''">
-              <p class="alert-message">Incorrect Email or Password</p>
-            </div>
-          </form>
+          <div class="group">
+            <label for="password">{{ 'LOGIN.PASSWORD_LABEL' | translate }}</label>
+            <input id="password" type="password" data-type="password" formControlName="password" placeholder="{{ 'LOGIN.PASSWORD_PLACEHOLDER' | translate }}">
+          </div>
+          <div id="password-required" *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+            <p class="alert-message">{{ 'LOGIN.PASSWORD_REQUIRED' | translate }}</p>
+          </div>
+          <div id="size-password-exceeded" *ngIf="loginForm.get('password')?.hasError('maxlength')">
+            <p class="alert-message">{{ 'LOGIN.PASSWORD_MAX_LENGTH' | translate }}</p>
+          </div>
+          <div id="size-password-min-length-required" *ngIf="loginForm.get('password')?.hasError('minlength')">
+            <p class="alert-message">{{ 'LOGIN.PASSWORD_MIN_LENGTH' | translate }}</p>
+          </div>
+          <div class="group">
+            <button id="doLogin" type="submit" class="col-8">{{ 'LOGIN.BUTTON_LOGIN' | translate }}</button>
+          </div>
+          <div id="error-login" *ngIf="error != ''">
+            <p class="alert-message">{{ error }}</p>
+          </div>
+        </form>
       </div>
     </div>
   </div>
-</div>
+  <div class="row">
+  </div>

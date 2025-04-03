@@ -1,132 +1,197 @@
-<div class="sign-up-space">
-  <form id="formSignUp" [formGroup]="this.finalForm" (ngSubmit)="registrarUsuario(this.finalForm.value)">
-    <div class="sign-up">
-      <div class="group form-check-inline">
-        <label class="label" for="inlineRadio1">Tipo de Usuario</label>
-        <ng-container *ngFor="let item of userTypeList; let i = index;">
-          <input   class="form-check-input" type="radio" value="{{item.name}}" name="userType" id="inlineRadio1" class="type-user"
-          (change)="onItemChange(i)" [checked]="isVisible === i">
-          <label class="label-radio" for="inlineRadio1">{{item.name}}</label>
-        </ng-container>
-      </div>
-      <ng-container *ngIf="this.isVisible == 1">
-        <div class="group">
-          <label for="nombre" class="label">Nombre</label>
-          <input novalidate class="input" id="nombre" type="text" formControlName="nombre" placeholder="Nombre" />
-        </div>
-        <div id="nombre-requerido"
-          *ngIf="finalForm.get('nombre')?.hasError('required') && finalForm.get('nombre')?.touched">
-          <p class="alert-message">Debe ingresar un nombre para registrarse</p>
-        </div>
-        <div id="tamano-nombre-excedido"
-          *ngIf="finalForm.get('nombre')?.hasError('maxlength')">
-          <p class="alert-message">El nombre no debe exceder los 50 carácteres</p>
-        </div>
-        <div class="group">
-          <label for="telefono" class="label">Telefono</label>
-          <input id="telefono" formControlName="telefono" type="text" class="input" placeholder="Telefono">
-        </div>
-        <div id="telefono-requerido"
-          *ngIf="finalForm.get('telefono')?.hasError('required') && finalForm.get('telefono')?.touched">
-          <p class="alert-message">Debe ingresar un telefono para registrarse</p>
-        </div>
-        <div id="tamano-telefono-excedido"
-          *ngIf="finalForm.get('telefono')?.hasError('maxlength')">
-          <p class="alert-message">El telefono no debe exceder los 15 carácteres</p>
-        </div>
-        <div class="group">
-          <label for="banco" class="label">Banco</label>
-          <select id="banco" formControlName="banco" class="select" placeholder="Banco">
-            <option [ngValue]="null" [disabled]="true" [selected]="true" class="select-default">Seleccionar Banco</option>
-            <option *ngFor="let banco of listaBancos" [ngValue]="banco">{{banco}}</option>
-          </select>
-        </div>
-        <div id="banco-requerido"
-          *ngIf="finalForm.get('banco')?.hasError('required') && finalForm.get('banco')?.touched">
-          <p class="alert-message">Debe ingresar un banco para registrarse</p>
-        </div>
+<div class="container">
+  <h2 class="text-center title" style="margin: 2rem 0;">{{ 'SIGNUP.TITLE' | translate }}</h2>
+  <form [formGroup]="sellerForm" (ngSubmit)="registerSeller(sellerForm.value)">
 
-        <div class="group">
-          <label for="cuenta" class="label">Cuenta</label>
-          <input id="cuenta" formControlName="cuenta" type="text" class="input" placeholder="Cuenta">
+    <!-- Row 1: Name & Phone -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="name">{{ 'SIGNUP.NAME_LABEL' | translate }}</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="{{ 'SIGNUP.NAME_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('name')?.hasError('required') && sellerForm.get('name')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.NAME_REQUIRED' | translate }}</p>
         </div>
-        <div id="cuenta-requerida"
-          *ngIf="finalForm.get('cuenta')?.hasError('required') && finalForm.get('cuenta')?.touched">
-          <p class="alert-message">Debe ingresar una cuenta para registrarse</p>
+        <div *ngIf="sellerForm.get('name')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.NAME_MAX_LENGTH' | translate }}</p>
         </div>
-        <div id="tamano-cuenta-excedida"
-          *ngIf="finalForm.get('cuenta')?.hasError('maxlength')">
-          <p class="alert-message">La cuenta no debe exceder los 20 carácteres</p>
-        </div>
-        <div class="group">
-          <label for="correo" class="label">Correo</label>
-          <input id="correo" formControlName="correo" type="text" class="input" placeholder="Correo" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
-        </div>
-        <div id="correo-requerido"
-          *ngIf="finalForm.get('correo')?.hasError('required') && finalForm.get('correo')?.touched">
-          <p class="alert-message">Debe ingresar un correo para registrarse</p>
-        </div>
-        <div id="correo-invalido"
-          *ngIf="finalForm.get('correo')?.hasError('pattern')">
-          <p class="alert-message">El correo no tiene un formato valido</p>
-        </div>
-      </ng-container>
+      </div>
 
-      <div class="group">
-        <label for="usuario" class="label">Usuario</label>
-        <input id=usuario formControlName="usuario" type="text" class="input" placeholder="Usuario">
+      <div class="col-md-6">
+        <label for="phone">{{ 'SIGNUP.PHONE_LABEL' | translate }}</label>
+        <input
+          id="phone"
+          type="text"
+          formControlName="phone"
+          placeholder="{{ 'SIGNUP.PHONE_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('phone')?.hasError('required') && sellerForm.get('phone')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.PHONE_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('phone')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.PHONE_MAX_LENGTH' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('phone')?.hasError('pattern')">
+          <p class="alert-message">{{ 'SIGNUP.PHONE_PATTERN' | translate }}</p>
+        </div>
       </div>
-      <div id="usuario-requerido"
-        *ngIf="finalForm.get('usuario')?.hasError('required') && finalForm.get('usuario')?.touched">
-        <p class="alert-message">Debe ingresar un usuario para registrarse</p>
+    </div>
+
+    <!-- Row 2: Email & Password -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="email">{{ 'SIGNUP.EMAIL_LABEL' | translate }}</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="{{ 'SIGNUP.EMAIL_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('email')?.hasError('required') && sellerForm.get('email')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('email')?.hasError('email') || sellerForm.get('email')?.hasError('pattern')">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_INVALID' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('email')?.hasError('minlength')">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_MIN_LENGTH' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('email')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_MAX_LENGTH' | translate }}</p>
+        </div>
       </div>
-      <div id="tamano-usuario-excedido"
-        *ngIf="finalForm.get('usuario')?.hasError('maxlength')">
-        <p class="alert-message">El usuario no debe exceder los 50 carácteres</p>
+
+      <div class="col-md-6">
+        <label for="password">{{ 'SIGNUP.PASSWORD_LABEL' | translate }}</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="{{ 'SIGNUP.PASSWORD_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('password')?.hasError('required') && sellerForm.get('password')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('password')?.hasError('minlength')">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_MIN_LENGTH' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('password')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_MAX_LENGTH' | translate }}</p>
+        </div>
       </div>
-      <div class="group">
-        <label for="contrasena" class="label">Contraseña</label>
-        <input id="contrasena" formControlName="contrasena" type="password" class="input" placeholder="*********"> 
+    </div>
+
+    <!-- Row 3: Confirm Password & Zone -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="confirmPassword">{{ 'SIGNUP.CONFIRM_PASSWORD_LABEL' | translate }}</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          placeholder="{{ 'SIGNUP.CONFIRM_PASSWORD_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('confirmPassword')?.hasError('required') && sellerForm.get('confirmPassword')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.CONFIRM_PASSWORD_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.hasError('mismatch') && sellerForm.get('confirmPassword')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_MISMATCH' | translate }}</p>
+        </div>
       </div>
-      <div id="contrasena-requerida"
-        *ngIf="finalForm.get('contrasena')?.hasError('required') && finalForm.get('contrasena')?.touched">
-        <p class="alert-message">Debe ingresar una contraseña para registrarse</p>
+
+      <div class="col-md-6">
+        <label for="zone">{{ 'SIGNUP.ZONE_LABEL' | translate }}</label>
+        <select id="zone" formControlName="zone">
+          <option value="">{{ 'SIGNUP.ZONE_SELECTED' | translate }}</option>
+          <option *ngFor="let zone of sellerZones" [value]="zone">{{ zone }}</option>
+        </select>
+        <div *ngIf="sellerForm.get('zone')?.hasError('required') && sellerForm.get('zone')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.ZONE_REQUIRED' | translate }}</p>
+        </div>
       </div>
-      <div id="tamano-contrasena-excedido"
-        *ngIf="finalForm.get('contrasena')?.hasError('maxlength')">
-        <p class="alert-message">La contraseña no debe exceder los 50 carácteres</p>
+    </div>
+
+    <!-- Row 4: Quota + Currency, Target + Currency -->
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="quotaExpected">{{ 'SIGNUP.QUOTA_LABEL' | translate }}</label>
+        <input
+          id="quotaExpected"
+          type="text"
+          formControlName="quotaExpected"
+          placeholder="{{ 'SIGNUP.QUOTA_PLACEHOLDER' | translate }}"
+          (blur)="formatNumber('quotaExpected')"
+        >
+        <div *ngIf="sellerForm.get('quotaExpected')?.hasError('required') && sellerForm.get('quotaExpected')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.QUOTA_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('quotaExpected')?.hasError('min')">
+          <p class="alert-message">{{ 'SIGNUP.QUOTA_MIN' | translate }}</p>
+        </div>
       </div>
-      <div id="tamano-contrasena-minimo-requerido"
-        *ngIf="finalForm.get('contrasena')?.hasError('minlength')">
-        <p class="alert-message">La contraseña debe tener más de 4 carácteres</p>
+      <div class="col-md-3" style="padding-top: 1.7rem;">
+        <select id="currencyQuota" formControlName="currencyQuota">
+          <option value="">{{ 'SIGNUP.CURRENCY_SELECTED' | translate }}</option>
+          <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+        </select>
+        <div *ngIf="sellerForm.get('currencyQuota')?.hasError('required') && sellerForm.get('currencyQuota')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.CURRENCY_REQUIRED' | translate }}</p>
+        </div>
       </div>
-      <div class="group">
-        <label for="confirmarContrasena" class="label">Confirmar contraseña</label>
-        <input id="confirmar-contrasena" formControlName="confirmarContrasena" type="password" class="input" placeholder="*********">
+      <div class="col-md-3">
+        <label for="quarterlyTarget">{{ 'SIGNUP.TARGET_LABEL' | translate }}</label>
+        <input
+          id="quarterlyTarget"
+          type="text"
+          formControlName="quarterlyTarget"
+          placeholder="{{ 'SIGNUP.TARGET_PLACEHOLDER' | translate }}"
+          (blur)="formatNumber('quarterlyTarget')"
+        >
+        <div *ngIf="sellerForm.get('quarterlyTarget')?.hasError('required') && sellerForm.get('quarterlyTarget')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.TARGET_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('quarterlyTarget')?.hasError('min')">
+          <p class="alert-message">{{ 'SIGNUP.TARGET_MIN' | translate }}</p>
+        </div>
       </div>
-      <div id="confirmar-contrasena-requerida"
-        *ngIf="finalForm.get('confirmarContrasena')?.hasError('required') && finalForm.get('confirmarContrasena')?.touched">
-        <p class="alert-message">Debe ingresar una contraseña para registrarse</p>
+      <div class="col-md-3" style="padding-top: 1.7rem;">
+        <select id="currencyTarget" formControlName="currencyTarget">
+          <option value="">{{ 'SIGNUP.CURRENCY_SELECTED' | translate }}</option>
+          <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+        </select>
+        <div *ngIf="sellerForm.get('currencyTarget')?.hasError('required') && sellerForm.get('currencyTarget')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.CURRENCY_REQUIRED' | translate }}</p>
+        </div>
       </div>
-      <div id="tamano-confirmar-contrasena-excedido"
-        *ngIf="finalForm.get('confirmarContrasena')?.hasError('maxlength')">
-        <p class="alert-message">La contraseña no debe exceder los 50 carácteres</p>
+    </div>
+
+    <!-- Row 5: Performance Recommendations -->
+    <div class="mb-3">
+      <label for="performanceRecomendations">{{ 'SIGNUP.PERFORMANCE_LABEL' | translate }}</label>
+      <textarea
+        id="performanceRecomendations"
+        formControlName="performanceRecomendations"
+        placeholder="{{ 'SIGNUP.PERFORMANCE_PLACEHOLDER' | translate }}"
+        rows="4"
+      ></textarea>
+      <div *ngIf="sellerForm.get('performanceRecomendations')?.hasError('required') && sellerForm.get('performanceRecomendations')?.touched">
+        <p class="alert-message">{{ 'SIGNUP.PERFORMANCE_REQUIRED' | translate }}</p>
       </div>
-      <div id="tamano-confirmar-contrasena-minimo-requerido"
-        *ngIf="finalForm.get('confirmarContrasena')?.hasError('minlength')">
-        <p class="alert-message">La contraseña debe tener más de 4 carácteres</p>
-      </div>
-      <div id="contrasena-no-coincide"
-        *ngIf="finalForm.get('confirmarContrasena')?.value !== finalForm.get('contrasena')?.value">
-        <p class="alert-message">Las contraseñas no coinciden</p>
-      </div>
-      <div class="group">
-        <button type="submit" class="btn btn-info col-8"
-          [disabled]="!finalForm.valid || finalForm.get('confirmarContrasena')?.value !== finalForm.get('contrasena')?.value">Registrarse</button>
-      </div>
+    </div>
+
+    <!-- Create Button -->
+    <div class="text-center">
+      <button type="submit" [disabled]="!sellerForm.valid || sellerForm.hasError('mismatch')">
+        {{ 'SIGNUP.BUTTON_SIGNUP' | translate }}
+      </button>
     </div>
   </form>
 </div>
-
-
-

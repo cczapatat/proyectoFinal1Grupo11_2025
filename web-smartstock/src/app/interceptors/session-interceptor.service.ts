@@ -21,14 +21,14 @@ export class SessionInterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     // Si la sesión está activa, se realiza la validación.
-    if (this.sessionManager.esSesionActiva) {
-      if (!this.sessionManager.esSesionValida()) {
+    if (this.sessionManager.isSessionActive) {
+      if (!this.sessionManager.isSessionValid()) {
         this.sessionManager.closeSession();
         return throwError(() => new Error('Sesión expirada'));
       }
 
       // Si existe un token, se adjunta el header de autorización.
-      const token = this.sessionManager.obtenerToken();
+      const token = this.sessionManager.getToken();
       if (token) {
         req = req.clone({
           setHeaders: {

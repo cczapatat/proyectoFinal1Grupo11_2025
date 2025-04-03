@@ -1,11 +1,10 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { SellerService } from 'src/app/services/seller.service';
 import { ToastrService } from 'ngx-toastr';
-import { SessionManager } from '../../services/session-manager.service';
-import { UserSession } from '../../dtos/user-session';
-import { EnumsService } from 'src/app/enums.service';
-import { Banco } from 'src/app/enums';
+import { SellerDTO } from 'src/app/dtos/seller.dto';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-session-sign-up',
@@ -13,84 +12,104 @@ import { Banco } from 'src/app/enums';
   styleUrls: ['./user-session-sign-up.component.css']
 })
 export class UserSessionSignUpComponent implements OnInit {
-
-  userTypeList = [
-    { name: 'admin' },
-    { name: 'propietario' },
+  sellerForm!: FormGroup;
+  sellerZones: string[] = [
+    'NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTER',
+    'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST'
   ];
-
-  @Output() newItemEvent = new EventEmitter<string>();
-  @Output() newUserRegisterEvent = new EventEmitter<string>();
-
-  finalForm: FormGroup;
-  administradorForm: FormGroup;
-  usuarioForm: FormGroup;
-  isVisible: Number = 0;
-
-  listaBancos: Banco[] = [];
+  currencies: string[] = ['USD', 'COP', 'EUR', 'GBP', 'ARS'];
 
   constructor(
-    private usuarioService: SessionManager,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
+    private sellerService: SellerService,
+    private toastr: ToastrService,
     private router: Router,
-    private toastrService: ToastrService,
-    private enumService: EnumsService,
-  ) {
-    this.finalForm = new FormGroup('')
-    this.administradorForm = new FormGroup('')
-    this.usuarioForm = new FormGroup('')
+    private translate: TranslateService
+  ) {}
+
+  ngOnInit(): void {
+    this.initializeForm();
   }
 
-  onItemChange(index) {
-    this.isVisible = index;
+  get formControls() {
+    return this.sellerForm.controls;
+  }
 
-    if (this.isVisible == 0) {
-      this.finalForm = this.administradorForm
-      this.newItemEvent.emit("Administrador de propiedades de corta estancia")
-    } else {
-      this.finalForm = this.usuarioForm
-      this.newItemEvent.emit("Propietario en corta estancia")
+  initializeForm(): void {
+    this.sellerForm = this.fb.group({
+      name: ['', [Validators.required, Validators.maxLength(255)]],
+      phone: ['', [Validators.required, Validators.maxLength(20), Validators.pattern(/^\+[0-9]+$/)]],
+      email: ['', [Validators.required, Validators.email, Validators.minLength(10), Validators.maxLength(255)]],
+      password: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
+      confirmPassword: ['', Validators.required],
+      zone: ['', Validators.required],
+      quotaExpected: ['', [Validators.required, Validators.min(1)]],
+      currencyQuota: ['', Validators.required],
+      quarterlyTarget: ['', [Validators.required, Validators.min(1)]],
+      currencyTarget: ['', Validators.required],
+      performanceRecomendations: ['', Validators.required]
+    }, { validator: this.passwordMatchValidator });
+  }
+
+  // Custom validator to ensure password and confirmPassword match
+  passwordMatchValidator(form: AbstractControl) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { mismatch: true };
+  }
+
+  // Format a number with commas on blur
+  formatNumber(controlName: string): void {
+    const control = this.sellerForm.get(controlName);
+    if (!control) return;
+    let rawValue: string = control.value || '';
+    rawValue = rawValue.replace(/,/g, '');  // Remove existing commas
+    const numericValue = Number(rawValue);
+    if (!isNaN(numericValue) && rawValue !== '') {
+      control.setValue(numericValue.toLocaleString('en-US'), { emitEvent: false });
     }
   }
 
-  ngOnInit() {
-    this.enumService.bancos().subscribe((bancos) => {
-      this.listaBancos = bancos;
-    })
+  registerSeller(formValue: any): void {
+    if (this.sellerForm.invalid) return;
 
-    this.initial();
-  }
+    // Remove commas and parse the quota fields
+    const rawQuotaExpected = formValue.quotaExpected?.replace(/,/g, '') || '0';
+    const rawQuarterlyTarget = formValue.quarterlyTarget?.replace(/,/g, '') || '0';
 
-  initial() {
-    this.isVisible = 0;
-    this.onItemChange(this.isVisible)
-    this.administradorForm = this.formBuilder.group({
-      usuario: ["", [Validators.required, Validators.maxLength(50)]],
-      contrasena: ["", [Validators.required, Validators.maxLength(50), Validators.minLength(4)]],
-      confirmarContrasena: ["", [Validators.required, Validators.maxLength(50), Validators.minLength(4)]]
+    const sellerData: SellerDTO = {
+      name: formValue.name,
+      phone: formValue.phone,
+      email: formValue.email,
+      password: formValue.password,
+      type: 'SELLER',
+      zone: formValue.zone,
+      quota_expected: +rawQuotaExpected,
+      currency_quota: formValue.currencyQuota,
+      quartely_target: +rawQuarterlyTarget,
+      currency_target: formValue.currencyTarget,
+      performance_recomendations: formValue.performanceRecomendations
+    };
+
+    this.sellerService.createSeller(sellerData).subscribe({
+      next: () => {
+        this.toastr.success(
+          this.translate.instant('SIGNUP.SUCCESS_MESSAGE'),
+          this.translate.instant('SIGNUP.SUCCESS_TITLE'),
+          { closeButton: true }
+        );
+        this.router.navigate(['/user-session/login']);
+        this.sellerForm.reset();
+        // Navigate to the login page after successful signup
+        
+      },
+      error: (err) => {
+        this.toastr.error(
+          this.translate.instant('SIGNUP.ERROR_MESSAGE') + ' ' + err.message,
+          this.translate.instant('SIGNUP.ERROR_TITLE'),
+          { closeButton: true }
+        );
+      }
     });
-
-    this.usuarioForm = this.formBuilder.group({
-      nombre: ["", [Validators.required, Validators.maxLength(50)]],
-      telefono: ["", [Validators.required, Validators.maxLength(15)]],
-      banco: [null, [Validators.required]],
-      cuenta: ["", [Validators.required, Validators.maxLength(20)]],
-      usuario: ["", [Validators.required, Validators.maxLength(50)]],
-      correo: ["", [Validators.required, Validators.pattern("[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]],
-      contrasena: ["", [Validators.required, Validators.maxLength(50), Validators.minLength(4)]],
-      confirmarContrasena: ["", [Validators.required, Validators.maxLength(50), Validators.minLength(4)]]
-    });
-
-    this.finalForm = this.administradorForm;
-  }
-
-  registrarUsuario(userSession: UserSession) {
-    userSession.type = this.userTypeList[this.isVisible.valueOf()].name
-
-    this.usuarioService.registro(userSession)
-      .subscribe(() => {
-        this.newUserRegisterEvent.emit("login")
-        this.toastrService.success("Registro exitoso", this.userTypeList[this.isVisible.valueOf()].name + " registrado correctamente.")
-      });
   }
 }

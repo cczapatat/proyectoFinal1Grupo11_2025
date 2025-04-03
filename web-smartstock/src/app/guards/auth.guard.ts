@@ -16,12 +16,12 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> {
     //Verifica si la sesión está activa y si es válida.
-    if (!this.sessionManager.esSesionActiva()) {
+    if (!this.sessionManager.isSessionActive()) {
       this.router.navigate(['/user-sessions/login']);
       return of(false);
     }
   
-    return this.sessionManager.esSesionValida().pipe(
+    return this.sessionManager.isSessionValid().pipe(
       tap((valid) => {
         if (!valid) {
           this.router.navigate(['/user-sessions/login']);
