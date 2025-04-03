@@ -98,9 +98,10 @@ export class UserSessionSignUpComponent implements OnInit {
           this.translate.instant('SIGNUP.SUCCESS_TITLE'),
           { closeButton: true }
         );
+        this.router.navigate(['/user-session/login']);
         this.sellerForm.reset();
         // Navigate to the login page after successful signup
-        this.router.navigate(['/user-session/login']);
+        
       },
       error: (err) => {
         this.toastr.error(
