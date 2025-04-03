@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment'
-import { Product } from './product';
-import { ProductCategory } from './product-category';
-import { ProductCurrency } from './product-currency';
+import { Product } from '../product/product';
+import { ProductCategory } from '../dtos/product-category';
+import { ProductCurrency } from '../dtos/product-currency';
 
 @Injectable({
   providedIn: 'root'

@@ -2,15 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { Manufacturer } from '../manufacturer';
+import { Manufacturer } from '../../dtos/manufacturer';
 import { Router } from '@angular/router';
-import { ProductService } from '../product.service';
-import { ManufacturerService } from '../manufacturer.service';
+
+import { ManufacturerService } from '../../services/manufacturer.service';
 import { Product } from '../product';
 import { positiveNumberValidator } from 'src/app/validators/positive-number.validator';
 import { fa } from '@faker-js/faker';
-import { ProductCategory } from '../product-category';
-import { ProductCurrency } from '../product-currency';
+import { ProductCategory } from '../../dtos/product-category';
+import { ProductCurrency } from '../../dtos/product-currency';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-create',
