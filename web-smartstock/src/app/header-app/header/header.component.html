@@ -9,7 +9,7 @@
 <!-- Sidebar -->
 <div class="sidebar" [class.show]="isMenuVisible">
   <div class="logo">
-    <h2 (click)="navigate('/')"><i class="bi bi-box"></i> {{ 'NAV.TITLE' | translate }}</h2>
+    <h2 id="nav_home" (click)="navigate('/')"><i class="bi bi-box"></i> {{ 'NAV.TITLE' | translate }}</h2>
   </div>
 
   <nav class="nav-menu">
@@ -18,23 +18,23 @@
         <h3><i class="bi bi-gear"></i> {{ 'NAV.ADMIN' | translate }}</h3>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" (click)="navigate('/salespeople/assign-customers')">
+            <a id="nav_assign_customers" class="nav-link" (click)="navigate('/salespeople/assign-customers')">
               <i class="bi bi-people"></i> {{ 'NAV.ASSIGN_CUSTOMERS' | translate }}
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#productosSubmenu" role="button">
+            <a id="nav_products" class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#productosSubmenu" role="button">
               <i class="bi bi-box-seam"></i> {{ 'NAV.PRODUCTS' | translate }}
             </a>
             <div class="collapse" id="productosSubmenu">
               <ul class="nav flex-column ms-3">
                 <li class="nav-item">
-                  <a class="nav-link" (click)="navigate('/product/create')">
+                  <a id="nav_products_register" class="nav-link" (click)="navigate('/product/create')">
                     <i class="bi bi-plus-circle"></i> {{ 'NAV.REGISTER' | translate }}
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" (click)="navigate('/product/edit')">
+                  <a id="nav_products_modify" class="nav-link" (click)="navigate('/product/edit')">
                     <i class="bi bi-pencil"></i> {{ 'NAV.MODIFY' | translate }}
                   </a>
                 </li>
@@ -42,23 +42,23 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#masivosSubmenu" role="button">
+            <a id="nav_massive" class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#masivosSubmenu" role="button">
               <i class="bi bi-collection"></i> {{ 'NAV.MASSIVE' | translate }}
             </a>
             <div class="collapse" id="masivosSubmenu">
               <ul class="nav flex-column ms-3">
                 <li class="nav-item">
-                  <a class="nav-link" (click)="navigate('/massive/manufacture')">
+                  <a id="nav_massive_manufactures" class="nav-link" (click)="navigate('/massive/manufacture')">
                     <i class="bi bi-building"></i> {{ 'NAV.REGISTER_MANUFACTURES' | translate }}
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" (click)="navigate('/massive/product/create')">
+                  <a id="nav_massive_products_create" class="nav-link" (click)="navigate('/massive/product/create')">
                     <i class="bi bi-boxes"></i> {{ 'NAV.REGISTER_PRODUCTS' | translate }}
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" (click)="navigate('/massive/product/edit')">
+                  <a id="nav_massive_products_modify" class="nav-link" (click)="navigate('/massive/product/edit')">
                     <i class="bi bi-pencil-square"></i> {{ 'NAV.MODIFY_PRODUCTS' | translate }}
                   </a>
                 </li>
@@ -66,17 +66,17 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" (click)="navigate('/salespeople/register')">
+            <a id="nav_sellers" class="nav-link" (click)="navigate('/salespeople/register')">
               <i class="bi bi-person-badge"></i> {{ 'NAV.SELLERS' | translate }}
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" (click)="navigate('/store/register')">
+            <a id="nav_store_register" class="nav-link" (click)="navigate('/store/register')">
               <i class="bi bi-building"></i> {{ 'NAV.STORES' | translate }}
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" (click)="navigate('store/assign-product')">
+            <a id="nav_assign_products" class="nav-link" (click)="navigate('store/assign-product')">
               <i class="bi bi-box-arrow-right"></i> {{ 'NAV.ASSIGN_PRODUCTS' | translate }}
             </a>
           </li>
@@ -88,23 +88,23 @@
       <h3><i class="bi bi-person"></i> {{ 'NAV.SELLER' | translate }}</h3>
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a class="nav-link" (click)="navigate('/order/create')">
+          <a id="nav_create_order" class="nav-link" (click)="navigate('/order/create')">
             <i class="bi bi-cart-plus"></i> {{ 'NAV.CREATE_ORDER' | translate }}
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#clientesSubmenu" role="button">
+          <a id="nav_customers" class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#clientesSubmenu" role="button">
             <i class="bi bi-people"></i> {{ 'NAV.CUSTOMERS' | translate }}
           </a>
           <div class="collapse" id="clientesSubmenu">
             <ul class="nav flex-column ms-3">
               <li class="nav-item">
-                <a class="nav-link" (click)="navigate('/salespeople/list-customers')">
+                <a id="nav_customer_list" class="nav-link" (click)="navigate('/salespeople/list-customers')">
                   <i class="bi bi-list-ul"></i> {{ 'NAV.LIST' | translate }}
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" (click)="navigate('/manufacturers/list-products')">
+                <a id="nav_customer_search" class="nav-link" (click)="navigate('/manufacturers/list-products')">
                   <i class="bi bi-search"></i> {{ 'NAV.SEARCH' | translate }}
                 </a>
               </li>
@@ -112,7 +112,7 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" (click)="navigate('/alarm/create')">
+          <a id="nav_alarm_create" class="nav-link" (click)="navigate('/alarm/create')">
             <i class="bi bi-bell"></i> {{ 'NAV.CREATE_ALARM' | translate }}
           </a>
         </li>
@@ -123,13 +123,13 @@
       <h3><i class="bi bi-sliders"></i> {{ 'NAV.SETTINGS' | translate }}</h3>
       <ul class="nav flex-column">
         <li class="nav-item">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#idiomasSubmenu" role="button">
+          <a id="nav_languages" class="nav-link dropdown-toggle" data-bs-toggle="collapse" href="#idiomasSubmenu" role="button">
             <i class="bi bi-translate"></i> {{ 'NAV.LANGUAGES' | translate }}
           </a>
           <div class="collapse" id="idiomasSubmenu">
             <ul class="nav flex-column ms-3">
               <li class="nav-item" *ngFor="let lang of availableLangs">
-                <a class="nav-link" (click)="changeLanguage(lang)" [class.active]="currentLang === lang">
+                <a id="nav_{{ lang }}" class="nav-link" (click)="changeLanguage(lang)" [class.active]="currentLang === lang">
                   <img src="assets/flags/{{lang.split('-')[1]}}.svg" [alt]="lang" class="flag-icon">
                   {{ lang }}
                 </a>

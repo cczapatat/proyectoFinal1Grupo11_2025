@@ -1,5 +1,5 @@
-describe('My First Test', () => {
-  it('Visits the initial project page', () => {
+describe('Test Base', () => {
+  it('visits Login', () => {
     cy.visit('/user-sessions/login')
     cy.contains('Sign Up As Seller')
   })
@@ -17,5 +17,9 @@ describe('Login Test', () => {
     cy.get('#password').type('123456')
     cy.get('.btn-info').click()
     cy.contains('Login successful as ADMIN')
+
+    cy.get('.menu-toggle').click()
+    cy.get('.btn-logout').click()
+    cy.url().should('include', '/user-sessions/login')
   })
 })
