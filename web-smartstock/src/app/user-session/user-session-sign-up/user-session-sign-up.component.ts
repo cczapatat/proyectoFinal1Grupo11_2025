@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { SellerService } from 'src/app/services/seller.service';
 import { ToastrService } from 'ngx-toastr';
 import { SellerDTO } from 'src/app/dtos/seller.dto';
+import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-session-sign-up',
@@ -12,18 +14,28 @@ import { SellerDTO } from 'src/app/dtos/seller.dto';
 export class UserSessionSignUpComponent implements OnInit {
   sellerForm!: FormGroup;
   sellerZones: string[] = [
-    'NORTH','SOUTH','EAST','WEST','CENTER',
-    'NORTHEAST','NORTHWEST','SOUTHEAST','SOUTHWEST'
+    'NORTH', 'SOUTH', 'EAST', 'WEST', 'CENTER',
+    'NORTHEAST', 'NORTHWEST', 'SOUTHEAST', 'SOUTHWEST'
   ];
-  currencies: string[] = ['USD','COP','EUR','GBP','ARS'];
+  currencies: string[] = ['USD', 'COP', 'EUR', 'GBP', 'ARS'];
 
   constructor(
     private fb: FormBuilder,
     private sellerService: SellerService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  get formControls() {
+    return this.sellerForm.controls;
+  }
+
+  initializeForm(): void {
     this.sellerForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(255)]],
       phone: ['', [Validators.required, Validators.maxLength(20), Validators.pattern(/^\+[0-9]+$/)]],
@@ -39,7 +51,7 @@ export class UserSessionSignUpComponent implements OnInit {
     }, { validator: this.passwordMatchValidator });
   }
 
-  // Ensures password and confirmPassword match
+  // Custom validator to ensure password and confirmPassword match
   passwordMatchValidator(form: AbstractControl) {
     const password = form.get('password')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
@@ -50,13 +62,10 @@ export class UserSessionSignUpComponent implements OnInit {
   formatNumber(controlName: string): void {
     const control = this.sellerForm.get(controlName);
     if (!control) return;
-
     let rawValue: string = control.value || '';
-    rawValue = rawValue.replace(/,/g, '');  // remove existing commas
-
+    rawValue = rawValue.replace(/,/g, '');  // Remove existing commas
     const numericValue = Number(rawValue);
     if (!isNaN(numericValue) && rawValue !== '') {
-      // Format with commas, e.g. 200000 -> "200,000"
       control.setValue(numericValue.toLocaleString('en-US'), { emitEvent: false });
     }
   }
@@ -64,7 +73,7 @@ export class UserSessionSignUpComponent implements OnInit {
   registerSeller(formValue: any): void {
     if (this.sellerForm.invalid) return;
 
-    // Remove commas and parse to number
+    // Remove commas and parse the quota fields
     const rawQuotaExpected = formValue.quotaExpected?.replace(/,/g, '') || '0';
     const rawQuarterlyTarget = formValue.quarterlyTarget?.replace(/,/g, '') || '0';
 
@@ -84,11 +93,21 @@ export class UserSessionSignUpComponent implements OnInit {
 
     this.sellerService.createSeller(sellerData).subscribe({
       next: () => {
-        this.toastr.success('Vendedor creado exitosamente.', 'Éxito');
+        this.toastr.success(
+          this.translate.instant('SIGNUP.SUCCESS_MESSAGE'),
+          this.translate.instant('SIGNUP.SUCCESS_TITLE'),
+          { closeButton: true }
+        );
         this.sellerForm.reset();
+        // Navigate to the login page after successful signup
+        this.router.navigate(['/user-session/login']);
       },
       error: (err) => {
-        this.toastr.error('Error al crear el vendedor. ' + err.message, 'Error');
+        this.toastr.error(
+          this.translate.instant('SIGNUP.ERROR_MESSAGE') + ' ' + err.message,
+          this.translate.instant('SIGNUP.ERROR_TITLE'),
+          { closeButton: true }
+        );
       }
     });
   }

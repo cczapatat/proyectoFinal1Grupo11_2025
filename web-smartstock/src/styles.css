@@ -36,7 +36,7 @@ label {
   select {
     width: 100%;
     padding: 0.5rem;
-    border: 1px solid #ccc; /* Subtle default border */
+    border: 1.5px solid #653208; /* Subtle default border */
     border-radius: 4px;
     outline: none;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -144,7 +144,7 @@ select {
     /* Match your input’s sizing & font: */
     width: 100%;
     padding: 0.5rem 2.5rem 0.5rem 0.5rem; /* extra right padding for arrow */
-    border: 1px solid #ccc;              /* default border */
+    border: 1.5px solid #653208; /* Subtle default border */
     border-radius: 4px;
     outline: none;
     font-size: 1rem;
