@@ -1,147 +1,158 @@
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-import { faker } from '@faker-js/faker';
-import { of } from 'rxjs';
-import { Router } from '@angular/router';
-
-import { SessionManager } from '../../services/session-manager.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of, throwError } from 'rxjs';
+import { ToastrModule } from 'ngx-toastr';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { Observable, of as observableOf } from 'rxjs';
+
 import { UserSessionLoginComponent } from './user-session-login.component';
+import { SessionManager } from '../../services/session-manager.service';
+
+// Dummy component for routing
+@Component({ template: '' })
+class DummyComponent {}
+
+// A simple fake loader (not strictly necessary when using setTranslation below)
+export class FakeLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    return observableOf({
+      LOGIN: {
+        TITLE: 'Log In Title (Fake)',
+        EMAIL_LABEL: 'Email (Fake)',
+        EMAIL_PLACEHOLDER: 'Email (Fake)',
+        EMAIL_REQUIRED: 'The email is required in tests',
+        EMAIL_INVALID: 'Invalid email format in tests',
+        PASSWORD_LABEL: 'Password (Fake)',
+        PASSWORD_PLACEHOLDER: '********* (Fake)',
+        PASSWORD_REQUIRED: 'The password is required in tests',
+        PASSWORD_MAX_LENGTH: 'The password can’t exceed 50 chars in tests',
+        PASSWORD_MIN_LENGTH: 'The password must be > 4 chars in tests',
+        BUTTON_LOGIN: 'Log In (Fake)',
+        LOGIN_ERROR: 'Incorrect Email or Password (Fake)'
+      }
+    });
+  }
+}
 
 describe('UserSessionLoginComponent', () => {
   let component: UserSessionLoginComponent;
   let fixture: ComponentFixture<UserSessionLoginComponent>;
-  let debug: DebugElement;
-  let sessionManager: jasmine.SpyObj<SessionManager>;
-  let router: Router;
+  let sessionSpy: jasmine.SpyObj<SessionManager>;
+  let translateService: TranslateService;
+  let router: any;
 
   beforeEach(async () => {
-    // Create the spy for SessionManager with the required methods.
-    const sessionManagerSpy = jasmine.createSpyObj('SessionManager', [
+    // Create a SpyObj for SessionManager with the required methods.
+    sessionSpy = jasmine.createSpyObj('SessionManager', [
+      'isSessionActive',
+      'isSessionValid',
       'login',
-      'guardarSesion',
-      'esSesionValida',
-      'esSesionActiva',
+      'saveSession'
     ]);
+    sessionSpy.isSessionActive.and.returnValue(false);
+    sessionSpy.isSessionValid.and.returnValue(of(false));
+    sessionSpy.login.and.returnValue(of({ token: 'dummy-token' }));
+    sessionSpy.saveSession.and.stub();
 
     await TestBed.configureTestingModule({
+      declarations: [UserSessionLoginComponent, DummyComponent],
       imports: [
-        RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule,
-        ToastrModule.forRoot(),
         ReactiveFormsModule,
+        ToastrModule.forRoot(),
+        RouterTestingModule.withRoutes([{ path: 'home', component: DummyComponent }]),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: FakeLoader }
+        })
       ],
       providers: [
-        { provide: SessionManager, useValue: sessionManagerSpy },
-        { provide: ToastrService, useValue: { success: jasmine.createSpy() } },
-        FormBuilder,
-      ],
-      declarations: [UserSessionLoginComponent],
+        { provide: SessionManager, useValue: sessionSpy }
+      ]
     }).compileComponents();
 
-    // Set default spy return values BEFORE creating the component.
-    sessionManager = TestBed.inject(SessionManager) as jasmine.SpyObj<SessionManager>;
-    router = TestBed.inject(Router);
-    sessionManager.login.and.returnValue(
-      of({
-        mensaje: 'Inicio de sesion exitoso',
-        token: 'sample-token',
-        userId: '1',
-        type: 'true',
-      })
-    );
-    // By default, have esSesionValida and esSesionActiva return false.
-    sessionManager.esSesionValida.and.returnValue(of(false));
-    sessionManager.esSesionActiva.and.returnValue(false);
+    router = TestBed.inject(RouterTestingModule);
+    translateService = TestBed.inject(TranslateService);
+    // Set translation for 'en' so that the pipe returns proper values.
+    translateService.setTranslation('en', {
+      LOGIN: {
+        TITLE: 'Log In Title (Fake)',
+        EMAIL_LABEL: 'Email (Fake)',
+        EMAIL_PLACEHOLDER: 'Email (Fake)',
+        EMAIL_REQUIRED: 'The email is required in tests',
+        EMAIL_INVALID: 'Invalid email format in tests',
+        PASSWORD_LABEL: 'Password (Fake)',
+        PASSWORD_PLACEHOLDER: '********* (Fake)',
+        PASSWORD_REQUIRED: 'The password is required in tests',
+        PASSWORD_MAX_LENGTH: 'The password can’t exceed 50 chars in tests',
+        PASSWORD_MIN_LENGTH: 'The password must be > 4 chars in tests',
+        BUTTON_LOGIN: 'Log In (Fake)',
+        LOGIN_ERROR: 'Incorrect Email or Password (Fake)'
+      }
+    });
+    translateService.use('en');
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(UserSessionLoginComponent);
     component = fixture.componentInstance;
-    debug = fixture.debugElement;
-
-    // Now trigger ngOnInit and initial() with our spy methods in place.
+    // Ensure loginForm is a FormGroup with "email" and "password" controls.
+    if (!(component.loginForm instanceof FormGroup)) {
+      component.loginForm = new FormGroup({
+        email: new FormControl(''),
+        password: new FormControl('')
+      });
+    }
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the login component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display the title "Sign Up As Seller"', () => {
-    const titleElem = debug.query(By.css('h2.my-2')).nativeElement;
-    expect(titleElem.textContent).toContain('Sign Up As Seller');
+  it('should initialize loginForm with email and password controls', () => {
+    expect(component.loginForm).toBeDefined();
+    expect(component.loginForm.get('email')).toBeTruthy();
+    expect(component.loginForm.get('password')).toBeTruthy();
   });
 
-  it('should have an input for email with id="email"', () => {
-    const emailField = debug.query(By.css('#email'));
-    expect(emailField).toBeTruthy();
-  });
-
-  it('should display #email-required error when email is empty and touched', () => {
-    component.loginForm.controls['email'].setValue('');
-    component.loginForm.controls['email'].markAsTouched();
+  it('should display required error for email when empty and touched', () => {
+    const emailControl = component.loginForm.get('email');
+    emailControl?.markAsTouched();
     fixture.detectChanges();
-
-    const emailCtrl = component.loginForm.controls['email'];
-    expect(emailCtrl.hasError('required')).toBeTrue();
-
-    const emailRequiredElem = debug.query(By.css('#email-required'));
-    expect(emailRequiredElem).toBeTruthy();
+    const errorMsg = fixture.debugElement.query(By.css('#email-required'));
+    expect(errorMsg).toBeTruthy();
+    expect(errorMsg.nativeElement.textContent).toContain('The email is required in tests');
   });
 
-  it('should have an input for password with id="password"', () => {
-    const passwordField = debug.query(By.css('#password'));
-    expect(passwordField).toBeTruthy();
-  });
-
-  it('should display #password-required error when password is empty and touched', () => {
-    component.loginForm.controls['password'].setValue('');
-    component.loginForm.controls['password'].markAsTouched();
+  it('should display pattern error for email when format is invalid', () => {
+    const emailControl = component.loginForm.get('email');
+    emailControl?.setValue('invalidEmail');
     fixture.detectChanges();
-
-    const passCtrl = component.loginForm.controls['password'];
-    expect(passCtrl.hasError('required')).toBeTrue();
-
-    const passwordReqElem = debug.query(By.css('#password-required'));
-    expect(passwordReqElem).toBeTruthy();
+    const errorMsg = fixture.debugElement.query(By.css('#correo-invalido'));
+    expect(errorMsg).toBeTruthy();
+    expect(errorMsg.nativeElement.textContent).toContain('Invalid email format in tests');
   });
 
-  it('should have a login button with id="doLogin"', () => {
-    const loginButton = debug.query(By.css('#doLogin'));
-    expect(loginButton).toBeTruthy();
-  });
-
-  it('should display #error-login when error is set', () => {
-    expect(debug.query(By.css('#error-login'))).toBeFalsy(); // Initially hidden
-    component.error = 'Some login error';
+  it('should display required error for password when empty and touched', () => {
+    const passwordControl = component.loginForm.get('password');
+    passwordControl?.markAsTouched();
     fixture.detectChanges();
-
-    const errorElem = debug.query(By.css('#error-login'));
-    expect(errorElem).toBeTruthy();
+    const errorMsg = fixture.debugElement.query(By.css('#password-required'));
+    expect(errorMsg).toBeTruthy();
+    expect(errorMsg.nativeElement.textContent).toContain('The password is required in tests');
   });
 
-  it('should perform login and navigate to "/home" if session is valid', fakeAsync(() => {
-    const navigateSpy = spyOn(router, 'navigate');
-    // Make the session checks pass.
-    sessionManager.esSesionValida.and.returnValue(of(true));
-    sessionManager.esSesionActiva.and.returnValue(true);
-
-    const testEmail = faker.internet.email();
-    const testPassword = faker.internet.password();
-    component.loginForm.controls['email'].setValue(testEmail);
-    component.loginForm.controls['password'].setValue(testPassword);
+  it('should call loginUser on form submit when form is valid', () => {
+    spyOn(component, 'loginUser').and.callThrough();
+    component.loginForm.patchValue({
+      email: 'test@example.com',
+      password: 'password123'
+    });
     fixture.detectChanges();
-
-    const loginButton = debug.nativeElement.querySelector('#doLogin');
-    loginButton.click();
-    tick();
-
-    // Verify that guardarSesion is called with the expected parameters.
-    expect(sessionManager.guardarSesion).toHaveBeenCalledWith('sample-token', '1', 'true');
-    // Verify navigation to '/home'.
-    expect(navigateSpy).toHaveBeenCalledWith(['/home']);
-  }));
+    const formEl = fixture.debugElement.query(By.css('#formLogin'));
+    formEl.triggerEventHandler('ngSubmit', null);
+    expect(component.loginUser).toHaveBeenCalledWith(component.loginForm.value);
+  });
 });

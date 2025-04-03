@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logOut() {
-    this.sessionManager.cerrarSesion();
+    this.sessionManager.signOut();
     this.toastrService.success(
       this.translate.instant('NAV.LOGOUT_MESSAGE'),
       this.translate.instant('NAV.LOGOUT'),

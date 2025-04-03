@@ -35,7 +35,7 @@ export class SessionManager  extends BaseService {
   }
 
   // Método para registrar un usuario (llamada a la API)
-  registro(usuario: UserSession): Observable<UserSession> {
+  register(usuario: UserSession): Observable<UserSession> {
     return this.http.post<UserSession>(
       `${this.apiUserSessionUrl}/signin`,
       usuario,
@@ -44,48 +44,48 @@ export class SessionManager  extends BaseService {
   }
 
   //Guarda el token y el tiempo de inicio de sesión en localStorage.
-  guardarSesion(token: string, userId: string, type: string): void {
+  saveSession(token: string, userId: string, type: string): void {
     localStorage.setItem('token', token);
     localStorage.setItem('loginTime', Date.now().toString());
     localStorage.setItem('userId', userId);
     localStorage.setItem('type', type);
     localStorage.setItem('decodedToken', this.jwtHelper.decodeToken(token));
-    this.limpiarContadorSesion();
-    this.iniciarContadorSesion();
+    this.cleanSessionTimer();
+    this.startSessionTimer();
   }
 
   // Recupera el token almacenado en localStorage.
-  obtenerToken(): string | null {
+  getToken(): string | null {
     return localStorage.getItem('token');
   }
 
   // Recupera el tiempo de inicio de sesión almacenado.
-  obtenerTiempoInicio(): number | null {
+  getStartingTime(): number | null {
     const tiempo = localStorage.getItem('loginTime');
     return tiempo ? parseInt(tiempo, 10) : null;
   }
 
-  esSesionActiva(): boolean {
-    if (this.obtenerToken() !== null) {
+  isSessionActive(): boolean {
+    if (this.getToken() !== null) {
       return true;
     }
     return false;
   }
 
 // Verifica si la sesión es válida comprobando primero a nivel local y luego a nivel del servidor.
-esSesionValida(): Observable<boolean> {
-  const token = this.obtenerToken();
+isSessionValid(): Observable<boolean> {
+  const token = this.getToken();
   if (!token) {
     return of(false);
   }
 
   // Si la validación local es correcta, se valida el token en el servidor.
-  return this.validarToken();
+  return this.validateToken();
 }
 
 // Valida el token usando el endpoint /auth.
-validarToken(): Observable<boolean> {
-  const token = this.obtenerToken();
+validateToken(): Observable<boolean> {
+  const token = this.getToken();
   if (!token) {
     return of(false);
   }
@@ -100,29 +100,29 @@ validarToken(): Observable<boolean> {
     map(() => true),
     catchError((error) => {
       console.error('Error al validar el token en el servidor:', error);
-      this.cerrarSesion();
+      this.signOut();
       return of(false);
     })
   );
 }
   // Inicia un temporizador para cerrar la sesión automáticamente cuando expire.
-  private iniciarContadorSesion(): void {
-    const tiempoInicio = this.obtenerTiempoInicio();
+  private startSessionTimer(): void {
+    const tiempoInicio = this.getStartingTime();
     if (tiempoInicio) {
       const tiempoRestante = this.duracionSesion - (Date.now() - tiempoInicio);
       if (tiempoRestante > 0) {
         this.temporizadorCierreSesion = setTimeout(() => {
           console.warn('La sesión ha expirado. Cerrando sesión automáticamente.');
-          this.cerrarSesion();
+          this.signOut();
         }, tiempoRestante);
       } else {
-        this.cerrarSesion();
+        this.signOut();
       }
     }
   }
 
   // Limpia el temporizador de cierre de sesión si existe.
-  private limpiarContadorSesion(): void {
+  private cleanSessionTimer(): void {
     if (this.temporizadorCierreSesion) {
       clearTimeout(this.temporizadorCierreSesion);
       this.temporizadorCierreSesion = null;
@@ -130,13 +130,13 @@ validarToken(): Observable<boolean> {
   }
 
   // Cierra la sesión: elimina el token y el tiempo de inicio del localStorage y limpia el temporizador.
-  cerrarSesion(): void {
+  signOut(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('loginTime');
     localStorage.removeItem('userId');
     localStorage.removeItem('type');
     localStorage.removeItem('decodedToken');
-    this.limpiarContadorSesion();
+    this.cleanSessionTimer();
 
     this.router.navigate(['/user-sessions/login']);
   }

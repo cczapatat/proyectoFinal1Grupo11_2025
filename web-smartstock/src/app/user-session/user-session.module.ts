@@ -6,12 +6,14 @@ import { UserRoutingModule } from './user-session-routing-module';
 
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
 import { UserSessionLoginComponent } from './user-session-login/user-session-login.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule, 
     ReactiveFormsModule,
-    UserRoutingModule
+    UserRoutingModule,
+    TranslateModule
   ],
   exports: [UserSessionLoginComponent, UserSessionSignUpComponent],
   declarations: [UserSessionLoginComponent, UserSessionSignUpComponent],
