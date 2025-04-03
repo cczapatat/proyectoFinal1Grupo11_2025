@@ -100,7 +100,7 @@
         </div>
         <div class="col-md-7 mb-3">
           <label class="form-label" for="manufacturer_id">{{ 'PRODUCT.MANUFACTURER' | translate }}</label>
-          <select id="manufacturer" formControlName="manufacturer_id" class="form-control">
+          <select id="manufacturer" formControlName="manufacturer_id" class="form-control" [attr.aria-label]="'PRODUCT.MANUFACTURER_SELECTED' | translate">
             <option value="" disabled>{{ 'PRODUCT.MANUFACTURER_SELECTED' | translate }}</option>
             <option *ngFor="let manufacturer of manufacturerList" [ngValue]="manufacturer.id">
               {{manufacturer.name}}</option>
