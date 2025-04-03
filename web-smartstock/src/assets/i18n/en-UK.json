@@ -108,7 +108,7 @@
     "CREATE_CATEGORY_ERROR_MESSAGE": "An error has occurred: categories could not be loaded."
   },
   "LOGIN": {
-    "TITLE": "Sign Up As Seller",
+    "TITLE": "Login as Salesperson",
     "EMAIL_LABEL": "Email",
     "EMAIL_PLACEHOLDER": "Email",
     "EMAIL_REQUIRED": "You must enter a username to log in",
