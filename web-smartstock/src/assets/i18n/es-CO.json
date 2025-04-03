@@ -108,7 +108,7 @@
     "CREATE_CATEGORY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las categorías."
   },
   "LOGIN": {
-    "TITLE": "Regístrate como Vendedor",
+    "TITLE": "Ingresa como Vendedor",
     "EMAIL_LABEL": "Correo Electrónico",
     "EMAIL_PLACEHOLDER": "Correo Electrónico",
     "EMAIL_REQUIRED": "Debe ingresar un nombre de usuario para iniciar sesión",

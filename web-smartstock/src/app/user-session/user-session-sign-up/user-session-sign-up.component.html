@@ -189,7 +189,7 @@
 
     <!-- Create Button -->
     <div class="text-center">
-      <button type="submit" [disabled]="!sellerForm.valid || sellerForm.hasError('mismatch')">
+      <button id="seller_btn_create" type="submit" [disabled]="!sellerForm.valid || sellerForm.hasError('mismatch')">
         {{ 'SIGNUP.BUTTON_SIGNUP' | translate }}
       </button>
     </div>
