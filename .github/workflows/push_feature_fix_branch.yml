@@ -246,10 +246,10 @@ jobs:
     steps:
       - name: Repository checkout
         uses: actions/checkout@v2
-      - name: Node Env Configuration 16.20
+      - name: Node Env Configuration 18.20
         uses: actions/setup-node@v4
         with:
-          node-version: '16.20'
+          node-version: '18.20'
       - name: Install dependencies
         run: |
           cd web-smartstock
