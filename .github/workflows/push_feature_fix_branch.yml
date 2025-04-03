@@ -54,7 +54,7 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout de repositorio
+      - name: Repository checkout
         uses: actions/checkout@v2
       - name: Python Env Configuration 3.10
         uses: actions/setup-python@v2
@@ -94,7 +94,7 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout de repositorio
+      - name: Repository checkout
         uses: actions/checkout@v2
       - name: Python Env Configuration 3.10
         uses: actions/setup-python@v2
@@ -134,7 +134,7 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout de repositorio
+      - name: Repository checkout
         uses: actions/checkout@v2
       - name: Python Env Configuration 3.10
         uses: actions/setup-python@v2
@@ -174,7 +174,7 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout de repositorio
+      - name: Repository checkout
         uses: actions/checkout@v2
       - name: Python Env Configuration 3.10
         uses: actions/setup-python@v2
@@ -214,7 +214,7 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout de repositorio
+      - name: Repository checkout
         uses: actions/checkout@v2
       - name: Python Env Configuration 3.10
         uses: actions/setup-python@v2
@@ -238,3 +238,94 @@ jobs:
         run: |
           cd user_session_manager
           coverage report -m --fail-under=90
+
+  web_smartstock_coverage:
+    name: Web SmartStock Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Node Env Configuration 18.20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.20'
+      - name: Install dependencies
+        run: |
+          cd web-smartstock
+          node --version
+          npm --version
+          npm install -g @angular/cli@15.0.3
+          npm install
+      - name: Run tests
+        run: |
+          cd web-smartstock
+          ng test --code-coverage --watch=false
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Get coverage percentages
+        id: get-coverage
+        run: |
+          cd web-smartstock/coverage/front
+          COVERAGE_FILE="coverage-summary.json"
+          if [ ! -f "$COVERAGE_FILE" ]; then
+            echo "Error: coverage-summary.json not found"
+            exit 1
+          fi
+          STATEMENTS=$(cat $COVERAGE_FILE | jq -r '.total.statements.pct')
+          BRANCHES=$(cat $COVERAGE_FILE | jq -r '.total.branches.pct')
+          FUNCTIONS=$(cat $COVERAGE_FILE | jq -r '.total.functions.pct')
+          LINES=$(cat $COVERAGE_FILE | jq -r '.total.lines.pct')
+          
+          echo "Coverage Summary:"
+          echo "Statements: $STATEMENTS%"
+          echo "Branches: $BRANCHES%"
+          echo "Functions: $FUNCTIONS%"
+          echo "Lines: $LINES%"
+          
+          echo "statements=$STATEMENTS" >> $GITHUB_OUTPUT
+          echo "branches=$BRANCHES" >> $GITHUB_OUTPUT
+          echo "functions=$FUNCTIONS" >> $GITHUB_OUTPUT
+          echo "lines=$LINES" >> $GITHUB_OUTPUT
+
+      - name: Check coverage thresholds
+        run: |
+          STATEMENTS=${{ steps.get-coverage.outputs.statements }}
+          BRANCHES=${{ steps.get-coverage.outputs.branches }}
+          FUNCTIONS=${{ steps.get-coverage.outputs.functions }}
+          LINES=${{ steps.get-coverage.outputs.lines }}
+
+          MIN_STATEMENTS=60
+          MIN_BRANCHES=24
+          MIN_FUNCTIONS=54
+          MIN_LINES=59
+
+          FAILED=0
+
+          if (( $(echo "$STATEMENTS < $MIN_STATEMENTS" | bc -l) )); then
+            echo "Statements coverage is below minimum required: $MIN_STATEMENTS% (Current: $STATEMENTS%)"
+            FAILED=$((FAILED + 1))
+          fi
+
+          if (( $(echo "$BRANCHES < $MIN_BRANCHES" | bc -l) )); then
+            echo "Branches coverage is below minimum required: $MIN_BRANCHES% (Current: $BRANCHES%)"
+            FAILED=$((FAILED + 1))
+          fi
+
+          if (( $(echo "$FUNCTIONS < $MIN_FUNCTIONS" | bc -l) )); then
+            echo "Functions coverage is below minimum required: $MIN_FUNCTIONS% (Current: $FUNCTIONS%)"
+            FAILED=$((FAILED + 1))
+          fi
+
+          if (( $(echo "$LINES < $MIN_LINES" | bc -l) )); then
+            echo "Lines coverage is below minimum required: $MIN_LINES% (Current: $LINES%)"
+            FAILED=$((FAILED + 1))
+          fi
+
+          if [ $FAILED -gt 0 ]; then
+            echo "Total coverage checks failed: $FAILED"
+            exit 1
+          fi
+
+          echo "All coverage checks passed."

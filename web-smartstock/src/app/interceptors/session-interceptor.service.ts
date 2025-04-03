@@ -21,9 +21,9 @@ export class SessionInterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     // Si la sesión está activa, se realiza la validación.
-    if (this.sessionManager.isSessionActive) {
-      if (!this.sessionManager.isSessionValid()) {
-        this.sessionManager.signOut();
+    if (this.sessionManager.esSesionActiva) {
+      if (!this.sessionManager.esSesionValida()) {
+        this.sessionManager.closeSession();
         return throwError(() => new Error('Sesión expirada'));
       }
 
@@ -41,7 +41,7 @@ export class SessionInterceptorService implements HttpInterceptor {
       return next.handle(req).pipe(
         catchError((error: HttpErrorResponse) => {
           if (error.status === 401) {
-            this.sessionManager.signOut();
+            this.sessionManager.closeSession();
             this.router.navigate(['/login']);
           }
           return throwError(() => error);

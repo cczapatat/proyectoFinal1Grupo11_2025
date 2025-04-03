@@ -20,12 +20,11 @@ export class HeaderComponent implements OnInit {
     private toastrService: ToastrService,
     private sessionManager: SessionManager,
     private translate: TranslateService
-  ) {
-    this.initializeLanguage();
-  }
+  ) { }
 
   ngOnInit() {
     this.isAdmin = this._isAdmin();
+    this.initializeLanguage();
   }
 
   toggleMenu() {
@@ -42,7 +41,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logOut() {
-    this.sessionManager.signOut();
+    this.sessionManager.closeSession();
     this.toastrService.success(
       this.translate.instant('NAV.LOGOUT_MESSAGE'),
       this.translate.instant('NAV.LOGOUT'),
@@ -59,7 +58,9 @@ export class HeaderComponent implements OnInit {
 
   private initializeLanguage() {
     const browserLang = navigator.language;
-    const matchedLang = this.availableLangs.find(lang => lang === browserLang);
+    const matchedLang = this.availableLangs.find(lang => 
+      lang.toLowerCase() === browserLang.toLowerCase()
+    );
     this.currentLang = matchedLang || 'es-CO';
     this.translate.setDefaultLang('es-CO');
     this.translate.use(this.currentLang);

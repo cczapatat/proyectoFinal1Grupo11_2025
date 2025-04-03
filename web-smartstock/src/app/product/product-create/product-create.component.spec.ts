@@ -9,13 +9,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ToastrModule } from 'ngx-toastr';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ProductService } from '../product.service';
-import { ManufacturerService } from '../manufacturer.service';
+import { ProductService } from '../../services/product.service';
+import { ManufacturerService } from '../../services/manufacturer.service';
 import { of } from 'rxjs';
-import { Product } from '../product';
-import { ProductCurrency } from '../product-currency';
-import { ProductCategory } from '../product-category';
-import { Manufacturer } from '../manufacturer';
+
+import { ProductCurrency } from '../../dtos/product-currency';
+import { ProductCategory } from '../../dtos/product-category';
+import { Manufacturer } from '../../dtos/manufacturer';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('ProductCreateComponent', () => {

@@ -19,17 +19,17 @@ module.exports = function (config) {
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, './coverage/front'),
-      reports: ['html', 'lcovonly', 'text-summary'],
+      reports: ['html', 'lcovonly', 'text-summary', 'json-summary'],
       fixWebpackSourcePaths: true
     },
     sonarQubeUnitReporter: {
-          sonarQubeVersion: 'LATEST',
-          outputFile: 'reports/ut_report.xml',
-          overrideTestDescription: true,
-          testPaths: ['./src'],
-          testFilePattern: '.spec.ts',
-          useBrowserName: false
-     },
+      sonarQubeVersion: 'LATEST',
+      outputFile: 'reports/ut_report.xml',
+      overrideTestDescription: true,
+      testPaths: ['./src'],
+      testFilePattern: '.spec.ts',
+      useBrowserName: false
+    },
     reporters: ['mocha', 'kjhtml', 'sonarqubeUnit', 'coverage-istanbul'],
     port: 9876,
     colors: true,
