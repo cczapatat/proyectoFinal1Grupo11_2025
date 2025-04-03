@@ -100,7 +100,7 @@ validarToken(): Observable<boolean> {
     map(() => true),
     catchError((error) => {
       console.error('Error al validar el token en el servidor:', error);
-      this.cerrarSesion();
+      this.closeSession();
       return of(false);
     })
   );
@@ -113,10 +113,10 @@ validarToken(): Observable<boolean> {
       if (tiempoRestante > 0) {
         this.temporizadorCierreSesion = setTimeout(() => {
           console.warn('La sesión ha expirado. Cerrando sesión automáticamente.');
-          this.cerrarSesion();
+          this.closeSession();
         }, tiempoRestante);
       } else {
-        this.cerrarSesion();
+        this.closeSession();
       }
     }
   }
@@ -130,7 +130,7 @@ validarToken(): Observable<boolean> {
   }
 
   // Cierra la sesión: elimina el token y el tiempo de inicio del localStorage y limpia el temporizador.
-  cerrarSesion(): void {
+  closeSession(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('loginTime');
     localStorage.removeItem('userId');

@@ -4,54 +4,54 @@
     <form [formGroup]="this.storeForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <label class="form-label">{{ 'STORE.NAME' | translate }}</label>
-        <input type="text" class="form-control" formControlName="name" placeholder="{{ 'STORE.NAME_PLACEHOLDER' | translate }}">
-        <div *ngIf="this.formControls?.['name'].invalid && this.formControls?.['name'].touched" class="text-danger">{{ 'STORE.NAME_ERROR' | translate }}</div>
+        <input id="store_name" type="text" class="form-control" formControlName="name" placeholder="{{ 'STORE.NAME_PLACEHOLDER' | translate }}">
+        <div id="store_name_error" *ngIf="this.formControls?.['name'].invalid && this.formControls?.['name'].touched" class="text-danger">{{ 'STORE.NAME_ERROR' | translate }}</div>
       </div>
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">{{ 'STORE.PHONE' | translate }}</label>
-          <input type="text" class="form-control" formControlName="phone" placeholder="{{ 'STORE.PHONE_PLACEHOLDER' | translate }}">
-          <div *ngIf="formControls?.['phone'].invalid && formControls?.['phone'].touched" class="text-danger">{{ 'STORE.PHONE_ERROR' | translate }}</div>
+          <input id="store_phone" type="text" class="form-control" formControlName="phone" placeholder="{{ 'STORE.PHONE_PLACEHOLDER' | translate }}">
+          <div id="store_phone_error" *ngIf="formControls?.['phone'].invalid && formControls?.['phone'].touched" class="text-danger">{{ 'STORE.PHONE_ERROR' | translate }}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">{{ 'STORE.EMAIL' | translate }}</label>
-          <input type="email" class="form-control" formControlName="email" placeholder="{{ 'STORE.EMAIL_PLACEHOLDER' | translate }}">
-          <div *ngIf="formControls?.['email'].invalid && formControls?.['email'].touched" class="text-danger">{{ 'STORE.EMAIL_ERROR' | translate }}</div>
+          <input id="store_email" type="email" class="form-control" formControlName="email" placeholder="{{ 'STORE.EMAIL_PLACEHOLDER' | translate }}">
+          <div id="store_email_error" *ngIf="formControls?.['email'].invalid && formControls?.['email'].touched" class="text-danger">{{ 'STORE.EMAIL_ERROR' | translate }}</div>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">{{ 'STORE.ADDRESS' | translate }}</label>
-          <input type="text" class="form-control" formControlName="address" placeholder="{{ 'STORE.ADDRESS_PLACEHOLDER' | translate }}">
-          <div *ngIf="formControls?.['address'].invalid && formControls?.['address'].touched" class="text-danger">{{ 'STORE.ADDRESS_ERROR' | translate }}</div>
+          <input id="store_address" type="text" class="form-control" formControlName="address" placeholder="{{ 'STORE.ADDRESS_PLACEHOLDER' | translate }}">
+          <div id="store_address_error" *ngIf="formControls?.['address'].invalid && formControls?.['address'].touched" class="text-danger">{{ 'STORE.ADDRESS_ERROR' | translate }}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">{{ 'STORE.CAPACITY' | translate }}</label>
-          <input type="number" class="form-control" formControlName="capacity" placeholder="{{ 'STORE.CAPACITY_PLACEHOLDER' | translate }}">
-          <div *ngIf="formControls?.['capacity'].invalid && formControls?.['capacity'].touched" class="text-danger">{{ 'STORE.CAPACITY_ERROR' | translate }}</div>
+          <input id="store_capacity" type="number" class="form-control" formControlName="capacity" placeholder="{{ 'STORE.CAPACITY_PLACEHOLDER' | translate }}">
+          <div id="store_capacity_error" *ngIf="formControls?.['capacity'].invalid && formControls?.['capacity'].touched" class="text-danger">{{ 'STORE.CAPACITY_ERROR' | translate }}</div>
         </div>
       </div>
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">{{ 'STORE.ESTATE' | translate }}</label>
-          <select class="form-select" formControlName="state">
+          <select id="store_state" class="form-select" formControlName="state" [attr.aria-label]="'STORE.STATE_SELECTED' | translate">
             <option value="">{{ 'STORE.STATE_SELECTED' | translate }}</option>
             <option *ngFor="let state of states" [value]="state">{{ 'STORE.STATE_' + state | translate }}</option>
           </select>
-          <div *ngIf="formControls?.['state'].invalid && formControls?.['state'].touched" class="text-danger">{{ 'STORE.STATE_ERROR' | translate }}</div>
+          <div id="store_state_error" *ngIf="formControls?.['state'].invalid && formControls?.['state'].touched" class="text-danger">{{ 'STORE.STATE_ERROR' | translate }}</div>
         </div>
         <div class="col-md-6 mb-3">
           <label class="form-label">{{ 'STORE.SECURITY_LEVEL' | translate }}</label>
-          <select class="form-select" formControlName="securityLevel">
+          <select id="store_security_level" class="form-select" formControlName="securityLevel" [attr.aria-label]="'STORE.SECURITY_LEVEL_SELECTED' | translate">
             <option value="">{{ 'STORE.SECURITY_LEVEL_SELECTED' | translate }}</option>
             <option *ngFor="let securityLevel of securityLevels" [value]="securityLevel">{{ 'STORE.SECURITY_LEVEL_' + securityLevel | translate }}</option>
           </select>
-          <div *ngIf="formControls?.['securityLevel'].invalid && formControls?.['securityLevel'].touched"
+          <div id="store_security_level_error" *ngIf="formControls?.['securityLevel'].invalid && formControls?.['securityLevel'].touched"
             class="text-danger">{{ 'STORE.SECURITY_LEVEL_ERROR' | translate }}</div>
         </div>
       </div>
       <div class="text-center">
-        <button type="submit" class="btn register-btn" [ngClass]="{'register-btn-active': !storeForm.invalid}"
+        <button id="store_btn_register" type="submit" class="btn register-btn" [ngClass]="{'register-btn-active': !storeForm.invalid}"
           [disabled]="storeForm.invalid">{{ 'STORE.REGISTER_BUTTON' | translate }}</button>
       </div>
     </form>
