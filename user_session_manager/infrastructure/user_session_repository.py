@@ -13,6 +13,15 @@ class UserSessionRepository:
 
     @staticmethod
     def create_user_session(user_session_dto: UserSessionDTO) -> UserSession:
+
+        #validate if the session already exists
+        existing_user_session = UserSession.query.filter_by(email=user_session_dto.email).first()
+        if existing_user_session:
+            response = make_response(
+                jsonify({"error": "User session already exists"}), 400
+            )
+            return response
+
         user_session = UserSession()
         user_session.email = user_session_dto.email
         user_session.password = bcrypt.hashpw(user_session_dto.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
