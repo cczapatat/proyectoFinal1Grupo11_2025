@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SalespeopleAssignCustomersComponent } from './salespeople-assign-customers/salespeople-assign-customers.component';
-import { SalespeopleRegisterComponent } from './salespeople-register/salespeople-register.component';
+import { SalesPeopleRegisterComponent } from './salespeople-register/salespeople-register.component';
 import { SalespeopleListCustomersComponent } from './salespeople-list-customers/salespeople-list-customers.component';
 import { AuthGuard } from '../guards/auth.guard';
 
@@ -14,7 +14,7 @@ const routes: Routes = [{
     },
     {
       path: 'register',
-      component: SalespeopleRegisterComponent, canActivate: [AuthGuard],
+      component: SalesPeopleRegisterComponent, canActivate: [AuthGuard],
     },
     {
       path: 'list-customers',
