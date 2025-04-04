@@ -23,6 +23,17 @@ jobs:
           echo "Starting Deployment - ${{ github.event.inputs.reason }}"
           echo "Tag for deployment - ${{ github.event.inputs.tag }}"
           docker --version
+  validate_all_coverage:
+    name: Merge On Main After Approved PR.
+    needs: starting_deploy
+    uses: cczapatat/proyectoFinal1Grupo11_2025/.github/workflows/push_feature_fix_branch.yml@main
+    with:
+      command: 'run_on_deployment'
+  deploy_to_production:
+    name: Deployment to Production
+    needs: validate_all_coverage
+    runs-on: ubuntu-latest
+    steps:
       - name: Repository checkout
         uses: actions/checkout@v2
         with:
@@ -31,6 +42,15 @@ jobs:
         run: |
           git config user.name "cczapatat"
           git config user.email "c.zapatat@uniandes.edu.co"
+      - name: Create New Tag
+        run: |
+          echo "Creating new tag - ${{ github.event.inputs.tag }}"
+          git fetch
+          git checkout main
+          git branch --show-current
+          git pull
+          git tag v${{ github.event.inputs.tag }} HEAD -m "${{ github.event.inputs.reason }}"
+          git push origin v${{ github.event.inputs.tag }}
       - name: Create credentials.json
         run: |
           echo "Creating credentials.json"
@@ -57,3 +77,23 @@ jobs:
           echo "Listing Images"
           docker images
           echo "Images created"
+      - name: Config Kubernetes
+        run: |
+          echo "Configuring Kubernetes"
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https ca-certificates gnupg
+          sudo apt-get update && sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin kubectl
+          gcloud container clusters get-credentials ${{ secrets.GCP_CLUSTER_NAME }} --region ${{ secrets.GCP_COMPUTE_REGION }} --project ${{ secrets.GCP_PROJECT_ID }}
+          kubectl get namespaces
+          echo "Kubernetes configured"
+      - name: Deploy to Kubernetes
+        run: |
+          echo "Deploying to Kubernetes with tag: ${{ github.event.inputs.tag }}"
+          tag="${{ github.event.inputs.tag }}"
+          cd deployment
+          sed -i.bak "s/:latest/:$tag/g" k8s-base-layer-deployment.yaml
+          kubectl apply -f secrets.yaml
+          kubectl apply -f k8s-base-layer-deployment.yaml
+          kubectl apply -f k8s-ingress-deployment.yaml
+          echo "Deployment completed"
+          kubectl get pods

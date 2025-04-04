@@ -68,3 +68,5 @@ data_app/*
 **/.coverage
 
 **/reports
+
+**/**.bak
