@@ -57,3 +57,16 @@ jobs:
           echo "Listing Images"
           docker images
           echo "Images created"
+      - name: Config Kubernetes
+        run: |
+          echo "Configuring Kubernetes"
+          gcloud container clusters get-credentials ${{ secrets.GCP_CLUSTER_NAME }} --region ${{ secrets.GCP_COMPUTE_REGION }} --project ${{ secrets.GCP_PROJECT_ID }}
+          echo "Kubernetes configured"
+      - name: Deploy to Kubernetes
+        run: |
+          echo "Deploying to Kubernetes"
+          kubectl apply -f deployment/secrets.yaml
+          kubectl apply -f deployment/k8s-base-layer-deployment.yaml
+          kubectl apply -f deployment/k8s-ingress-deployment.yaml
+          echo "Deployment completed"
+          kubectl get pods
