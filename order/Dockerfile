@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 python:3.10.16
+FROM --platform=linux/amd64 python:3.10.16-slim
 
 RUN mkdir .config_app
 COPY credentials.json /.config_app/credentials.json
