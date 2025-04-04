@@ -35,9 +35,7 @@ jobs:
         run: |
           echo "Creating credentials.json"
           mkdir -p data_app
-          echo ${{ secrets.GCP_CREDENTIALS }}
           echo ${{ secrets.GCP_CREDENTIALS }} > data_app/credentials.json
-          cat data_app/credentials.json
       - name: Config GCP
         run: |
           echo "Configuring GCP"

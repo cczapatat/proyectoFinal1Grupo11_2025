@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/logintest"
+        android:paddingTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/centered_background_one"
+        android:clipToOutline="true"
+        android:theme="@style/Theme.MyApplication"
+        tools:context=".LoginActivity">
+
+        <!-- Auto layout, variables, and unit scale are not yet supported -->
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/section_4"
+            android:layout_width="411dp"
+            android:layout_height="50dp"
+            android:clipToOutline="true"
+            >
+            <TextView
+                android:id="@+id/crear_nueva"
+                android:layout_width="420dp"
+                android:layout_height="50dp"
+                android:text="@string/iniciar_sesion"
+                android:textAppearance="@style/crear_nueva"
+                android:lineSpacingExtra="2sp"
+                android:gravity="center_horizontal|center_vertical"
+                />
+        </RelativeLayout>
+        <!-- Auto layout, variables, and unit scale are not yet supported -->
+        <RelativeLayout
+            android:id="@+id/section_9"
+            android:layout_width="411dp"
+            android:layout_height="150dp"
+            android:clipToOutline="true"
+            android:layout_below="@id/section_4"
+            >
+
+            <ImageView
+                android:id="@+id/micLogin"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/factory_logo"
+                android:scaleType="center" />
+        </RelativeLayout>
+        <!-- Auto layout, variables, and unit scale are not yet supported -->
+        <RelativeLayout
+            android:id="@+id/section_5"
+            android:layout_width="411dp"
+            android:layout_height="100dp"
+            android:clipToOutline="true"
+            android:layout_below="@id/section_9"
+            >
+
+            <TextView
+                android:id="@+id/no_te_encue"
+                android:layout_width="341dp"
+                android:layout_height="84dp"
+                android:layout_centerInParent="true"
+                android:gravity="top"
+                android:lineSpacingExtra="2sp"
+                android:text="@string/no_registrado"
+                android:textAppearance="@style/ya_te_encue"
+                android:translationY="-1.11sp" />
+        </RelativeLayout>
+        <!-- Auto layout, variables, and unit scale are not yet supported -->
+
+        <RelativeLayout
+            android:id="@+id/section_7"
+            android:layout_width="411dp"
+            android:layout_height="100dp"
+            android:clipToOutline="true"
+            android:layout_below="@id/section_5"
+            >
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/LoginTextInputLayoutStyle2"
+                android:id="@+id/textField5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="@string/email"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                app:boxBackgroundColor="@color/white"
+                app:endIconMode="clear_text"
+                app:hintTextColor="@color/black"
+                app:endIconTint="@color/schemesSecondary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceBodyLarge"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/section_8"
+            android:layout_width="411dp"
+            android:layout_height="100dp"
+            android:clipToOutline="true"
+            android:layout_below="@id/section_7"
+            >
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/LoginTextInputLayoutStyle2"
+                android:id="@+id/textField6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:hint="@string/constrasena"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                app:boxBackgroundColor="@color/white"
+                app:endIconMode="password_toggle"
+                app:hintTextColor="@color/black"
+                app:endIconTint="@color/schemesSecondary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceBodyLarge"
+                    android:inputType="textPassword"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/section_11"
+            android:layout_width="411dp"
+            android:layout_height="150dp"
+            android:clipToOutline="true"
+            android:layout_below="@id/section_8"
+            >
+
+            <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="203dp"
+                android:layout_height="62dp"
+
+                android:layout_centerInParent="true"
+                android:backgroundTint="@color/schemesOrange600"
+                android:text="@string/iniciar_sesion"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/colorBackground"
+                android:textSize="@dimen/textAppearanceHeadlineSmall" />
+        </RelativeLayout>
+    </RelativeLayout>
+

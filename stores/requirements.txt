@@ -1,4 +1,4 @@
-psycopg2==2.9.9
+psycopg2-binary==2.9.6
 SQLAlchemy==2.0.38
 Flask==3.1.0
 Flask-RESTful==0.3.10

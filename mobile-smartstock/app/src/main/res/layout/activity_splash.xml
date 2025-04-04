@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo_movil_2_s2_1"
+    android:orientation="vertical">
+
+    <!-- Add any optional UI elements such as logo or text if needed -->
+
+</RelativeLayout>

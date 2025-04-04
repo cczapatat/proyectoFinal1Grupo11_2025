@@ -1,0 +1,101 @@
+<resources>
+    <string name="app_name">SmartStock</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="usuario">Usuario</string>
+    <string name="password">Password</string>
+    <string name="entrar">ENTRAR</string>
+    <string name="olvide_contrasena">OLVIDE CONTRASENA</string>
+    <string name="nuevo_usuario">NUEVO USUARIO</string>
+    <string name="configuraciones">Configuraciones</string>
+    <string name="cerrar_sesion">Cerrar sesion</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- TODO: Smart Stock Resources -->
+    <string name="sign_up_fragment_label">SignUp Fragment</string>
+    <string name="create_fragment_label">Create Fragment</string>
+    <string name="client_fragment_label">Clients Fragment</string>
+    <string name="edit_fragment_label">Edit Fragment</string>
+    <string name="asociate_fragment_label">Asociate Fragment</string>
+    <string name="register_client_fragment_label">Register Client Fragment</string>
+    <string name="asociate_select_fragment_label">Asociate Select Fragment</string>
+    <string name="list_fragment_label">List Fragment</string>
+    <string name="record_fragment_label">Record Fragment</string>
+    <string name="crear_nueva_cuenta">Crear nueva cuenta</string>
+    <string name="ya_registrado">Ya te encuentras registrado? Si es asi, ingresa al siguiente
+        enlace para iniciar tu sesión </string>
+    <string name="aqui">Aqui.</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="nombre">Nombre</string>
+    <string name="email">Email</string>
+    <string name="constrasena">Contraseña</string>
+    <string name="repetir_contrasena">Repetir Contraseña</string>
+    <string name="no_registrado">No estas registrado? Registrate accediendo a este enlace </string>
+    <string name="iniciar_sesion">Iniciar Sesión</string>
+    <string name="lista_de_clientes">Lista de Clientes</string>
+    <string name="registrar_cliente">Registrar Cliente</string>
+    <string name="registrar_cliente_nombre">Nombre</string>
+    <string name="registrar_cliente_direccion">Direccion</string>
+    <string name="registrar_cliente_telefono">Telefono</string>
+    <string name="registrar_cliente_email">Email</string>
+    <string name="registrar_cliente_tipo">Tipo de cliente</string>
+    <string name="registrar_cliente_zona">Zona Geográfica</string>
+    <string name="registrar_cliente_seleccionar_zona">Seleccionar zona</string>
+    <string name="registrar_cliente_seleccionar_tipo">Seleccionar tipo</string>
+    <string name="seleccionar_tono">Seleccionar tono</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="crear">Crear</string>
+    <string name="menu_registrar_visita">Registrar visita</string>
+    <string name="menu_listar_clientes">Listar Clientes</string>
+    <string name="menu_crear_cliente">Crear Cliente</string>
+    <string name="menu_consulta_productos">Consulta Productos</string>
+    <string name="menu_pedidos">Pedidos</string>
+    <string name="menu_cargar_video">Cargar Video</string>
+    <string name="menu_cerrar_sesion">Cerrar sesión</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="error_login_fields">Todos los campos deben ser llenados</string>
+    <string name="success_login">Bienvenido</string>
+    <string name="error_login">A ocurrido un error al iniciar sesión</string>
+    <string name="success_add_client">El cliente se ha agregado de forma satisfactoria</string>
+    <string name="error_add_client">Ocurrio un error al intentar guardar clientes</string>
+    <string name="error_add_client_fields">Todos los campos deben ser llenados</string>
+
+    <!--api client errors-->
+    <string name="error_user_id_required">Se requiere el userID</string>
+    <string name="error_seller_id_required">Se requiere el Seller ID</string>
+    <string name="error_name_required">Se requiere el el nombre</string>
+    <string name="error_phone_required">Se requiere el telefono</string>
+    <string name="error_email_required">Se requiere el email</string>
+    <string name="error_address_required">Se requiere la dirección</string>
+    <string name="error_client_type_required">Se requiere el tipo de cliente</string>
+    <string name="error_zone_required">Se requiere la zona</string>
+    <string name="error_unknown">A ocurrido un error desconocido</string>
+    <string name="error_network">Error de red. Por favor intente de nuevo.</string>
+    <string name="error_email_exists">El correo ya existe</string>
+    <string name="error_phone_exists">El telefono ya existe</string>
+    <string name="error_client_exists">El cliente ya existe</string>
+    <string name="error_email_format">Error en el formato de correo</string>
+    <string name="error_phone_format">Error en el formato de telefono</string>
+    <string name="error_database_integrity">Error del servidor</string>
+
+    <!--Client Zones-->
+    <string name="client_type_supermarket">Supermercado</string>
+    <string name="client_type_corner_store">Tienda de Barrio</string>
+
+    <string name="zone_south">Sur</string>
+    <string name="zone_north">Norte</string>
+    <string name="zone_east">Este</string>
+    <string name="zone_west">Oeste</string>
+    <string name="zone_center">Centro</string>
+    <string name="zone_northeast">Noreste</string>
+    <string name="zone_northwest">Noroeste</string>
+    <string name="zone_southeast">Sureste</string>
+    <string name="zone_southwest">Suroeste</string>
+
+
+</resources>

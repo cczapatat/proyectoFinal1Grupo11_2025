@@ -8,7 +8,6 @@ jsonschema
 marshmallow
 marshmallow_sqlalchemy
 psycopg2-binary==2.9.6
-# psycopg2==2.9.6  # Commented out to avoid conflict
 python-abc
 python-dotenv
 sqlalchemy

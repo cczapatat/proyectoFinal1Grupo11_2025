@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registerclienttest"
+    android:paddingTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/centered_background_one"
+    android:clipToOutline="true"
+    android:theme="@style/Theme.MyApplication"
+    tools:context="com.smartstock.myapplication.ui.RegisterClientFragment">
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/section_4"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        >
+        <TextView
+            android:id="@+id/crear_nueva"
+            android:layout_centerVertical="true"
+            android:layout_width="420dp"
+            android:layout_height="50dp"
+            android:text="@string/registrar_cliente"
+
+            android:textAppearance="@style/crear_nueva"
+            android:lineSpacingExtra="2sp"
+            android:gravity="center_horizontal|center_vertical"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/section_4_1"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_4"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle2"
+            android:id="@+id/textField4_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/registrar_cliente_nombre"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:endIconMode="clear_text"
+            app:hintTextColor="@color/black"
+            app:endIconTint="@color/schemesSecondary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textAppearanceBodyLarge"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/section_4_2"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_4_1"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle2"
+            android:id="@+id/textField4_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/registrar_cliente_direccion"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:endIconMode="clear_text"
+            app:hintTextColor="@color/black"
+            app:endIconTint="@color/schemesSecondary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textAppearanceBodyLarge"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/section_4_3"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_4_2"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle2"
+            android:id="@+id/textField4_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/registrar_cliente_telefono"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:endIconMode="clear_text"
+            app:hintTextColor="@color/black"
+            app:endIconTint="@color/schemesSecondary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phone"
+                android:layout_width="match_parent"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textAppearanceBodyLarge"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/section_4_4"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_4_3"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle2"
+            android:id="@+id/textField4_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/registrar_cliente_email"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:endIconMode="clear_text"
+            app:hintTextColor="@color/black"
+            app:endIconTint="@color/schemesSecondary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textAppearanceBodyLarge"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/section_4_5"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_4_4"
+
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/CustomExposedDropdownMenu"
+            android:id="@+id/textField4_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/registrar_cliente_seleccionar_tipo"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="@color/black"
+            app:endIconTint="@color/schemesSecondary">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewCreate1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:popupBackground="@drawable/custom_popup_background"
+                android:textSize="@dimen/textAppearanceBodyLarge"
+                android:inputType="none"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/section_4_6"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_4_5"
+
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/CustomExposedDropdownMenu"
+            android:id="@+id/textField4_6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/registrar_cliente_seleccionar_zona"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="@color/black"
+            app:endIconTint="@color/schemesSecondary">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewCreate2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:popupBackground="@drawable/custom_popup_background"
+                android:textSize="@dimen/textAppearanceBodyLarge"
+                android:inputType="none"
+                />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
+
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
+    <RelativeLayout
+        android:id="@+id/section_11"
+        android:layout_width="411dp"
+        android:layout_height="150dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_4_6"
+        >
+
+        <Button
+            android:id="@+id/buttonCancelCreate"
+            android:layout_width="203dp"
+            android:layout_height="62dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/center_divider_action"
+            android:layout_marginLeft="2dp"
+            android:backgroundTint="@color/schemesOrange600"
+            android:text="@string/cancelar"
+            android:textColor="@color/colorBackground"
+            android:textSize="@dimen/textAppearanceHeadlineSmall" />
+
+        <Button
+            android:id="@+id/buttonAcceptCreate"
+            android:layout_width="203dp"
+            android:layout_height="62dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2dp"
+            android:layout_toRightOf="@+id/center_divider_action"
+            android:backgroundTint="@color/schemesOrange600"
+            android:text="@string/crear"
+            android:textColor="@color/colorBackground"
+            android:textSize="@dimen/textAppearanceHeadlineSmall" />
+
+        <View
+            android:id="@+id/center_divider_action"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</RelativeLayout>
+

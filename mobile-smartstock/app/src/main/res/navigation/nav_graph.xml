@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/ClientFragment">
+
+    <fragment
+        android:id="@+id/ClientFragment"
+        android:name="com.smartstock.myapplication.ui.client.ClientFragment"
+        android:label="@string/client_fragment_label"
+        tools:layout="@layout/fragment_list_clients">
+
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/RegisterClientFragment"
+        android:name="com.smartstock.myapplication.ui.RegisterClientFragment"
+        android:label="@string/register_client_fragment_label"
+        tools:layout="@layout/fragment_register_client">
+        <action
+            android:id="@+id/actionRegisterClientFragmentToClientFragment"
+            app:destination="@id/ClientFragment" />
+    </fragment>
+
+
+</navigation>

@@ -1,7 +1,7 @@
 Pillow==9.5.0
 ez_setup==0.9
 sqlalchemy==2.0.29
-psycopg2==2.9.9
+psycopg2-binary==2.9.6
 google-api-core==2.18.0
 google-auth==2.29.0
 google-cloud-core==2.4.1
