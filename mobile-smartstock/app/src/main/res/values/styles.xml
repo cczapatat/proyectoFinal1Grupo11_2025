@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="crear_nueva">
+        <item name="android:textSize">@dimen/textAppearanceHeadlineLarge</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+    <style name="duration_time">
+        <item name="android:textSize">@dimen/textAppearanceBodyMedium</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+    <style name="ya_te_encue">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="asociar_info">
+        <item name="android:textSize">@dimen/textAppearanceHeadlineSmall</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="reminder_date">
+        <item name="android:textSize">@dimen/textAppearanceTitleMedium</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+
+    <style name="asociar_dispositivo">
+        <item name="android:textSize">@dimen/textAppearanceBodyMedium</item>
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxStrokeWidth">2.5dp</item>
+    </style>
+    <style name="LoginTextInputLayoutStyle2" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxStrokeWidth">2.5dp</item>
+    </style>
+
+    <style name="LoginTextInputLayoutStyle3" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxStrokeWidth">2.5dp</item>
+        <item name="boxBackgroundColor">@color/schemesPrimaryContainer</item>
+
+        <!-- Customize hint text and input text color -->
+        <item name="android:textColor">@color/black</item>
+        <!-- Customize the popup (dropdown) background -->
+        <item name="colorPrimary">@color/schemesPrimaryContainer</item>
+        <item name="colorOnSurface">@color/schemesOnSecondaryContainer</item>
+
+    </style>
+
+    <!-- Custom Exposed Dropdown Menu Style -->
+    <style name="CustomExposedDropdownMenu" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <!-- Box background color -->
+
+        <!-- Box stroke color when focused and unfocused -->
+
+        <!-- Hint and text color -->
+        <item name="hintTextColor">@color/colorDark</item>
+
+        <!-- Icon tint for the dropdown arrow -->
+        <item name="endIconTint">@color/schemesSecondary</item>
+
+        <!-- Style for the drop-down list itself -->
+        <item name="android:popupBackground">@color/white</item>
+
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxStrokeWidth">2.5dp</item>
+        <item name="boxBackgroundColor">@color/schemesPrimaryContainer</item>
+
+        <!-- Customize hint text and input text color -->
+        <item name="android:textColor">@color/black</item>
+        <!-- Customize the popup (dropdown) background -->
+        <item name="colorPrimary">@color/schemesPrimaryContainer</item>
+        <item name="colorOnSurface">@color/schemesOnSecondaryContainer</item>
+    </style>
+
+    <style name="MaterialCardItemStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="boxStrokeColor">@color/text_input_box_stroke</item>
+        <item name="boxStrokeWidth">2.5dp</item>
+        <item name="boxBackgroundColor">@color/schemesPrimaryContainer</item>
+
+        <!-- Customize hint text and input text color -->
+        <item name="android:textColor">@color/black</item>
+        <!-- Customize the popup (dropdown) background -->
+        <item name="colorPrimary">@color/schemesPrimaryContainer</item>
+        <item name="colorOnSurface">@color/schemesOnSecondaryContainer</item>
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Card</item>
+
+    </style>
+
+    <style name="ThemeOverlay.App.Card" parent="">
+        <item name="colorSecondary">@color/schemesSecondary</item>
+        <item name="colorSurface">@color/schemesSurfaceContainerHighest</item>
+        <item name="colorOnSurfaceVariant">@color/schemesOnSurfaceVariant</item>
+    </style>
+
+    <!--    AM/PM Button style-->
+    <style name="AppTheme.Widget.TimePicker.Clock.AmPmButton" parent="Widget.MaterialComponents.TimePicker.Button">
+        <item name="backgroundTint">@color/selector_bg_chip</item>
+        <item name="strokeColor">@color/schemesPrimaryContainer</item>
+        <item name="android:textColor">@color/selector_text_chip</item>
+    </style>
+
+
+
+</resources>

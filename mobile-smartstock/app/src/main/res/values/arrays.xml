@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="repetir">
+        <item>Si</item>
+        <item>No</item>
+    </string-array>
+
+    <string-array name="snoozes">
+        <item>2</item>
+        <item>3</item>
+        <item>5</item>
+    </string-array>
+
+    <string-array name="formatoHora">
+        <item>12 Hrs</item>
+        <item>24 Hrs</item>
+    </string-array>
+
+    <string-array name="formatoFecha">
+        <item>DD-MM-AA</item>
+        <item>DD/MM/AA</item>
+        <item>MM-DD-AA</item>
+        <item>MM/DD/AA</item>
+    </string-array>
+
+    <string-array name="intensidad">
+        <item>Bajo</item>
+        <item>Medio</item>
+        <item>Alto</item>
+    </string-array>
+
+    <string-array name="tonos">
+        <item>Pulse</item>
+        <item>Bell</item>
+        <item>Cry</item>
+    </string-array>
+
+
+
+</resources>

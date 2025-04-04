@@ -1,0 +1,10 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <bitmap
+            android:src="@drawable/fondo_movil_3_s3_1"
+            android:gravity="start"
+            android:alpha="0.2"
+            android:tileMode="disabled"
+        />
+    </item>
+</layer-list>
