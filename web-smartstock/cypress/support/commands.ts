@@ -41,3 +41,18 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('login', (email, password) => {
+    cy.visit('/user-sessions/login');
+    cy.get('#email').type(email);
+    cy.get('#password').type(password);
+    cy.get('#doLogin').click();
+    cy.url().should('include', '/home');
+  });
+  
+  Cypress.Commands.add('navigateToProductCreate', () => {
+    cy.get('.menu-toggle').click();
+    cy.get('#nav_products').click();
+    cy.get('#nav_products_register').click();
+    cy.url().should('include', '/product/create');
+  });
