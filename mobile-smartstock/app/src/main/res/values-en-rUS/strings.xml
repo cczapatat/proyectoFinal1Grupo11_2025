@@ -1,0 +1,100 @@
+<resources>
+    <string name="app_name">SmartStock</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="usuario">Usuario</string>
+    <string name="password">Password</string>
+    <string name="entrar">ENTRAR</string>
+    <string name="olvide_contrasena">FORGOT PASSWORD</string>
+    <string name="nuevo_usuario">NEW USER</string>
+    <string name="configuraciones">Settings</string>
+    <string name="cerrar_sesion">Logout</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- TODO: Smart Stock Resources -->
+    <string name="sign_up_fragment_label">SignUp Fragment</string>
+    <string name="create_fragment_label">Create Fragment</string>
+    <string name="client_fragment_label">Clients Fragment</string>
+    <string name="edit_fragment_label">Edit Fragment</string>
+    <string name="asociate_fragment_label">Asociate Fragment</string>
+    <string name="register_client_fragment_label">Register Client Fragment</string>
+    <string name="asociate_select_fragment_label">Asociate Select Fragment</string>
+    <string name="list_fragment_label">List Fragment</string>
+    <string name="record_fragment_label">Record Fragment</string>
+    <string name="crear_nueva_cuenta">Create new account</string>
+    <string name="ya_registrado">Are you registered? If yes, signing by accessing to this link </string>
+    <string name="aqui">Here.</string>
+    <string name="registrarse">Signup</string>
+    <string name="nombre">Name</string>
+    <string name="email">Email</string>
+    <string name="constrasena">Password</string>
+    <string name="repetir_contrasena">Password Confirmation</string>
+    <string name="no_registrado">Not registered? Register by accessing this link </string>
+    <string name="iniciar_sesion">Signin</string>
+    <string name="lista_de_clientes">Clients</string>
+    <string name="registrar_cliente">Register client</string>
+    <string name="registrar_cliente_nombre">Name</string>
+    <string name="registrar_cliente_direccion">Address</string>
+    <string name="registrar_cliente_telefono">Phone</string>
+    <string name="registrar_cliente_email">Email</string>
+    <string name="registrar_cliente_tipo">Client type</string>
+    <string name="registrar_cliente_zona">Geographic Zone</string>
+    <string name="registrar_cliente_seleccionar_zona">Select a zone</string>
+    <string name="registrar_cliente_seleccionar_tipo">Select a type</string>
+    <string name="seleccionar_tono">Seleccionar tono</string>
+    <string name="cancelar">Cancel</string>
+    <string name="crear">Create</string>
+    <string name="menu_registrar_visita">Visit registration</string>
+    <string name="menu_listar_clientes">Client list</string>
+    <string name="menu_crear_cliente">Create client</string>
+    <string name="menu_consulta_productos">Product search</string>
+    <string name="menu_pedidos">Orders</string>
+    <string name="menu_cargar_video">Upload video</string>
+    <string name="menu_cerrar_sesion">Signout</string>
+    <string name="aceptar">Accept</string>
+    <string name="error_login_fields">Todos los campos deben ser llenados</string>
+    <string name="success_login">Bienvenido</string>
+    <string name="error_login">A ocurrido un error al iniciar sesión</string>
+    <string name="success_add_client">El cliente se ha agregado de forma satisfactoria</string>
+    <string name="error_add_client">Ocurrio un error al intentar guardar clientes</string>
+    <string name="error_add_client_fields">All fields must be filled</string>
+
+    <!--api client errors-->
+    <string name="error_user_id_required">userID is required</string>
+    <string name="error_seller_id_required">Seller ID is required</string>
+    <string name="error_name_required">Name is required</string>
+    <string name="error_phone_required">Phone is required</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_address_required">Address is required</string>
+    <string name="error_client_type_required">client type is required</string>
+    <string name="error_zone_required">Zone is required</string>
+    <string name="error_unknown">An unknown error has occurred</string>
+    <string name="error_network">Network error. Please try again.</string>
+    <string name="error_email_exists">The email already exists</string>
+    <string name="error_phone_exists">Phone already exist</string>
+    <string name="error_client_exists">Client already exist</string>
+    <string name="error_email_format">EMail Format Error</string>
+    <string name="error_phone_format">Phone Format Error</string>
+    <string name="error_database_integrity">Server Error</string>
+
+    <!--Client Zones-->
+    <string name="client_type_supermarket">Supermarket</string>
+    <string name="client_type_corner_store">Corner store</string>
+
+    <string name="zone_south">South</string>
+    <string name="zone_north">North</string>
+    <string name="zone_east">East</string>
+    <string name="zone_west">West</string>
+    <string name="zone_center">Center</string>
+    <string name="zone_northeast">Northeast</string>
+    <string name="zone_northwest">Northwest</string>
+    <string name="zone_southeast">Southeast</string>
+    <string name="zone_southwest">Southwest</string>
+
+
+</resources>
