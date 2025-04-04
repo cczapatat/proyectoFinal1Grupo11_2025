@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { HeaderAppModule } from './header-app/header-app.module';
 import { UserSessionModule } from './user-session/user-session.module';
 import { MassiveModule } from './massive/massive.module';
-import { SalespeopleModule } from './salespeople/salespeople.module';
+import { SalesPeopleModule } from './salespeople/salespeople.module';
 import { ProductModule } from './product/product.module';
 import { StoreModule } from './store/store.module';
 import { OrderModule } from './order/order.module';
@@ -51,7 +51,7 @@ export function createTranslateLoader(http: HttpClient) {
     HeaderAppModule,
     UserSessionModule,
     MassiveModule,
-    SalespeopleModule,
+    SalesPeopleModule,
     ProductModule,
     StoreModule,
     OrderModule,

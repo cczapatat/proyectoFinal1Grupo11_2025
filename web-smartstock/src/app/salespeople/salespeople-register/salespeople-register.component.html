@@ -1,3 +1,197 @@
 <div class="container">
-  <h2>Registrar Vendedor</h2>
+  <h2 class="text-center title" style="margin: 2rem 0;">{{ 'SIGNUP.TITLE' | translate }}</h2>
+  <form [formGroup]="sellerForm" (ngSubmit)="registerSeller(sellerForm.value)">
+
+    <!-- Row 1: Name & Phone -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="name">{{ 'SIGNUP.NAME_LABEL' | translate }}</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="{{ 'SIGNUP.NAME_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('name')?.hasError('required') && sellerForm.get('name')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.NAME_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('name')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.NAME_MAX_LENGTH' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="phone">{{ 'SIGNUP.PHONE_LABEL' | translate }}</label>
+        <input
+          id="phone"
+          type="text"
+          formControlName="phone"
+          placeholder="{{ 'SIGNUP.PHONE_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('phone')?.hasError('required') && sellerForm.get('phone')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.PHONE_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('phone')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.PHONE_MAX_LENGTH' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('phone')?.hasError('pattern')">
+          <p class="alert-message">{{ 'SIGNUP.PHONE_PATTERN' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Email & Password -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="email">{{ 'SIGNUP.EMAIL_LABEL' | translate }}</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="{{ 'SIGNUP.EMAIL_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('email')?.hasError('required') && sellerForm.get('email')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('email')?.hasError('email') || sellerForm.get('email')?.hasError('pattern')">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_INVALID' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('email')?.hasError('minlength')">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_MIN_LENGTH' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('email')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.EMAIL_MAX_LENGTH' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="password">{{ 'SIGNUP.PASSWORD_LABEL' | translate }}</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="{{ 'SIGNUP.PASSWORD_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('password')?.hasError('required') && sellerForm.get('password')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('password')?.hasError('minlength')">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_MIN_LENGTH' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('password')?.hasError('maxlength')">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_MAX_LENGTH' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Confirm Password & Zone -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="confirmPassword">{{ 'SIGNUP.CONFIRM_PASSWORD_LABEL' | translate }}</label>
+        <input
+          id="confirmPassword"
+          type="password"
+          formControlName="confirmPassword"
+          placeholder="{{ 'SIGNUP.CONFIRM_PASSWORD_PLACEHOLDER' | translate }}"
+        />
+        <!-- Error messages -->
+        <div *ngIf="sellerForm.get('confirmPassword')?.hasError('required') && sellerForm.get('confirmPassword')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.CONFIRM_PASSWORD_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.hasError('mismatch') && sellerForm.get('confirmPassword')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.PASSWORD_MISMATCH' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="zone">{{ 'SIGNUP.ZONE_LABEL' | translate }}</label>
+        <select id="zone" formControlName="zone">
+          <option value="">{{ 'SIGNUP.ZONE_SELECTED' | translate }}</option>
+          <option *ngFor="let zone of sellerZones" [value]="zone">{{ zone }}</option>
+        </select>
+        <div *ngIf="sellerForm.get('zone')?.hasError('required') && sellerForm.get('zone')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.ZONE_REQUIRED' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: Quota + Currency, Target + Currency -->
+    <div class="row mb-3">
+      <div class="col-md-3">
+        <label for="quotaExpected">{{ 'SIGNUP.QUOTA_LABEL' | translate }}</label>
+        <input
+          id="quotaExpected"
+          type="text"
+          formControlName="quotaExpected"
+          placeholder="{{ 'SIGNUP.QUOTA_PLACEHOLDER' | translate }}"
+          (blur)="formatNumber('quotaExpected')"
+        >
+        <div *ngIf="sellerForm.get('quotaExpected')?.hasError('required') && sellerForm.get('quotaExpected')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.QUOTA_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('quotaExpected')?.hasError('min')">
+          <p class="alert-message">{{ 'SIGNUP.QUOTA_MIN' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-3" style="padding-top: 1.7rem;">
+        <select id="currencyQuota" formControlName="currencyQuota">
+          <option value="">{{ 'SIGNUP.CURRENCY_SELECTED' | translate }}</option>
+          <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+        </select>
+        <div *ngIf="sellerForm.get('currencyQuota')?.hasError('required') && sellerForm.get('currencyQuota')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.CURRENCY_REQUIRED' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <label for="quarterlyTarget">{{ 'SIGNUP.TARGET_LABEL' | translate }}</label>
+        <input
+          id="quarterlyTarget"
+          type="text"
+          formControlName="quarterlyTarget"
+          placeholder="{{ 'SIGNUP.TARGET_PLACEHOLDER' | translate }}"
+          (blur)="formatNumber('quarterlyTarget')"
+        >
+        <div *ngIf="sellerForm.get('quarterlyTarget')?.hasError('required') && sellerForm.get('quarterlyTarget')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.TARGET_REQUIRED' | translate }}</p>
+        </div>
+        <div *ngIf="sellerForm.get('quarterlyTarget')?.hasError('min')">
+          <p class="alert-message">{{ 'SIGNUP.TARGET_MIN' | translate }}</p>
+        </div>
+      </div>
+      <div class="col-md-3" style="padding-top: 1.7rem;">
+        <select id="currencyTarget" formControlName="currencyTarget">
+          <option value="">{{ 'SIGNUP.CURRENCY_SELECTED' | translate }}</option>
+          <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+        </select>
+        <div *ngIf="sellerForm.get('currencyTarget')?.hasError('required') && sellerForm.get('currencyTarget')?.touched">
+          <p class="alert-message">{{ 'SIGNUP.CURRENCY_REQUIRED' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 5: Performance Recommendations -->
+    <div class="mb-3">
+      <label for="performanceRecomendations">{{ 'SIGNUP.PERFORMANCE_LABEL' | translate }}</label>
+      <textarea
+        id="performanceRecomendations"
+        formControlName="performanceRecomendations"
+        placeholder="{{ 'SIGNUP.PERFORMANCE_PLACEHOLDER' | translate }}"
+        rows="4"
+      ></textarea>
+      <div *ngIf="sellerForm.get('performanceRecomendations')?.hasError('required') && sellerForm.get('performanceRecomendations')?.touched">
+        <p class="alert-message">{{ 'SIGNUP.PERFORMANCE_REQUIRED' | translate }}</p>
+      </div>
+    </div>
+
+    <!-- Create Button -->
+    <div class="text-center">
+      <button id="seller_btn_create" type="submit" [disabled]="!sellerForm.valid || sellerForm.hasError('mismatch')">
+        {{ 'SIGNUP.BUTTON_SIGNUP' | translate }}
+      </button>
+    </div>
+  </form>
 </div>
