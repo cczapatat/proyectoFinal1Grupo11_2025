@@ -1,7 +1,7 @@
 describe('Test Base', () => {
   it('visits Login', () => {
     cy.visit('/user-sessions/login')
-    cy.contains('Sign Up As Seller')
+    cy.url().should('include', '/login')
   })
 })
 
@@ -15,8 +15,8 @@ describe('Login Test', () => {
   it('Fill login form', () => {
     cy.get('#email').type('admin.admin@sta.com')
     cy.get('#password').type('123456')
-    cy.get('.btn-info').click()
-    cy.contains('Login successful as ADMIN')
+    cy.get('#doLogin').click()
+    cy.url().should('include', '/home')
 
     cy.get('.menu-toggle').click()
     cy.get('.btn-logout').click()

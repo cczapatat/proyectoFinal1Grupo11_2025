@@ -5,8 +5,8 @@ describe('Create Store Test', () => {
     cy.visit('/user-sessions/login');
     cy.get('#email').type('admin.admin@sta.com');
     cy.get('#password').type('123456');
-    cy.get('.btn-info').click();
-    cy.contains('Login successful as ADMIN');
+    cy.get('#doLogin').click();
+    cy.url().should('include', '/home')
 
     cy.get('.menu-toggle').click();
     cy.get('#nav_languages').click();

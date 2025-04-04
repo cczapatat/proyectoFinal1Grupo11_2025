@@ -108,7 +108,7 @@
     "CREATE_CATEGORY_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar las categorías."
   },
   "LOGIN": {
-    "TITLE": "Regístrate como Vendedor",
+    "TITLE": "Ingresa como Vendedor",
     "EMAIL_LABEL": "Correo Electrónico",
     "EMAIL_PLACEHOLDER": "Correo Electrónico",
     "EMAIL_REQUIRED": "Debe ingresar un nombre de usuario para iniciar sesión",
@@ -127,7 +127,7 @@
     "SIGN_UP": "Registrate"
   },
   "SIGNUP": {
-    "TITLE": "Regístrate como Vendedor",
+    "TITLE": "Registrar Vendedor",
     "NAME_LABEL": "Nombre",
     "NAME_PLACEHOLDER": "Nombre",
     "NAME_REQUIRED": "El nombre es obligatorio.",
