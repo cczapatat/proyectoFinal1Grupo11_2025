@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: manufacturerapi
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacture_api:1.0.7
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacture_api:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -151,7 +151,7 @@ spec:
     spec:
       containers:
         - name: documentmanager
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/document_manager:1.0.7
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/document_manager:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -283,7 +283,7 @@ spec:
     spec:
       containers:
         - name: manufacturerworker
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacturers_worker:1.0.7
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/manufacturers_worker:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -416,7 +416,7 @@ spec:
     spec:
       containers:
         - name: massiveworker
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.0.9
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/massive_worker:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -542,7 +542,7 @@ spec:
     spec:
       containers:
         - name: order
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/order:1.0.2
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/order:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -649,7 +649,7 @@ spec:
     spec:
       containers:
         - name: order
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_api:1.0.0
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_api:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -756,7 +756,7 @@ spec:
     spec:
       containers:
         - name: order
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_worker:1.0.1
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stocks_worker:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -873,7 +873,7 @@ spec:
     spec:
       containers:
         - name: stores
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stores:1.0.0
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/stores:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -970,7 +970,7 @@ spec:
     spec:
       containers:
         - name: product
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/product:1.0.0
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/product:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -1067,7 +1067,7 @@ spec:
     spec:
       containers:
         - name: seller
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/seller:1.0.0
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/seller:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -1164,7 +1164,7 @@ spec:
     spec:
       containers:
         - name: user-session-manager
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.0.1
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/user_session_manager:1.1.4
           resources:
             requests:
               memory: "64Mi"
@@ -1271,7 +1271,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/client:1.0.1
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/client:1.1.4
           resources:
             requests:
               memory: "64Mi"
