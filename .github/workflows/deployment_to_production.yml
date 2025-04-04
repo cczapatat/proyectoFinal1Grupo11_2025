@@ -1,0 +1,45 @@
+name: Deployment to Production
+on:
+  workflow_dispatch:
+    inputs:
+        reason:
+            description: Reason for deployment
+            required: true
+        tag:
+            description: Tag for deployment
+            required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  starting_deploy:
+    name: Starting Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Starting Deployment
+        run: |
+          echo "Starting Deployment - ${{ github.event.inputs.reason }}"
+          echo "Tag for deployment - ${{ github.event.inputs.tag }}"
+          docker --version
+      - name: Repository checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup user git
+        run: |
+          git config user.name "cczapatat"
+          git config user.email "c.zapatat@uniandes.edu.co"
+      - name: Create credentials.json
+        run: |
+          echo "Creating credentials.json"
+          mkdir -p data_app
+          echo '${{ secrets.GCP_CREDENTIALS }}' > data_app/credentials.json
+      - name: Create Images
+        run: |
+          echo "Creating Images with tag ${{ github.event.inputs.tag }}"
+          sh build-images.sh ${{ github.event.inputs.tag }}
+          echo "Listing Images"
+          docker images
+          echo "Images created"

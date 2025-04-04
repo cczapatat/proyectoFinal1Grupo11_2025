@@ -33,7 +33,8 @@ jobs:
         || github.event_name == 'workflow_call'
         || github.event_name == 'workflow_dispatch'
         || github.event_name == 'pull_request_review'
-        || github.events.inputs.command == 'run_on_merge' }}
+        || github.events.inputs.command == 'run_on_merge'
+        || github.events.inputs.command == 'run_on_deployment' }}
     runs-on: ubuntu-latest
     steps:
       - name: start continue validation coverage
