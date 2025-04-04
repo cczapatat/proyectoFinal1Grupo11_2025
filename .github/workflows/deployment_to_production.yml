@@ -36,6 +36,19 @@ jobs:
           echo "Creating credentials.json"
           mkdir -p data_app
           echo '${{ secrets.GCP_CREDENTIALS }}' > data_app/credentials.json
+      - name: Config GCP
+        run: |
+          echo "Configuring GCP"
+          curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+          echo "GCP SDK installed"
+          sudo apt-get update && sudo apt-get install google-cloud-cli
+          gcloud auth activate-service-account --key-file data_app/credentials.json
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud config set compute/zone ${{ secrets.GCP_COMPUTE_ZONE }}
+          gcloud config set compute/region ${{ secrets.GCP_COMPUTE_REGION }}
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+          echo "GCP configured"
       - name: Create Images
         run: |
           echo "Creating Images with tag ${{ github.event.inputs.tag }}"

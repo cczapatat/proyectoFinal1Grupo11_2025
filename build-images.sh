@@ -28,7 +28,7 @@ build_and_push() {
     docker build -t "$REGISTRY/$service:$TAG" .
     
     # Publicar imagen
-    #docker push "$REGISTRY/$service:$TAG"
+    docker push "$REGISTRY/$service:$TAG"
     
     # Volver al directorio raíz y limpiar credenciales
     cd ..

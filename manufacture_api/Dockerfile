@@ -1,5 +1,5 @@
 # Base image
-FROM --platform=linux/amd64 python:3.9.6
+FROM --platform=linux/amd64 python:3.9.6-slim
 
 RUN mkdir .config_app
 COPY credentials.json /.config_app/credentials.json
