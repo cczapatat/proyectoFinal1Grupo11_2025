@@ -83,25 +83,33 @@ class RegisterClientFragment : Fragment() {
             navigateToClients()
         }
         binding.buttonAcceptCreate.setOnClickListener {
-
+            if (viewModel.isSubmitting.value == true) return@setOnClickListener
             addClient()
 
 
         }
 
 
-        // Populate dropdowns
-        val autoCompleteTextViewOne = view.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextViewCreate1)
-        val autoCompleteTextViewTwo = view.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextViewCreate2)
+        setupDropdowns()
+        observeViewModel()
 
+    }
+
+    private fun setupDropdowns() {
         val adapterType = ArrayAdapter(requireContext(), R.layout.list_item, clientTypeMap.keys.toList())
         val adapterZone = ArrayAdapter(requireContext(), R.layout.list_item, zoneMap.keys.toList())
 
-        autoCompleteTextViewOne.setAdapter(adapterType)
-        autoCompleteTextViewTwo.setAdapter(adapterZone)
-
-
+        binding.autoCompleteTextViewCreate1.setAdapter(adapterType)
+        binding.autoCompleteTextViewCreate2.setAdapter(adapterZone)
     }
+
+    private fun observeViewModel() {
+        // Observe ViewModel to disable the button while processing
+        viewModel.isSubmitting.observe(viewLifecycleOwner) { isSubmitting ->
+            binding.buttonAcceptCreate.isEnabled = !isSubmitting
+        }
+    }
+
     private fun addClient() {
 
         val name = binding.name.text?.toString()?:""
@@ -138,6 +146,7 @@ class RegisterClientFragment : Fragment() {
                 } else {
                     //showMessage(getString(R.string.error_add_client), this.requireContext())
                 }
+
             }
 
             /*if (viewModel.addNewClient(client)) {

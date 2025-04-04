@@ -16,50 +16,38 @@ import kotlinx.coroutines.withContext
 
 class ClientViewModel(application: Application) : AndroidViewModel(application) {
     private val _client = MutableLiveData<Client>()
+    private val _isSubmitting = MutableLiveData(false)
+    val isSubmitting: LiveData<Boolean> get() = _isSubmitting
+
     private val _clientRepository = ClientRepository(
         application,
         AppDatabase.getDatabase(application.applicationContext).clientDao()
     )
     private val currentApp = application
 
-    val clientAdded = SingleLiveEvent<Boolean>()
-
-    var client: LiveData<Client>
-        get() = _client
 
 
-    private var _eventNetworkError = MutableLiveData(false)
 
-    val eventNetworkError: LiveData<Boolean>
-        get() = _eventNetworkError
-
-    private var _isNetworkErrorShown = MutableLiveData(false)
-
-    val isNetworkErrorShown: LiveData<Boolean>
-        get() = _isNetworkErrorShown
-
-    init {
-        client = MutableLiveData()
-    }
-
-    fun onNetworkErrorShown() {
-        _isNetworkErrorShown.value = true
-    }
 
     fun addNewClient(newClient: Client, onResult: (Boolean) -> Unit) {
+        if (_isSubmitting.value == true) return // 🚫 Prevent duplicate requests
+
+        _isSubmitting.value = true
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _clientRepository.addClient(newClient, currentApp.applicationContext)
-                _eventNetworkError.postValue(false)
-                _isNetworkErrorShown.postValue(false)
+
                 onResult(true)  // Call the callback with success
             } catch (e: Exception) {
                 println(e)
                 e.printStackTrace() // Log the full stack trace
 
-                _eventNetworkError.postValue(true)
-                _isNetworkErrorShown.postValue(true)
+
                 onResult(false)  // Call the callback with failure
+            }
+            finally {
+                _isSubmitting.postValue(false) // Reset flag after request
             }
         }
     }

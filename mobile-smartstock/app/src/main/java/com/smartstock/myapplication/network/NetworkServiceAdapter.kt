@@ -31,8 +31,8 @@ class NetworkServiceAdapter constructor(context: Context){
 
     companion object {
         const val INTERNAL_TOKEN = "internal_token"
-        const val BASE_URL_USER_SESSIONS = "http://192.168.0.5:3008/"
-        const val BASE_URL_CLIENTS = "http://192.168.0.5:3008/"
+        const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
+        const val BASE_URL_CLIENTS = "http://130.211.32.9/"
         const val LOGIN_PATH = "user_sessions/login"
         const val CREATE_CLIENT_PATH = "user_sessions/create"
         const val VERIFY_PATH = "user_sessions/auth"
