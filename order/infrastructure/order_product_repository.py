@@ -23,6 +23,4 @@ class OrderProductRepository:
             db.session.add(order_product)
             order_products.append(order_product)
 
-        db.session.commit()
-
         return order_products

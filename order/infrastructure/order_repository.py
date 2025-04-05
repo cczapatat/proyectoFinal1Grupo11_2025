@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 
 from ..config.db import db
@@ -9,8 +10,9 @@ from ..models.order_model import Order
 class OrderRepository:
 
     @staticmethod
-    def create_order(order_dto: OrderInDTO) -> Order:
+    def create_order(order_id: uuid, order_dto: OrderInDTO) -> Order:
         order = Order()
+        order.id = order_id,
         order.user_id = order_dto.user_id
         order.seller_id = order_dto.seller_id
         order.client_id = order_dto.client_id
@@ -22,6 +24,4 @@ class OrderRepository:
         order.updated_at = datetime.now()
 
         db.session.add(order)
-        db.session.commit()
-
         return order

@@ -92,7 +92,7 @@ def create_order():
 
     request_data = request.get_json()
 
-    if user_auth['user_type'] == 'ADMIN' or user_auth['user_type'] == 'CLIENT':
+    if user_auth['user_type'] in ['ADMIN', 'CLIENT']:
         seller_id = request_data.get('seller_id', None)
     elif user_auth['user_type'] == 'SELLER':
         seller_id = user_auth['user_id']
