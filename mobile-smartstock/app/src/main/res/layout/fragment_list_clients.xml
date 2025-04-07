@@ -22,7 +22,7 @@
         android:clipToOutline="true"
         >
         <TextView
-            android:id="@+id/crear_nueva"
+            android:id="@+id/client_list"
             android:layout_centerVertical="true"
             android:layout_width="420dp"
             android:layout_height="50dp"

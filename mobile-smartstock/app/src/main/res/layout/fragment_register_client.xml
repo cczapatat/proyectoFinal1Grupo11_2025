@@ -149,7 +149,7 @@
             app:endIconTint="@color/schemesSecondary">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/email"
+                android:id="@+id/email_create_client"
                 android:layout_width="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textAppearanceBodyLarge"

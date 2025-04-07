@@ -1,6 +1,7 @@
 package com.smartstock.myapplication
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.MenuItem
@@ -32,6 +33,12 @@ class MainActivity : AppCompatActivity() {
         val userType = bundle?.getString("type", "CLIENT") ?: "CLIENT"
         sharedPreferences.edit().putString(
             "type", userType).apply()
+        val userId = bundle?.getString("userId", "")
+        sharedPreferences.edit().putString(
+            "userId", userId).apply()
+        val token = bundle?.getString("token", "")
+        sharedPreferences.edit().putString(
+            "token", token).apply()
 
         // Set up navigation with BottomNavigationView
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -58,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         // Show/Hide BottomNavigationView based on the fragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.RegisterClientFragment, R.id.RegistrarVisita -> {
+                R.id.nav_clients, R.id.nav_menu -> {
                     bottomNavigationView.visibility = View.GONE
                 }
                 else -> {
@@ -72,22 +79,28 @@ class MainActivity : AppCompatActivity() {
     private fun showPopupMenu(anchorView: View, userType: String) {
         val popup = PopupMenu(this, anchorView)
         popup.menuInflater.inflate(R.menu.popup_menu, popup.menu)
+        popup.menu.setGroupVisible(0, false)
 
-        // Filter menu based on user type
-        val isSeller = userType == "SELLER"
-        popup.menu.findItem(R.id.RegisterClientFragment).isVisible = isSeller
-        popup.menu.findItem(R.id.RegistrarVisita).isVisible = isSeller
-        popup.menu.findItem(R.id.ListarClientes).isVisible = isSeller
-        popup.menu.findItem(R.id.ConsultaProductos).isVisible = isSeller
-        popup.menu.findItem(R.id.Pedidos).isVisible = isSeller
-        popup.menu.findItem(R.id.CargarVideo).isVisible = isSeller
-        popup.menu.findItem(R.id.CerrarSesion).isVisible = isSeller
+        when (userType) {
+            "SELLER" -> {
+                popup.menu.findItem(R.id.RegisterClientFragment).isVisible = true
+                popup.menu.findItem(R.id.RegistrarVisita).isVisible = true
+                popup.menu.findItem(R.id.ListarClientes).isVisible = true
+                popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
+                popup.menu.findItem(R.id.Pedidos).isVisible = true
+                popup.menu.findItem(R.id.CargarVideo).isVisible = true
 
-        val isClient = userType == "CLIENT"
-        popup.menu.findItem(R.id.ConsultaProductos).isVisible = isClient
-        popup.menu.findItem(R.id.Pedidos).isVisible = isClient
-        popup.menu.findItem(R.id.CargarVideo).isVisible = isClient
-        popup.menu.findItem(R.id.CerrarSesion).isVisible = isClient
+            }
+
+            "CLIENT" -> {
+                popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
+                popup.menu.findItem(R.id.Pedidos).isVisible = true
+                popup.menu.findItem(R.id.CargarVideo).isVisible = true
+
+            }
+            // Filter menu based on user type
+        }
+        popup.menu.findItem(R.id.CerrarSesion).isVisible = true
 
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
@@ -97,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.ConsultaProductos -> navController.navigate(R.id.ConsultaProductos)
                 R.id.Pedidos -> navController.navigate(R.id.Pedidos)
                 R.id.CargarVideo -> navController.navigate(R.id.CargarVideo)
-                R.id.CerrarSesion -> finish()  // Example: Close the app
+                R.id.CerrarSesion -> closeSesion()
             }
             true
         }
@@ -105,15 +118,14 @@ class MainActivity : AppCompatActivity() {
         popup.show()
     }
 
-    /*override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    fun closeSesion(){
+        sharedPreferences.edit().remove("type").apply()
+        sharedPreferences.edit().remove("userId").apply()
+        sharedPreferences.edit().remove("token").apply()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }*/
 }
