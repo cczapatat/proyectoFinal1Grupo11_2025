@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -23,7 +24,9 @@ import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.database.dao.ClientDao
 import com.smartstock.myapplication.databinding.FragmentRegisterClientBinding
 import com.smartstock.myapplication.models.Client
+import com.smartstock.myapplication.network.NetworkServiceAdapter
 import com.smartstock.myapplication.repositories.ClientRepository
+import com.smartstock.myapplication.repositories.UserSessionRepository
 import com.smartstock.myapplication.ui.client.ClientViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,12 +48,12 @@ class RegisterClientFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private val viewModel: ClientViewModel by viewModels()
-    private lateinit var clientRepository: ClientRepository
-    private lateinit var clientDao: ClientDao
+    private lateinit var adapter: NetworkServiceAdapter
+
     private lateinit var clientTypeMap: Map<String, String>
     private lateinit var zoneMap: Map<String, String>
-
+    private lateinit var userSessionRepository: UserSessionRepository
+    private var isSubmitting = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,6 +75,9 @@ class RegisterClientFragment : Fragment() {
             getString(R.string.zone_southeast) to "SOUTHEAST",
             getString(R.string.zone_southwest) to "SOUTHWEST"
         )
+        adapter = NetworkServiceAdapter.getInstance(requireContext())
+        val userTokenDao = AppDatabase.getDatabase(requireContext()).userTokenDao()
+        userSessionRepository = UserSessionRepository(requireActivity().application, userTokenDao)
         return binding.root
 
     }
@@ -83,15 +89,15 @@ class RegisterClientFragment : Fragment() {
             navigateToClients()
         }
         binding.buttonAcceptCreate.setOnClickListener {
-            if (viewModel.isSubmitting.value == true) return@setOnClickListener
-            addClient()
+            if (!isSubmitting) {
+                isSubmitting = true
+                binding.buttonAcceptCreate.isEnabled = false
+                addClient()
+            }
 
 
         }
-
-
         setupDropdowns()
-        observeViewModel()
 
     }
 
@@ -103,20 +109,12 @@ class RegisterClientFragment : Fragment() {
         binding.autoCompleteTextViewCreate2.setAdapter(adapterZone)
     }
 
-    private fun observeViewModel() {
-        // Observe ViewModel to disable the button while processing
-        viewModel.isSubmitting.observe(viewLifecycleOwner) { isSubmitting ->
-            binding.buttonAcceptCreate.isEnabled = !isSubmitting
-        }
-    }
-
     private fun addClient() {
-
         val name = binding.name.text?.toString()?:""
         val phone = binding.phone.text?.toString()?:""
-        val email = binding.email.text?.toString()?:""
+        val email = binding.emailCreateClient.text?.toString()?:""
         val address = binding.address.text?.toString()?:""
-        val seller_id = UUID.randomUUID()
+        //val seller_id = UUID.randomUUID()
         val user_id = UUID.randomUUID()
 
         val selectedType = binding.autoCompleteTextViewCreate1.text.toString()
@@ -128,36 +126,50 @@ class RegisterClientFragment : Fragment() {
 
         val argsArray: ArrayList<String> = arrayListOf(name, phone, email, address, mappedType, mappedZone)
         if (this.formIsValid(argsArray)) {
-            val client = Client(
-                name = name,
-                phone = phone,
-                email = email,
-                address = address,
-                clientType = mappedType,
-                zone = mappedZone,
-                userId = user_id,
-                sellerId = seller_id
-            )
-            viewModel.addNewClient(client) { success ->
 
-                if (success) {
-                    showMessage(getString(R.string.success_add_client), this.requireContext())
-                    navigateToClients()
-                } else {
-                    //showMessage(getString(R.string.error_add_client), this.requireContext())
+            lifecycleScope.launch {
+                val userId = withContext(Dispatchers.IO) {
+                    userSessionRepository.getSavedUserId()
                 }
+                val client = Client(
+                    name = name,
+                    phone = phone,
+                    email = email,
+                    address = address,
+                    clientType = mappedType,
+                    zone = mappedZone,
+                    userId = user_id,
+                    sellerId = UUID.fromString(userId)
+                )
 
+                try {
+                    val createdClient = adapter.addClient(client, requireContext())
+                    Toast.makeText(requireContext(), getString(R.string.success_add_client), Toast.LENGTH_LONG).show()
+                    clearForm()
+                    navigateToClients()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    isSubmitting = false
+                    binding.buttonAcceptCreate.isEnabled = true
+                }
             }
 
-            /*if (viewModel.addNewClient(client)) {
-                showMessage(getString(R.string.success_add_client), this.requireContext())
-                navigateToClients()
-            } else {
-                showMessage(getString(R.string.error_add_client), this.requireContext())
-            }*/
+
         } else {
             showMessage(getString(R.string.error_add_client_fields), this.requireContext())
+            binding.buttonAcceptCreate.isEnabled = true
+            isSubmitting = false
         }
+    }
+
+    private fun clearForm() {
+        binding.name.setText("")
+        binding.phone.setText("")
+        binding.emailCreateClient.setText("")
+        binding.address.setText("")
+        binding.autoCompleteTextViewCreate1.setText("")
+        binding.autoCompleteTextViewCreate2.setText("")
     }
 
     private fun formIsValid(array: ArrayList<String>): Boolean {

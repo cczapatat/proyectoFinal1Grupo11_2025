@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
             result.fold(
                 onSuccess = { user ->
                     showMessage(getString(R.string.success_login), this)
-                    this.goToMainActivity(user.type)
+                    this.goToMainActivity(user.type, user.user_id, user.token)
                 },
                 onFailure = {
                     showMessage(getString(R.string.error_login), this)
@@ -65,9 +65,11 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(context, s, Toast.LENGTH_LONG).show()
     }
 
-    private fun goToMainActivity(type: String) {
+    private fun goToMainActivity(type: String, userId: String, token: String) {
         val intent = Intent(applicationContext, MainActivity::class.java)
         intent.putExtra("type", type)
+        intent.putExtra("userId", userId)
+        intent.putExtra("token", token)
         startActivity(intent)
         finish()
     }

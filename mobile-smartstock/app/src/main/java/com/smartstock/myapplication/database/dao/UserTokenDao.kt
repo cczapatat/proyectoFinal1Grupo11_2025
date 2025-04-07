@@ -12,7 +12,7 @@ interface UserTokenDao {
     suspend fun insertToken(userToken: UserToken)
 
     @Query("SELECT * FROM user_token LIMIT 1")
-    fun getToken(): UserToken?
+    suspend fun getToken(): UserToken?
 
     @Query("DELETE FROM user_token")
     suspend fun clearToken()

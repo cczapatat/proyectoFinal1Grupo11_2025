@@ -41,6 +41,7 @@
         android:id="@+id/CerrarSesion"
         android:icon="@drawable/baseline_logout_24"
         android:title="@string/menu_cerrar_sesion"
-        android:enabled="false"/>
+        android:enabled="true"
+        android:visible="true"/>
 
 </menu>

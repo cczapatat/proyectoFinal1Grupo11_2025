@@ -31,8 +31,8 @@ class NetworkServiceAdapter constructor(context: Context){
 
     companion object {
         const val INTERNAL_TOKEN = "internal_token"
-        const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
-        const val BASE_URL_CLIENTS = "http://130.211.32.9/"
+        const val BASE_URL_USER_SESSIONS = "http://192.168.0.5:3008/"
+        const val BASE_URL_CLIENTS = "http://192.168.0.5:3008/"
         const val LOGIN_PATH = "user_sessions/login"
         const val CREATE_CLIENT_PATH = "user_sessions/create"
         const val VERIFY_PATH = "user_sessions/auth"
@@ -90,7 +90,7 @@ class NetworkServiceAdapter constructor(context: Context){
             .put("email", client.email)
             .put("password", "1234567")
             .put("type", "CLIENT")
-            .put("seller_id", getSavedUser(context))
+            .put("seller_id", client.sellerId)
             .put("address", client.address)
             .put("client_type", client.clientType)
             .put("zone", client.zone)
@@ -194,10 +194,11 @@ class NetworkServiceAdapter constructor(context: Context){
         responseListener: Response.Listener<JSONObject>,
         errorListener: Response.ErrorListener
     ): JsonObjectRequest {
-        val token = getSavedToken(context) ?: ""
+        //
+        // val token = getSavedToken(context) ?: ""
 
         println("POST URL*******************: $base$path")
-        println("POST Headers******************: Authorization=Bearer $token")
+        //println("POST Headers******************: Authorization=Bearer $token")
         println("POST Body**********************: $body")
 
         return object : JsonObjectRequest(Method.POST, base + path, body, responseListener, errorListener) {
@@ -214,7 +215,14 @@ class NetworkServiceAdapter constructor(context: Context){
                 } else if (response?.statusCode == 400){
                     val errorMessage = extractVolleyErrorMessage(response, context)
                     Response.error(VolleyError(errorMessage))
-                }else {
+                }
+                else if (response?.statusCode == 409){
+                    Response.error(VolleyError("Conflict in DB - 409"))
+                }
+                else if (response?.statusCode == 500){
+                    Response.error(VolleyError("Error in system - 500"))
+                }
+                else {
                     super.parseNetworkResponse(response)
                 }
 
@@ -224,17 +232,7 @@ class NetworkServiceAdapter constructor(context: Context){
         }
     }
 
-    private fun getSavedToken(context: Context): String? {
-        val db = AppDatabase.getDatabase(context)
-        val userToken = db.userTokenDao().getToken()
-        return userToken?.token
-    }
 
-    private fun getSavedUser(context: Context): String? {
-        val db = AppDatabase.getDatabase(context)
-        val userToken = db.userTokenDao().getToken()
-        return userToken?.userId
-    }
 
 
     private fun showToast(message: String, context: Context) {
