@@ -1,7 +1,9 @@
 import uuid
 
+from werkzeug.exceptions import BadRequest
+
 from ..dtos.order_in_dto import OrderInDTO
-from ..http_services.users_http import get_seller_by_id, get_client_by_id
+from ..http_services.users_http import get_seller_by_id, get_client_by_id, get_product_stocks_by_id
 from ..infrastructure.order_product_repository import OrderProductRepository
 from ..infrastructure.order_repository import OrderRepository
 from ..infrastructure.transaction import Transaction
@@ -18,6 +20,17 @@ class OrderManager:
     def create_order(self, order_in_dto: OrderInDTO) -> dict:
         get_seller_by_id(order_in_dto.seller_id)
         get_client_by_id(order_in_dto.client_id, order_in_dto.seller_id)
+
+        product_stocks_id = [product.product_id for product in order_in_dto.products]
+        product_stocks = get_product_stocks_by_id(product_stocks_id)
+
+        if len(product_stocks) != len(order_in_dto.products):
+            raise BadRequest(description='product stocks not found')
+
+        for product in order_in_dto.products:
+            product_on_stock = next((p for p in product_stocks if p['id'] == product.product_id), None)
+            if product_on_stock is None or (product_on_stock['quantity_in_stock'] - product.units) < 0:
+                raise BadRequest(description=f'not enough product stocks {product.product_id}')
 
         def transaction_operations() -> [Order, OrderProduct]:
             order_id = uuid.uuid4()

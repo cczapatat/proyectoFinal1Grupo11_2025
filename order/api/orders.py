@@ -22,6 +22,13 @@ user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http
 project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinalmiso2025')
 commands_to_stock_name_pub = os.environ.get('GCP_STOCKS_TOPIC', 'commands_to_stock')
 
+
+def get_publisher():
+    if os.getenv('TESTING'):
+        return publisher_stocks
+    return pubsub_v1.PublisherClient()
+
+
 publisher_stocks = pubsub_v1.PublisherClient()
 topic_path_stocks = publisher_stocks.topic_path(project_id, commands_to_stock_name_pub)
 
@@ -39,7 +46,10 @@ def __there_is_token() -> None:
 
 
 def __validate_auth_token() -> dict:
-    auth_token = request.headers.get('Authorization')
+    auth_token = request.headers.get('Authorization', None)
+
+    if auth_token is None:
+        raise Unauthorized(description='authorization required')
 
     auth_response = requests.get(f'{user_session_manager_path}/user_sessions/auth', headers={
         'Authorization': auth_token,
@@ -75,7 +85,7 @@ def __publish_order_created(order_dict: dict) -> None:
 
     print(f"[Order Created] Publishing to {topic_path_stocks} from order_id: {order_id}, data: {data}")
 
-    future = publisher_stocks.publish(topic_path_stocks, data)
+    future = get_publisher().publish(topic_path_stocks, data)
     result = future.result()
 
     print(f"[Order Created] order_id: {order_id} future: {result}")
@@ -110,6 +120,7 @@ def create_order():
 @bp.errorhandler(400)
 @bp.errorhandler(401)
 @bp.errorhandler(404)
+@bp.errorhandler(500)
 def handle_validation_error(error):
     return jsonify({
         'message': str(error.description)
