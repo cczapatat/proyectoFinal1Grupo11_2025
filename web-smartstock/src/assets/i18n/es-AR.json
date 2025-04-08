@@ -105,7 +105,17 @@
     "CREATE_LOAD_SERVICES_INFORMARION_ERROR_TITLE": "Error",
     "CREATE_MANUFACTURES_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar los fabricantes.",
     "CREATE_CURRENCY_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar las monedas.",
-    "CREATE_CATEGORY_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar las categorías."
+    "CREATE_CATEGORY_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar las categorías.",
+    "EDIT_BUTTON": "Editar",
+    "EDIT_SUCCESS_TITLE": "Edición Exitosa",
+    "EDIT_SUCCESS_MESSAGE": "El producto fue editado con éxito.",
+    "EDIT_ERROR_TITLE": "Error al Editar",
+    "EDIT_ERROR_MESSAGE": "Ocurrió un error: no se pudo editar el producto.",
+    "EDIT_LOAD_SERVICES_INFORMARION_ERROR_TITLE": "Error",
+    "EDIT_MANUFACTURES_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar los fabricantes.",
+    "EDIT_CURRENCY_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar las monedas.",
+    "EDIT_CATEGORY_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar las categorías.",
+    "EDIT_PRODUCT_ERROR_MESSAGE": "Ocurrió un error: no se pudo cargar el producto."
   },
   "LOGIN": {
     "TITLE": "Ingresa como Vendedor",

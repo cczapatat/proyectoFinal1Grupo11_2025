@@ -105,7 +105,16 @@
     "CREATE_LOAD_SERVICES_INFORMARION_ERROR_TITLE": "Error",
     "CREATE_MANUFACTURES_ERROR_MESSAGE": "An error has occurred: manufacturers could not be loaded.",
     "CREATE_CURRENCY_ERROR_MESSAGE": "An error has occurred: currencies could not be loaded.",
-    "CREATE_CATEGORY_ERROR_MESSAGE": "An error has occurred: categories could not be loaded."
+    "EDIT_BUTTON": "Edit",
+    "EDIT_SUCCESS_TITLE": "Edit Successful",
+    "EDIT_SUCCESS_MESSAGE": "The product has been successfully edited.",
+    "EDIT_ERROR_TITLE": "Edit Error",
+    "EDIT_ERROR_MESSAGE": "An error has occurred: the product cannot be edited.",
+    "EDIT_LOAD_SERVICES_INFORMARION_ERROR_TITLE": "Error",
+    "EDIT_MANUFACTURES_ERROR_MESSAGE": "An error has occurred: manufacturers could not be loaded.",
+    "EDIT_CURRENCY_ERROR_MESSAGE": "An error has occurred: currencies could not be loaded.",
+    "EDIT_CATEGORY_ERROR_MESSAGE": "An error has occurred: categories could not be loaded.",
+    "EDIT_PRODUCT_ERROR_MESSAGE": "An error has occurred: the product could not be loaded."
   },
   "LOGIN": {
     "TITLE": "Login As Seller",

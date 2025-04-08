@@ -2,9 +2,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
-import { faker } from '@faker-js/faker';
+import { fa, faker, fi } from '@faker-js/faker';
 
-import { ProductCreateComponent } from './product-create.component';
+import { ProductEditComponent } from './product-edit.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ToastrModule } from 'ngx-toastr';
@@ -18,9 +18,9 @@ import { ProductCategory } from '../../dtos/product-category';
 import { Manufacturer } from '../../dtos/manufacturer';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
-describe('ProductCreateComponent', () => {
-  let component: ProductCreateComponent;
-  let fixture: ComponentFixture<ProductCreateComponent>;
+describe('ProductEditComponent', () => {
+  let component: ProductEditComponent;
+  let fixture: ComponentFixture<ProductEditComponent>;
   let debug: DebugElement;
 
   let manufacturerService: jasmine.SpyObj<ManufacturerService>;
@@ -44,11 +44,11 @@ describe('ProductCreateComponent', () => {
         FormBuilder,
         TranslateService
       ],
-      declarations: [ ProductCreateComponent ]
+      declarations: [ ProductEditComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ProductCreateComponent);
+    fixture = TestBed.createComponent(ProductEditComponent);
     component = fixture.componentInstance;
     debug = fixture.debugElement;
 
@@ -86,7 +86,6 @@ describe('ProductCreateComponent', () => {
   });
 
   it("Component has an input product_name", () => {
-    let title = debug.query(By.css('h4')).nativeElement;
     expect(debug.queryAll(By.css('#product_name'))).toHaveSize(1);
   });
 
