@@ -28,7 +28,7 @@ topic_path_stocks = publisher_stocks.topic_path(project_id, commands_to_stock_na
 order_manager = OrderManager()
 
 
-def there_is_token() -> None:
+def __there_is_token() -> None:
     token = request.headers.get('x-token', None)
 
     if token is None:
@@ -38,7 +38,7 @@ def there_is_token() -> None:
         raise Unauthorized(description='x-token required')
 
 
-def validate_auth_token() -> dict:
+def __validate_auth_token() -> dict:
     auth_token = request.headers.get('Authorization')
 
     auth_response = requests.get(f'{user_session_manager_path}/user_sessions/auth', headers={
@@ -84,8 +84,8 @@ def __publish_order_created(order_dict: dict) -> None:
 @bp.route('/create', methods=('POST',))
 @validate_json(CREATE_ORDER_SCHEMA)
 def create_order():
-    there_is_token()
-    user_auth = validate_auth_token()
+    __there_is_token()
+    user_auth = __validate_auth_token()
 
     user_id = user_auth['user_session_id']
     seller_id = None

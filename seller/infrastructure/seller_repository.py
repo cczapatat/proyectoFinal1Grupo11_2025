@@ -1,6 +1,10 @@
+import uuid
 from uuid import UUID, uuid4
+
 from sqlalchemy.orm import Session
+
 from ..models.seller_model import Seller
+
 
 class SellerRepository:
     def __init__(self, session: Session):
@@ -17,8 +21,11 @@ class SellerRepository:
         self._session.flush()
         return seller
 
-    def get_seller_by_user_id(self, user_id) -> Seller:
-        if isinstance(user_id, UUID):
-            user_id = str(user_id)
-        user_id_uuid = UUID(user_id)
-        return self._session.query(Seller).filter(Seller.user_id == user_id_uuid).first()
+    def get_seller_by_id(self, seller_id: uuid.uuid4) -> Seller | None:
+        return self._session.query(Seller).filter_by(id=seller_id).one_or_none()
+
+    def get_seller_by_user_id(self, user_id: uuid.uuid4) -> Seller | None:
+        return self._session.query(Seller).filter_by(user_id=user_id).one_or_none()
+
+    def get_all_sellers(self) -> list[Seller]:
+        return self._session.query(Seller).all()

@@ -1,11 +1,10 @@
+import uuid
 from datetime import datetime
-from sqlalchemy.exc import IntegrityError
-from flask import jsonify, make_response
 
 from ..config.db import db
+from ..dtos.client_dto import ClientDTO
 from ..models import ClientSeller
 from ..models.client_model import Client
-from ..dtos.client_dto import ClientDTO
 
 
 class ClientRepository:
@@ -23,7 +22,6 @@ class ClientRepository:
         client.created_at = datetime.now()
         client.updated_at = datetime.now()
 
-
         db.session.add(client)
         db.session.flush()
 
@@ -35,7 +33,7 @@ class ClientRepository:
         db.session.commit()
 
         return client
-    
+
     @staticmethod
     def get_client_by_user_id(user_id: int) -> Client:
         return Client.query.filter_by(user_id=user_id).first()
@@ -49,8 +47,16 @@ class ClientRepository:
         return None
 
     @staticmethod
+    def get_client_relation_seller(client_id: uuid.uuid4, seller_id: uuid.uuid4) -> Client | None:
+        return db.session.query(Client). \
+            join(ClientSeller, Client.id == ClientSeller.client_id). \
+            filter(Client.id == client_id, ClientSeller.seller_id == seller_id). \
+            one_or_none()
+
+    @staticmethod
     def clean_transactions() -> None:
         db.session.rollback()
+
 
 def get_clients_by_seller_id(seller_id):
     """Get all clients for a specific seller"""
@@ -60,6 +66,7 @@ def get_clients_by_seller_id(seller_id):
         all()
 
     return [client.to_dict() for client in clients]
+
 
 def get_client_with_seller(client_id):
     """Helper function to get client with seller information"""

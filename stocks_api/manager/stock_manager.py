@@ -1,5 +1,7 @@
-from ..infrastructure.stock_repository import StockRepository
+import uuid
+
 from ..infrastructure.cache_repository import CacheRepository
+from ..infrastructure.stock_repository import StockRepository
 
 stock_repository = StockRepository()
 cache_repository = CacheRepository()
@@ -49,5 +51,12 @@ class StockManager:
         stocks_dict = [stock.to_dict() for stock in stocks]
 
         set_cache_stocks_paginate(page, per_page, stocks_dict)
+
+        return stocks_dict
+
+    @staticmethod
+    def get_stocks_by_ids(ids: list[uuid.uuid4]) -> list[dict]:
+        stocks = stock_repository.get_documents_by_ids(ids)
+        stocks_dict = [stock.to_dict() for stock in stocks]
 
         return stocks_dict
