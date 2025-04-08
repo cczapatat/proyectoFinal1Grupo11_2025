@@ -331,6 +331,21 @@ class TestProduct:
         })
 
         assert response.status_code == 404
+    
+    def test_get_all_products(self):
+        product_data = self._generate_product_data()
+        product_response = self._post_product(product_data)
+
+        assert product_response.status_code == 201
+
+        product_data = json.loads(product_response.data)
+
+        response = self.test_client.get('/products/list', headers={
+            'x-token': 'internal_token',
+            'content-type': 'application/json'
+        })
+
+        assert response.status_code == 200
 
     def test_get_all_categories(self):
         response = self.test_client.get('/products/categories', headers={

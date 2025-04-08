@@ -114,7 +114,9 @@
     "EDIT_MANUFACTURES_ERROR_MESSAGE": "An error has occurred: manufacturers could not be loaded.",
     "EDIT_CURRENCY_ERROR_MESSAGE": "An error has occurred: currencies could not be loaded.",
     "EDIT_CATEGORY_ERROR_MESSAGE": "An error has occurred: categories could not be loaded.",
-    "EDIT_PRODUCT_ERROR_MESSAGE": "An error has occurred: the product could not be loaded."
+    "EDIT_PRODUCT_ERROR_MESSAGE": "An error has occurred: the product could not be loaded.",
+    "LIST_ERROR_TITLE": "Error",
+    "LIST_ERROR_MESSAGE": "An error has occurred: the products could not be loaded."
   },
   "LOGIN": {
     "TITLE": "Login As Seller",

@@ -186,6 +186,17 @@ def update_product(product_id):
     
     return update_product_response
 
+@bp.route('/list', methods=('GET',))
+def list_products():
+    there_is_token()
+    
+    products = product_repository.get_all_products()
+
+    if isinstance(products, list):
+        return jsonify([product.to_dict() for product in products]), 200
+    
+    return products
+
 @bp.route('/categories', methods=('GET',))
 def get_all_categories():
     there_is_token()

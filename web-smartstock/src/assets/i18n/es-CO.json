@@ -116,7 +116,13 @@
     "EDIT_MANUFACTURES_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar los fabricantes.",
     "EDIT_CURRENCY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las monedas.",
     "EDIT_CATEGORY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las categorías.",
-    "EDIT_PRODUCT_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar el producto."
+    "EDIT_PRODUCT_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar el producto.",
+    "LIST_ERROR_TITLE": "Error",
+    "LIST_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar la lista de productos.",
+    "TITLE_LIST": "Lista de Productos",
+    "ID": "Id",
+    "CURRENCY_PRICE": "Moneda",
+    "EDIT": "Editar"
   },
   "LOGIN": {
     "TITLE": "Ingresa como Vendedor",

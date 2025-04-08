@@ -147,7 +147,7 @@ export class ProductEditComponent implements OnInit {
           { closeButton: true }
         );
         
-        this.routerPath.navigate(['/product']);
+        this.routerPath.navigate(['/product/list']);
       },
       error: (error) => {
         this.toastr.error(

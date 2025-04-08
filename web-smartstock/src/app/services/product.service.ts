@@ -40,7 +40,14 @@ export class ProductService {
     })
     return this.http.put<Product>(`${this.apiProductUrl}/update/${productId}`, product, { headers: headers })
   }
-  
+
+  getProducts(): Observable<Product[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+      'x-token': environment.xToken
+    })
+    return this.http.get<Product[]>(`${this.apiProductUrl}/list`, { headers: headers })
+  }
 
   getProductCategories(): Observable<ProductCategory[]> {
     const headers = new HttpHeaders({

@@ -108,6 +108,45 @@ describe('Service: Product', () => {
     req.flush(mockProduct);
   });
 
+  it('should get all products', () => {
+    const mockProducts: Product[] = [
+      new Product( 
+        faker.string.uuid(),
+        faker.string.uuid(),
+        faker.lorem.word(),
+        faker.lorem.word(),
+        'ELECTRONIC',
+        faker.number.int({ min: 1, max: 10 }),
+        'EUR',
+        false,
+        0,
+        null,
+        faker.image.url(),
+        faker.lorem.word()
+      ),
+      new Product( 
+        faker.string.uuid(),
+        faker.string.uuid(),
+        faker.lorem.word(),
+        faker.lorem.word(),
+        'ELECTRONIC',
+        faker.number.int({ min: 1, max: 10 }),
+        'EUR',
+        false,
+        0,
+        null,
+        faker.image.url(),
+        faker.lorem.word()
+      )];
+      
+    service.getProducts().subscribe((response) => {
+      expect(response).toEqual(mockProducts);
+    });
+    const req = httpMock.expectOne(`${environment.apiProductUrl}/list`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockProducts);
+  });
+
   it('should get product categories', () => {
     const mockCategories: ProductCategory[] = [
       { key: 'electronics', value: 'Electronics' },

@@ -94,3 +94,9 @@ class ProductRepository:
             return response
 
         return product
+    
+    @staticmethod
+    def get_all_products() -> list[Product]:
+        products = Product.query.all()
+
+        return products
