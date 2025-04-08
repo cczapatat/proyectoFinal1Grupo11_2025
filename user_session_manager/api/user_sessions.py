@@ -52,7 +52,7 @@ def create_client(request, user_id):
     if create_client_response.status_code != 201:
         print(
             f"[Client] Failed to create client {url}, status code: {create_client_response.status_code}, response: {create_client_response.json()}")
-        return None
+        return create_client_response.text
 
     return create_client_response.json()
 
@@ -128,8 +128,8 @@ def create_user_session():
         if user_session['type'] == 'CLIENT':
             client = create_client(request, user_session['id'])
 
-            if client is None:
-                return jsonify({'message': 'failed to create client'}), 500
+            if isinstance(client, str):
+                return jsonify({'message': f'failed to create client : {str(client)}'}), 400
 
             token_access = create_access_token(
                 identity=LoginIn(user_session['id'], client['id'], type).to_serializable())

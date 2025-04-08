@@ -12,6 +12,18 @@ class ClientRepository:
 
     @staticmethod
     def create_client(client_dto: ClientDTO) -> Client:
+
+        #Check if the client_id alredy exists
+        existing_client = Client.query.filter(
+            (Client.email == client_dto.email) | (Client.phone == client_dto.phone)
+        ).first()
+        if existing_client:
+            #return error if the client already exists
+            return make_response(
+                jsonify({"error": "Client already exists", "message": "Client already exists"}), 400
+            )
+
+        print(f"Creating client with email {client_dto.email} and phone {client_dto.phone}")
         client = Client()
         client.user_id = client_dto.user_id
         client.name = client_dto.name
@@ -26,6 +38,7 @@ class ClientRepository:
 
         db.session.add(client)
         db.session.flush()
+        
 
         client_seller = ClientSeller(
             client_id=client.id,

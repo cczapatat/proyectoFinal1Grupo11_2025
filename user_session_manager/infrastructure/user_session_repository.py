@@ -16,11 +16,9 @@ class UserSessionRepository:
 
         #validate if the session already exists
         existing_user_session = UserSession.query.filter_by(email=user_session_dto.email).first()
+       
         if existing_user_session:
-            response = make_response(
-                jsonify({"error": "User session already exists"}), 400
-            )
-            return response
+            return existing_user_session
 
         user_session = UserSession()
         user_session.email = user_session_dto.email
