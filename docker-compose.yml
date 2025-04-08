@@ -8,7 +8,7 @@ networks:
 
 services:
   redis:
-    image: redis:7.4.2
+    image: redis:7.4.2-alpine
     profiles: ["resource", "app"]
     ports:
       - 6379:6379

@@ -1,8 +1,16 @@
 .idea
+.DS_Store
 
 .venv
 **/venv
 
+__pycache__
+__pycache__/
 **/__pycache__
 
 Dockerfile
+tests
+tests/**
+
+.coverage
+README.md

@@ -1,4 +1,5 @@
 import os
+
 import redis
 
 REDIS_HOST = os.environ.get("REDIS_HOST", "localhost")

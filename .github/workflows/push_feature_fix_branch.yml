@@ -28,13 +28,13 @@ jobs:
   start_continue_validation_coverage:
     name: Start Continue Validation Coverage
     needs: start_validation_coverage
-    if: ${{ contains(github.event.head_commit.message, '[HU') 
-        || contains(github.event.head_commit.message, '[fix') 
-        || github.event_name == 'workflow_call'
-        || github.event_name == 'workflow_dispatch'
-        || github.event_name == 'pull_request_review'
-        || github.events.inputs.command == 'run_on_merge'
-        || github.events.inputs.command == 'run_on_deployment' }}
+    if: ${{ contains(github.event.head_commit.message, '[HU')
+      || contains(github.event.head_commit.message, '[fix')
+      || github.event_name == 'workflow_call'
+      || github.event_name == 'workflow_dispatch'
+      || github.event_name == 'pull_request_review'
+      || github.events.inputs.command == 'run_on_merge'
+      || github.events.inputs.command == 'run_on_deployment' }}
     runs-on: ubuntu-latest
     steps:
       - name: start continue validation coverage
@@ -238,6 +238,91 @@ jobs:
       - name: Validate coverage
         run: |
           cd user_session_manager
+          coverage report -m --fail-under=90
+
+  stocks_api_coverage:
+    name: Stocks API Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: user_final
+          POSTGRES_PASSWORD: pass_final
+          POSTGRES_DB: project_final
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:7.4.2-alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Python Env Configuration 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd stocks_api
+          python --version
+          pip install --upgrade --no-cache-dir pip==23.2.1
+          pip --version
+          pip install --no-cache-dir -r requirements.txt
+      - name: Run tests
+        run: |
+          cd stocks_api
+          coverage run -m pytest -vv
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Validate coverage
+        run: |
+          cd stocks_api
+          coverage report -m --fail-under=90
+
+  order_coverage:
+    name: Order Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: user_final
+          POSTGRES_PASSWORD: pass_final
+          POSTGRES_DB: project_final
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Python Env Configuration 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd order
+          python --version
+          pip install --upgrade --no-cache-dir pip==23.2.1
+          pip --version
+          pip install --no-cache-dir -r requirements.txt
+      - name: Run tests
+        run: |
+          cd order
+          coverage run -m pytest -vv
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Validate coverage
+        run: |
+          cd order
           coverage report -m --fail-under=90
 
   web_smartstock_coverage:

@@ -1,17 +1,20 @@
 import os
+import uuid
+
 from flask import Blueprint, jsonify, request
-from werkzeug.exceptions import Unauthorized
+from sqlalchemy.exc import IntegrityError, DataError
+from werkzeug.exceptions import Unauthorized, BadRequest
 
 from ..dtos.client_dto import ClientDTO
 from ..infrastructure.client_repository import ClientRepository, get_clients_by_seller_id
 from ..models.client_model import Client
-from sqlalchemy.exc import IntegrityError, DataError
 
 bp = Blueprint('clients', __name__, url_prefix='/clients')
 
 internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
 
 client_repository = ClientRepository()
+
 
 def there_is_token():
     token = request.headers.get('x-token', None)
@@ -23,12 +26,21 @@ def there_is_token():
         raise Unauthorized(description='authorization required')
 
 
+def __valid_uuid(uuid_string: str, uuid_name: str) -> uuid.uuid4:
+    try:
+        _uuid = uuid.UUID(uuid_string)
+
+        return _uuid
+    except ValueError:
+        raise BadRequest(description=f'Invalid {uuid_name}')
+
+
 @bp.route('/create', methods=('POST',))
 def create_client():
     there_is_token()
-    
+
     data = request.get_json()
-    user_id =  data.get('user_id')
+    user_id = data.get('user_id')
     seller_id = data.get('seller_id')
     name = data.get('name')
     phone = data.get('phone')
@@ -42,24 +54,24 @@ def create_client():
 
     if seller_id is None:
         return jsonify({'message': 'seller_id is required'}), 400
-    
+
     if name is None:
         return jsonify({'message': 'name is required'}), 400
-    
+
     if phone is None:
         return jsonify({'message': 'phone is required'}), 400
-    
+
     if email is None:
         return jsonify({'message': 'email is required'}), 400
-    
+
     if address is None:
         return jsonify({'message': 'address is required'}), 400
-    
+
     if client_type is None:
         return jsonify({'message': 'client_type is required'}), 400
-    
+
     if zone is None:
-        return jsonify({'message': 'zone is required'}), 400    
+        return jsonify({'message': 'zone is required'}), 400
 
     client_dto = ClientDTO(
         user_id=user_id,
@@ -71,13 +83,14 @@ def create_client():
         client_type=client_type,
         zone=zone
     )
-    
+
     create_client_response = client_repository.create_client(client_dto=client_dto)
 
     if isinstance(create_client_response, Client):
         return jsonify(create_client_response.to_dict()), 201
-    
+
     return create_client_response
+
 
 @bp.route('/<user_id>', methods=('GET',))
 def get_client_by_user_id(user_id: str):
@@ -99,6 +112,7 @@ def get_client_by_user_id_with_seller(user_id: str):
 
     return jsonify(get_client_response), 200
 
+
 @bp.route('/seller/<string:seller_id>', methods=['GET'])
 def get_seller_clients(seller_id):
     there_is_token()
@@ -109,6 +123,23 @@ def get_seller_clients(seller_id):
         return jsonify({'message': 'clients not found'}), 404
 
     return jsonify(clients), 200
+
+
+@bp.route('/client-id/<client_id>/seller-id/<seller_id>', methods=('GET',))
+def get_seller_by_id(client_id: str, seller_id: str):
+    there_is_token()
+    _client_id = __valid_uuid(client_id, 'client_id')
+    _seller_id = __valid_uuid(seller_id, 'seller_id')
+    client = client_repository.get_client_relation_seller(
+        client_id=_client_id,
+        seller_id=_seller_id,
+    )
+
+    if client is None:
+        return jsonify({'message': 'client not found'}), 404
+
+    return jsonify(client.to_dict()), 200
+
 
 @bp.errorhandler(400)
 @bp.errorhandler(401)

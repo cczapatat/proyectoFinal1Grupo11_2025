@@ -1,92 +1,134 @@
 import json
 import os
-import gc
 import uuid
-from google.cloud import pubsub_v1
-from flask import Blueprint, jsonify, request, send_file
-from werkzeug.exceptions import NotFound, BadRequest, Unauthorized
 
-from ..dtos.order_dto import OrderDTO
-from ..dtos.order_product_dto import OrderProductDTO
-from ..infrastructure.order_product_repository import OrderProductRepository
-from ..infrastructure.order_repository import OrderRepository
+import requests
+from flask import Blueprint, jsonify, request
+from flask_validate_json import validate_json
+from google.cloud import pubsub_v1
+from sqlalchemy.exc import DataError
+from werkzeug.exceptions import Unauthorized, InternalServerError
+
+from ..dtos.order_in_dto import OrderInDTO
+from ..dtos.order_product_in_dto import OrderProductInDTO
+from ..managers.order_manager import OrderManager
+from ..schemas.create_order_schema import CREATE_ORDER_SCHEMA
 
 bp = Blueprint('orders', __name__, url_prefix='/orders')
 
 internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
-
-order_repository = OrderRepository()
-order_product_repository = OrderProductRepository()
+user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
 
 project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinalmiso2025')
 commands_to_stock_name_pub = os.environ.get('GCP_STOCKS_TOPIC', 'commands_to_stock')
 
+
+def get_publisher():
+    if os.getenv('TESTING'):
+        return publisher_stocks
+    return pubsub_v1.PublisherClient()
+
+
 publisher_stocks = pubsub_v1.PublisherClient()
 topic_path_stocks = publisher_stocks.topic_path(project_id, commands_to_stock_name_pub)
 
+order_manager = OrderManager()
 
-def there_is_token():
+
+def __there_is_token() -> None:
     token = request.headers.get('x-token', None)
 
     if token is None:
-        raise Unauthorized(description='authorization required')
+        raise Unauthorized(description='x-token required')
 
     if token != internal_token:
-        raise Unauthorized(description='authorization required')
-    
+        raise Unauthorized(description='x-token required')
 
-def publish_order_created(order_data):
-    order_id = order_data['id']
-    data = json.dumps(order_data['products']).encode('utf-8')
-    
+
+def __validate_auth_token() -> dict:
+    auth_token = request.headers.get('Authorization', None)
+
+    if auth_token is None:
+        raise Unauthorized(description='authorization required')
+
+    auth_response = requests.get(f'{user_session_manager_path}/user_sessions/auth', headers={
+        'Authorization': auth_token,
+    })
+
+    if auth_response.status_code == 401:
+        raise Unauthorized(description='authorization required')
+    elif auth_response.status_code != 200:
+        raise InternalServerError(description='internal server error on user_session_manager')
+
+    return auth_response.json()
+
+
+def __dict_to_order_in_dto(user_id: uuid, seller_id: uuid, data: dict) -> OrderInDTO:
+    return OrderInDTO(
+        user_id=user_id,
+        seller_id=seller_id,
+        client_id=data.get('client_id'),
+        delivery_date=data.get('delivery_date'),
+        payment_method=data.get('payment_method'),
+        products=[
+            OrderProductInDTO(
+                product_id=product.get('product_id'),
+                units=product.get('units')
+            ) for product in data.get('products', [])
+        ]
+    )
+
+
+def __publish_order_created(order_dict: dict) -> None:
+    order_id = order_dict['id']
+    data = json.dumps(order_dict['products']).encode('utf-8')
+
     print(f"[Order Created] Publishing to {topic_path_stocks} from order_id: {order_id}, data: {data}")
 
-    future = publisher_stocks.publish(topic_path_stocks, data)
+    future = get_publisher().publish(topic_path_stocks, data)
     result = future.result()
 
     print(f"[Order Created] order_id: {order_id} future: {result}")
 
 
 @bp.route('/create', methods=('POST',))
+@validate_json(CREATE_ORDER_SCHEMA)
 def create_order():
-    there_is_token()
-    
-    data = request.get_json()
+    __there_is_token()
+    user_auth = __validate_auth_token()
 
-    user_id = data.get('user_id')
-    products = data.get('products')
+    user_id = user_auth['user_session_id']
+    seller_id = None
 
-    if user_id is None:
-        return jsonify({'message': 'user_id is required'}), 400
-    
-    if products is None:
-        return jsonify({'message': 'products is required'}), 400
-    
-    order_dto = OrderDTO(
-        user_id=user_id
-    )
-    order = order_repository.create_order(order_dto=order_dto)
+    request_data = request.get_json()
 
-    order_product_dtos = []
-    for product in products:
-        product_id = product.get('product_id')
-        units = product.get('units')
+    if user_auth['user_type'] in ['ADMIN', 'CLIENT']:
+        seller_id = request_data.get('seller_id', None)
+    elif user_auth['user_type'] == 'SELLER':
+        seller_id = user_auth['user_id']
 
-        if not product_id or not units:
-            return jsonify({'message': 'product_id and units are required for each product'}), 400
+    if seller_id is None:
+        return jsonify({'message': 'seller_id is required'}), 400
 
-        order_product_dto = OrderProductDTO(
-            order_id=order.id,
-            product_id=product_id,
-            units=units
-        )
-        order_product_dtos.append(order_product_dto)
+    order_in_dto = __dict_to_order_in_dto(user_id, seller_id, request_data)
+    order_created = order_manager.create_order(order_in_dto)
+    __publish_order_created(order_created)
 
-    order_products = order_product_repository.create_order_products(order_product_dtos)
+    return jsonify(order_created), 201
 
-    response = order.to_dict()
-    response['products'] = [order_product.to_dict() for order_product in order_products]
 
-    publish_order_created(response)
+@bp.errorhandler(400)
+@bp.errorhandler(401)
+@bp.errorhandler(404)
+@bp.errorhandler(500)
+def handle_validation_error(error):
+    return jsonify({
+        'message': str(error.description)
+    }), error.code
 
-    return jsonify(response), 201
+
+@bp.errorhandler(DataError)
+def handle_integrity_error(error):
+    return jsonify({
+        'message': f'Database integrity error. {str(error.code)}'
+    }), 409
