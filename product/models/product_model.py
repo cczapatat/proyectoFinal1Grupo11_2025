@@ -71,9 +71,9 @@ class Product(db.Model):
             'currency_price': self.currency_price.value,
             'is_promotion': self.is_promotion,
             'discount_price': self.discount_price,
-            'expired_at': self.expired_at,
+            'expired_at': self.expired_at.isoformat() if self.expired_at else None,
             'url_photo': self.url_photo,
             'store_conditions': self.store_conditions,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat()
         }
