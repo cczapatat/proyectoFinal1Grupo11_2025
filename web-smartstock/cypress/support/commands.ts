@@ -56,3 +56,14 @@ Cypress.Commands.add('login', (email, password) => {
     cy.get('#nav_products_register').click();
     cy.url().should('include', '/product/create');
   });
+
+  Cypress.Commands.add('navigateToProductEdit', () => {
+    cy.get('.menu-toggle').click();
+    cy.get('#nav_products').click();
+    cy.get('#nav_products_modify').click();
+    cy.url().should('include', '/product/list');
+    cy.get('#product_list_table tbody tr')
+    .first()
+    .find('button')
+    .click();
+  });
