@@ -18,6 +18,7 @@ internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
 store_manager = StoreManager()
 
 
+# Utility Functions
 def there_is_token():
     token = request.headers.get('x-token', None)
 
@@ -28,6 +29,19 @@ def there_is_token():
         raise Unauthorized(description='authorization required')
 
 
+def _dict_to_store_in_dto(data: dict) -> StoreInDTO:
+    return StoreInDTO(
+        name=data.get('name'),
+        phone=data.get('phone'),
+        email=data.get('email'),
+        address=data.get('address'),
+        capacity=data.get('capacity'),
+        state=STATE[data.get('state')],
+        security_level=SECURITY_LEVEL[data.get('security_level')],
+    )
+
+
+# Routes for Store Operations
 @bp.route('/<id_store>', methods=('GET',))
 def get_store_by_id(id_store: str):
     there_is_token()
@@ -55,6 +69,17 @@ def create_store():
     return jsonify(store), 201
 
 
+@bp.route('/all', methods=('GET',))
+def get_stores_paginate():
+    there_is_token()
+
+    page = max(1, request.args.get('page', default=1, type=int))
+    per_page = min(max(1, request.args.get('per_page', default=10, type=int)), 50)
+
+    return jsonify(store_manager.get_stores_paginate(page, per_page)), 200
+
+
+# Routes for Enumerations
 @bp.route('/all-states', methods=('GET',))
 def get_states():
     there_is_token()
@@ -67,18 +92,7 @@ def get_security_levels():
     return jsonify([security_level.name for security_level in SECURITY_LEVEL]), 200
 
 
-def _dict_to_store_in_dto(data: dict) -> StoreInDTO:
-    return StoreInDTO(
-        name=data.get('name'),
-        phone=data.get('phone'),
-        email=data.get('email'),
-        address=data.get('address'),
-        capacity=data.get('capacity'),
-        state=STATE[data.get('state')],
-        security_level=SECURITY_LEVEL[data.get('security_level')],
-    )
-
-
+# Error Handlers
 @bp.errorhandler(400)
 @bp.errorhandler(401)
 @bp.errorhandler(404)

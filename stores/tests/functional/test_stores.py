@@ -152,3 +152,14 @@ def test_all_security_levels(client, headers):
     assert 'LOW' in data
     assert 'MEDIUM' in data
     assert 'HIGH' in data
+
+def test_get_stores_paginate(client, headers):
+    response = client.get('/stores/all', headers=headers)
+    data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert isinstance(data, list)
+    assert len(data) > 0
+    assert 'id' in data[0]
+    assert 'name' in data[0]
+    assert 'email' in data[0]

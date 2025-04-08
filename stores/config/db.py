@@ -23,8 +23,8 @@ def create_db(app: Flask):
 def get_uri_db() -> str:
     host = os.getenv('DB_HOST', default="127.0.0.1")
     port = os.getenv('DB_PORT', default="5432")
-    user = os.getenv('DB_USER', default="user_final")
-    password = os.getenv('DB_PASSWORD', default="pass_final")
+    user = os.getenv('DB_USER', default="postgres")
+    password = os.getenv('DB_PASSWORD', default="postgres")
     db_name = os.getenv('DB_STORE_NAME', default="project_final")
     db_type = os.getenv('DB_TYPE', default="postgresql")
 
