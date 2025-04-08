@@ -1,0 +1,34 @@
+
+  <h4 id="product_create_title" class="text-center title">{{ 'PRODUCT.TITLE_LIST' | translate }}</h4>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="product_list_table" class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>{{ 'PRODUCT.ID' | translate }}</th>
+                  <th>{{ 'PRODUCT.NAME' | translate }}</th>
+                  <th>{{ 'PRODUCT.DESCRIPTION' | translate }}</th>
+                  <th>{{ 'PRODUCT.UNIT_PRICE' | translate }}</th>
+                  <th>{{ 'PRODUCT.CURRENCY_PRICE' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of products">
+                  <td>{{ product.id }}</td>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.description }}</td>
+                  <td>{{ product.unit_price }}</td>
+                  <td>{{ product.currency_price }}</td>
+                  <td>
+                    <button (click)="editProduct(product.id)" class="btn list-btn-active">{{ 'PRODUCT.EDIT' | translate }}</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>

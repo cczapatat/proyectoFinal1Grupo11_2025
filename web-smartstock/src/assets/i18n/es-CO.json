@@ -62,6 +62,7 @@
   },
   "PRODUCT": {
     "TITLE_CREATE": "Crear Producto",
+    "TITLE_EDIT": "Editar Producto",
     "NAME": "Nombre",
     "NAME_PLACEHOLDER": "Nombre del Producto",
     "NAME_REQUIRED": "El nombre es requerido.",
@@ -105,7 +106,23 @@
     "CREATE_LOAD_SERVICES_INFORMARION_ERROR_TITLE": "Error",
     "CREATE_MANUFACTURES_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar los fabricantes.",
     "CREATE_CURRENCY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las monedas.",
-    "CREATE_CATEGORY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las categorías."
+    "CREATE_CATEGORY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las categorías.",
+    "EDIT_BUTTON": "Editar",
+    "EDIT_SUCCESS_TITLE": "Edición Exitosa",
+    "EDIT_SUCCESS_MESSAGE": "El producto ha sido editado exitosamente.",
+    "EDIT_ERROR_TITLE": "Error de Edición",
+    "EDIT_ERROR_MESSAGE": "Ha ocurrido un error: no se puede editar el producto.",
+    "EDIT_LOAD_SERVICES_INFORMARION_ERROR_TITLE": "Error",
+    "EDIT_MANUFACTURES_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar los fabricantes.",
+    "EDIT_CURRENCY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las monedas.",
+    "EDIT_CATEGORY_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar las categorías.",
+    "EDIT_PRODUCT_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar el producto.",
+    "LIST_ERROR_TITLE": "Error",
+    "LIST_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar la lista de productos.",
+    "TITLE_LIST": "Lista de Productos",
+    "ID": "Id",
+    "CURRENCY_PRICE": "Moneda",
+    "EDIT": "Editar"
   },
   "LOGIN": {
     "TITLE": "Ingresa como Vendedor",
