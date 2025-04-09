@@ -1,5 +1,3 @@
-import { is } from "cypress/types/bluebird";
-
 export class Product {
     id: string;
     manufacturer_id: string;

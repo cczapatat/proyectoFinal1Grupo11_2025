@@ -42,15 +42,6 @@ jobs:
         run: |
           git config user.name "cczapatat"
           git config user.email "c.zapatat@uniandes.edu.co"
-      - name: Create New Tag
-        run: |
-          echo "Creating new tag - ${{ github.event.inputs.tag }}"
-          git fetch
-          git checkout main
-          git branch --show-current
-          git pull
-          git tag v${{ github.event.inputs.tag }} HEAD -m "${{ github.event.inputs.reason }}"
-          git push origin v${{ github.event.inputs.tag }}
       - name: Create credentials.json
         run: |
           echo "Creating credentials.json"
@@ -97,3 +88,12 @@ jobs:
           kubectl apply -f k8s-ingress-deployment.yaml
           echo "Deployment completed"
           kubectl get pods
+      - name: Create New Tag
+        run: |
+          echo "Creating new tag - ${{ github.event.inputs.tag }}"
+          git fetch
+          git checkout main
+          git branch --show-current
+          git pull
+          git tag v${{ github.event.inputs.tag }} HEAD -m "${{ github.event.inputs.reason }}"
+          git push origin v${{ github.event.inputs.tag }}

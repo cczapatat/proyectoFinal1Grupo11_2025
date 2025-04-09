@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { ManufacturerService } from '../../services/manufacturer.service';
 import { Product } from '../product';
 import { positiveNumberValidator } from 'src/app/validators/positive-number.validator';
-import { fa } from '@faker-js/faker';
 import { ProductCategory } from '../../dtos/product-category';
 import { ProductCurrency } from '../../dtos/product-currency';
 import { ProductService } from '../../services/product.service';
