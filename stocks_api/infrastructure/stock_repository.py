@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import asc
 
 from ..config.db import db
-from ..models.stock_model import Stock
+from ..models.stock_model import Stock, StoreXStock
 
 
 class StockRepository:
@@ -19,3 +19,9 @@ class StockRepository:
         stocks = db.session.query(Stock).filter(Stock.id.in_(ids)).all()
 
         return stocks
+
+    @staticmethod
+    def get_stocks_ids_by_store_id(id_store: uuid.uuid4) -> list[int]:
+        stocks_ids = db.session.query(StoreXStock).filter_by(store_id=id_store).all()
+
+        return stocks_ids

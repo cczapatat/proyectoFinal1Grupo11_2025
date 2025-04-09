@@ -60,6 +60,36 @@ def get_stocks_by_ids():
 
     return jsonify(stock_manager.get_stocks_by_ids(ids))
 
+@bp.route('/by-store-id', methods=('GET',))
+def get_stocks_by_store_id():
+    __there_is_token()
+
+    id_store = request.args.get('id_store', None)
+
+    if id_store is None:
+        return jsonify({'message': 'id_store is required'}), 400
+
+    #transform id_store to uuid
+    try:
+        id_store = uuid.UUID(id_store)
+    except ValueError:
+        return jsonify({'message': 'invalid id_store'}), 400
+
+    stocks_ids = stock_manager.get_stock_ids_by_store_id(id_store)
+
+    return jsonify(stocks_ids)
+
+@bp.route('/sync', methods=('POST',))
+def sync_product_stock():
+    __there_is_token()
+
+    added_products = stock_manager.sync_products()
+    
+    if added_products is None:
+        return jsonify({'message': 'No products were synced'}), 200
+    
+    return jsonify(added_products), 200
+
 
 @bp.errorhandler(400)
 @bp.errorhandler(401)

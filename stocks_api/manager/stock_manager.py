@@ -1,10 +1,13 @@
 import uuid
 
+from ..infrastructure.product_sync import ProductsSync
+
 from ..infrastructure.cache_repository import CacheRepository
 from ..infrastructure.stock_repository import StockRepository
 
 stock_repository = StockRepository()
 cache_repository = CacheRepository()
+product_sync_service = ProductsSync()
 
 
 def get_stocks_paginate_from_cache(page: int, per_page: int):
@@ -60,3 +63,17 @@ class StockManager:
         stocks_dict = [stock.to_dict() for stock in stocks]
 
         return stocks_dict
+    
+    @staticmethod
+    def get_stock_ids_by_store_id(id_store: uuid.uuid4) -> list[int]:
+        stocks_ids = stock_repository.get_stocks_ids_by_store_id(id_store)
+              
+        return stocks_ids
+    
+    @staticmethod
+    def sync_products():
+        added_products = product_sync_service.sync_products()
+        if added_products is None:
+            return None
+
+        return added_products
