@@ -11,6 +11,13 @@ spec:
   rules:
     - http:
         paths:
+          - path: /web_smartstock
+            pathType: Prefix
+            backend:
+              service:
+                name: web_smartstock-service
+                port:
+                  number: 80
           - path: /orders
             pathType: Prefix
             backend:
