@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
-import { SellerDTO } from '../dtos/seller.dto';
+import { SellerDTO, PaginatedSellers } from '../dtos/seller.dto';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SellerService extends BaseService {
 
-  private userManagerAPI = environment.apiUserSessionUrl;
+  private readonly userManagerAPI = environment.apiUserSessionUrl;
 
   constructor(protected http: HttpClient) {
     super();
@@ -22,4 +22,11 @@ export class SellerService extends BaseService {
       headers: this.defaultHeaders,
     });
   }
+
+  getSellersPaginated(page: number = 1, perPage: number = 10, sortBy: string = 'name', sortOrder: string = 'asc'): Observable<PaginatedSellers> {
+    const getAllSellerPag = `${this.userManagerAPI}/sellers/pag?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_order=${sortOrder}`;
+    return this.http.get<PaginatedSellers>(getAllSellerPag);
+  }
+
+
 }

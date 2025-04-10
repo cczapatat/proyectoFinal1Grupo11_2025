@@ -1,9 +1,12 @@
+import json
 import os
 import requests
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, current_user, jwt_required
 from werkzeug.exceptions import Unauthorized
 
+from .client_sort_field import ClientSortField
+from .seller_sort_field import SellerSortField
 from ..dtos.user_session_dto import UserSessionDTO
 from ..infrastructure.user_session_repository import UserSessionRepository
 from ..models.user_session_model import UserSession
@@ -205,3 +208,83 @@ def validate_token():
         "user_id": identity.id_user,
         "user_type": identity.type
     }), 200
+
+
+@bp.route('/clients/seller/<seller_id>', methods=('GET',))
+def get_clients_by_seller(seller_id:str):
+    there_is_token()
+
+    # Get query parameters with default values
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    sort_by_str = request.args.get('sort_by', default='name', type=str).lower()
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+
+    if sort_by_str not in [field.value for field in ClientSortField]:
+        return jsonify({"message": f"Invalid sort_by field: {sort_by_str}"}), 400
+
+    sort_by = ClientSortField(sort_by_str).value
+    """Get all clients for a specific seller"""
+
+    url = f"{host_client}/clients/seller/{seller_id}?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
+    headers = request.headers
+    get_client_response = requests.get(url, headers=headers)
+    data = get_client_response.json()
+    if get_client_response.status_code != 200:
+        print(f"[Client] Failed to get clients {url}, status code: {get_client_response.status_code}")
+        return jsonify(data),  get_client_response.status_code
+
+    return get_client_response.json()
+
+
+@bp.route('/clients/associate_seller', methods=('POST',))
+def associate_client_to_seller():
+    there_is_token()
+
+    data = request.get_json()
+
+    url = f"{host_client}/clients/associate_seller"
+    headers = request.headers
+    associate_client_response = requests.post(url, json=data, headers=headers)
+    data = associate_client_response.json()
+    if associate_client_response.status_code != 200:
+        print(f"[Client] Failed to associate clients {url}, status code: {associate_client_response.status_code}")
+        return jsonify(data),  associate_client_response.status_code
+
+    return jsonify(associate_client_response.json()), 200
+
+@bp.route('/sellers/pag', methods=('GET',))
+def get_sellers():
+    there_is_token()
+
+    # Get query parameters with default values
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    sort_by_str = request.args.get('sort_by', default='name', type=str).lower()
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+
+    if sort_by_str not in [field.value for field in ClientSortField]:
+        return jsonify({"message": f"Invalid sort_by field: {sort_by_str}"}), 400
+
+    sort_by = SellerSortField(sort_by_str).value
+    """Get all sellers"""
+
+    url = f"{host_seller}/sellers/sellers?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
+    headers = request.headers
+    get_sellers_response = requests.get(url, headers=headers)
+    data = get_sellers_response.json()
+    if get_sellers_response.status_code != 200:
+        return jsonify(data),  get_sellers_response.status_code
+
+    return get_sellers_response.json()
+
+@bp.route('/sellers/id/<id>', methods=('GET',))
+def get_seller_by_id(id: str):
+    url = f"{host_seller}/sellers/id/{id}"
+    headers = request.headers
+    get_seller_response = requests.get(url, headers=headers)
+    data = get_seller_response.json()
+    if get_seller_response.status_code != 200:
+        return jsonify(data),  get_seller_response.status_code
+
+    return get_seller_response.json()
