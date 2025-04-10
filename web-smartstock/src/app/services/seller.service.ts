@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
-import { SellerDTO } from '../dtos/seller.dto';
+import { SellerDTO, PaginatedSellers } from '../dtos/seller.dto';
 import { environment } from 'src/environments/environment';
-import { PaginatedSellers } from '../dtos/seller';
 
 @Injectable({
   providedIn: 'root'
