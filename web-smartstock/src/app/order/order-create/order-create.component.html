@@ -45,10 +45,10 @@
       </thead>
       <tbody>
         <tr *ngFor="let product of products; let i = index">
-          <td>{{ product.name }}</td>
-          <td>{{ product.description }}</td>
-          <td>{{ product.unitPrice }} GBR</td>
-          <td>{{ product.quantity }}</td>
+          <td>{{ product.product_name }}</td>
+          <td>{{ product.product_name }}</td>
+          <td>100 GBR</td>
+          <td>{{ product.quantity_in_stock }}</td>
           <td>
             <div class="input-group quantity-control">
               <button class="btn btn-sm btn-outline-secondary" (click)="decrementQuantity(product)">
@@ -60,7 +60,7 @@
               </button>
             </div>
           </td>
-          <td>{{ product.unitPrice * product.quantity }} GBR</td>
+          <td>{{ 100 * product.quantity_in_stock }} GBR</td>
           <td>
             <button class="btn btn-sm btn-dange btn-iconr" (click)="removeProduct(product)">
               <i class="bi bi-trash"></i>
@@ -106,7 +106,7 @@
           <thead class="table-dark">
             <tr>
               <th></th>
-              <th>Filter by name</th>
+              <th>Name</th>
               <th>Description</th>
               <th>Unit Price</th>
               <th>Units Available</th>
@@ -116,10 +116,10 @@
           <tbody>
             <tr *ngFor="let product of availableProducts">
               <td><input type="checkbox" [checked]="product.selected" (change)="toggleSelectProduct(product)" /></td>
-              <td>{{ product.name }}</td>
-              <td>{{ product.description }}</td>
-              <td>{{ product.unitPrice }} GBR</td>
-              <td>{{ product.quantity }}</td>
+              <td>{{ product.product_name }}</td>
+              <td>{{ product.product_name }}</td>
+              <td>100 GBR</td>
+              <td>{{ product.quantity_in_stock }}</td>
               <td>
                 <div class="input-group input-group-sm">
                   <button class="btn btn-outline-secondary" [disabled]="!selectedModalProducts[product.id]"
@@ -127,7 +127,7 @@
                   <input type="text" class="form-control text-center" [value]="selectedModalProducts[product.id] || 0"
                     readonly>
                   <button class="btn btn-outline-secondary"
-                    [disabled]="selectedModalProducts[product.id] && selectedModalProducts[product.id] >= product.quantity"
+                    [disabled]="selectedModalProducts[product.id] && selectedModalProducts[product.id] >= product.quantity_in_stock"
                     (click)="increaseModalQuantity(product.id)"><i class="bi bi-plus"></i></button>
                 </div>
               </td>
