@@ -51,14 +51,14 @@ export class UserSessionLoginComponent implements OnInit {
   
     this.loginForm = this.formBuilder.group({
       email: [
-        '',
+        'admin.admin@sta.com',
         [
           Validators.required,
           Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$'),
         ],
       ],
       password: [
-        '',
+        '123456',
         [
           Validators.required,
           Validators.maxLength(50),
