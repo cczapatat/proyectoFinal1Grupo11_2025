@@ -75,8 +75,11 @@ def get_stores_paginate():
 
     page = max(1, request.args.get('page', default=1, type=int))
     per_page = min(max(1, request.args.get('per_page', default=10, type=int)), 50)
+    
+    #add a filter to get active stores by default
+    state = request.args.get('state', default=STATE.ACTIVE, type=bool)
 
-    return jsonify(store_manager.get_stores_paginate(page, per_page)), 200
+    return jsonify(store_manager.get_stores_paginate(state, page, per_page)), 200
 
 
 # Routes for Enumerations

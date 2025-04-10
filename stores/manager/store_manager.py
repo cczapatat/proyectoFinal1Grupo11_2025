@@ -1,5 +1,7 @@
 import uuid
 
+from ..models.enums import STATE
+
 from ..dtos.store_in_dto import StoreInDTO
 from ..infrastructure.store_repository import StoreRepository
 
@@ -23,7 +25,6 @@ class StoreManager:
         return store.to_dict()
 
     @staticmethod
-    def get_stores_paginate(page: int = 1, per_page: int = 10) -> list[dict]:
-        stores = store_repository.get_stores_by_page(page=page, per_page=per_page)
-        print('ooooooo')
+    def get_stores_paginate(state : any, page: int = 1, per_page: int = 10) -> list[dict]:
+        stores = store_repository.get_stores_by_page(page=page, per_page=per_page, state=state)
         return [store.to_dict() for store in stores]

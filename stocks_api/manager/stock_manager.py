@@ -1,13 +1,12 @@
 import uuid
 
-from ..infrastructure.product_sync import ProductsSync
-
+from ..dtos.store_x_products_dto import StoreXProductsDTO
 from ..infrastructure.cache_repository import CacheRepository
 from ..infrastructure.stock_repository import StockRepository
 
 stock_repository = StockRepository()
 cache_repository = CacheRepository()
-product_sync_service = ProductsSync()
+
 
 
 def get_stocks_paginate_from_cache(page: int, per_page: int):
@@ -65,15 +64,30 @@ class StockManager:
         return stocks_dict
     
     @staticmethod
-    def get_stock_ids_by_store_id(id_store: uuid.uuid4) -> list[int]:
-        stocks_ids = stock_repository.get_stocks_ids_by_store_id(id_store)
-              
-        return stocks_ids
+    def get_stocks_by_store_id(id_store: uuid.uuid4) -> list[StoreXProductsDTO]:
+        stocks = stock_repository.get_stocks_by_store_id(id_store)
+        if stocks is None:
+            return []
+        return stocks
     
     @staticmethod
-    def sync_products():
-        added_products = product_sync_service.sync_products()
-        if added_products is None:
-            return None
+    def assign_stock_store(store_x_products_dto : StoreXProductsDTO):
+       
+        store_id = store_x_products_dto.id_store
+        stocks = store_x_products_dto.stocks
 
-        return added_products
+        if not stocks:
+            return {'message': 'No products to assign'}
+
+        for stock in stocks:
+            if stock.id_product is '' or stock.assigned_stock is '':
+                return {'message': 'Error: Invalid product or stock data'}
+            stock_repository.assign_stock_to_store(stock.id, store_id, stock.id_product, stock.assigned_stock)
+
+        # Clear the cache for the specific stock
+        for stock in stocks:
+            cache_key = f'stock:{stock.id_product}'
+            cache_repository.delete(cache_key)
+       
+
+        return {'message': 'Stocks assigned successfully'}
