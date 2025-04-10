@@ -4,5 +4,6 @@ export const environment = {
     storesUrl: 'http://130.211.32.9/stores',
     apiProductUrl: 'http://130.211.32.9/products',
     apiManufacturerUrl: 'http://130.211.32.9/manufacture-api',
+    clientUrl: 'http://130.211.32.9/clients',
     xToken: 'internal_token'
 };

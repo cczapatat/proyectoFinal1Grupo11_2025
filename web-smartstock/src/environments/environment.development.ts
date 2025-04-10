@@ -1,8 +1,9 @@
 export const environment = {
-    production: false,
-    apiUserSessionUrl: 'http://127.0.0.1:3008/user_sessions',
-    storesUrl: 'http://127.0.1:3015/stores',
-    apiProductUrl: 'http://127.0.0.1:3017/products',
-    apiManufacturerUrl: 'http://127.0.0.1:3000/manufacture-api',
+    production: true,
+    apiUserSessionUrl: 'http://130.211.32.9/user_sessions',
+    storesUrl: 'http://130.211.32.9/stores',
+    apiProductUrl: 'http://130.211.32.9/products',
+    apiManufacturerUrl: 'http://130.211.32.9/manufacture-api',
+    clientUrl: 'http://130.211.32.9/clients',
     xToken: 'internal_token'
 };
