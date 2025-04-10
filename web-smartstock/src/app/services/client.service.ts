@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ClientService extends BaseService {
 
-  private clientApi = environment.clientUrl;
+  private readonly clientApi = environment.apiClientUrl;
   private readonly userManagerAPI = environment.apiUserSessionUrl;
 
   constructor(protected http: HttpClient) {

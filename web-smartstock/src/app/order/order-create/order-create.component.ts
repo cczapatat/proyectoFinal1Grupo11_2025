@@ -3,15 +3,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { ClientDTO } from 'src/app/dtos/client.dto';
+import { ProductStockDTO } from 'src/app/dtos/stock.dto';
 
 import { ClientService } from 'src/app/services/client.service';
+import { StocksService } from 'src/app/services/stocks.service';
 
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  unitPrice: number;
-  quantity: number;
+interface Product extends ProductStockDTO {
   quantitySelected?: number;
   selected: boolean;
 }
@@ -33,40 +30,34 @@ export class OrderCreateComponent implements OnInit {
   products: Product[] = [];
   availableProducts: Product[] = [];
 
-  selectedModalProducts: { [id: number]: number } = {};
+  selectedModalProducts: { [id: string]: number } = {};
 
   currentPage: number = 1;
-  pageSize: number = 5;
+  pageSize: number = 10;
 
   constructor(
     private toastr: ToastrService,
     private translate: TranslateService,
     private clientService: ClientService,
+    private stocksService: StocksService,
   ) { }
 
   ngOnInit(): void {
     this.loadData();
     this.deliveryDate = this.formatDate(new Date());
-
-    this.availableProducts = [
-      { id: 1, name: 'Apple', description: 'Apple Description', unitPrice: 250, quantity: 10, selected: false },
-      { id: 2, name: 'Carrot', description: 'Carrot Description', unitPrice: 670, quantity: 20, selected: false },
-      { id: 3, name: 'Rice', description: 'Rice Description', unitPrice: 200, quantity: 8, selected: false },
-      { id: 4, name: 'Mushroom', description: 'Mushroom Description', unitPrice: 560, quantity: 30, selected: false },
-      { id: 5, name: 'Onion', description: 'Onion Description', unitPrice: 100, quantity: 6, selected: false },
-      { id: 6, name: 'Potatoe', description: 'Potatoe Description', unitPrice: 1000, quantity: 10, selected: false },
-      { id: 7, name: 'Orange', description: 'Orange Description', unitPrice: 350, quantity: 4, selected: false }
-    ];
-
-    this.products = this.availableProducts.slice(0,2).filter(p => p.quantity > 0).map(p => ({ ...p, quantitySelected: p.quantity / 2 }));
   }
 
   loadData(): void {
     forkJoin({
-      clients: this.clientService.getClientsBySellerId('4e5e0531-b49d-40c2-afbc-2e1772701431'),
+      clients: this.clientService.getClientsBySellerIdList('4e5e0531-b49d-40c2-afbc-2e1772701431'),
+      stocks: this.stocksService.getProductsOnStock(this.pageSize, this.currentPage)
     }).subscribe({
       next: (response) => {
         this.clients = response.clients;
+        this.availableProducts = response.stocks.map(product => ({
+          ...product,
+          selected: false
+        }));
       },
       error: (error) => {
         this.toastr.error(
@@ -98,7 +89,7 @@ export class OrderCreateComponent implements OnInit {
   }
 
   get getTotal(): number {
-    return this.products.reduce((total, prod) => total + prod.unitPrice * prod.quantitySelected, 0);
+    return this.products.reduce((total, prod) => total + 100 * prod.quantitySelected, 0);
   }
 
   openModal() {
@@ -116,20 +107,20 @@ export class OrderCreateComponent implements OnInit {
   toggleSelectProduct(product: Product) {
     product.selected = !product.selected;
     if (product.selected) {
-      this.selectedModalProducts[product.id] = product.quantity;
+      this.selectedModalProducts[product.id] = product.quantity_in_stock;
     } else {
       delete this.selectedModalProducts[product.id];
       this.removeProduct(product);
     }
   }
 
-  increaseModalQuantity(productId: number) {
+  increaseModalQuantity(productId: string) {
     if (this.selectedModalProducts[productId]) {
       this.selectedModalProducts[productId]++;
     }
   }
 
-  decreaseModalQuantity(productId: number) {
+  decreaseModalQuantity(productId: string) {
     if (this.selectedModalProducts[productId] > 1) {
       this.selectedModalProducts[productId]--;
     }
@@ -137,10 +128,9 @@ export class OrderCreateComponent implements OnInit {
 
   addProductsToOrder() {
     Object.entries(this.selectedModalProducts).forEach(([id, quantity]) => {
-      const pid = +id;
-      const product = this.availableProducts.find(p => p.id === pid);
+      const product = this.availableProducts.find(p => p.id === id);
       if (product) {
-        const existing = this.products.find(p => p.id === pid);
+        const existing = this.products.find(p => p.id === id);
         if (existing) {
           existing.quantitySelected = quantity;
         } else {
@@ -172,7 +162,7 @@ export class OrderCreateComponent implements OnInit {
       payment_method: this.selectedPayment,
       products: this.products.map(p => ({
         product_id: p.id,
-        units: p.quantity
+        units: p.quantity_in_stock
       })),
     };
     console.log('Creating Order:', payload);
