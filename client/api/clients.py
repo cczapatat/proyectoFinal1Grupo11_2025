@@ -3,10 +3,13 @@ import uuid
 
 from flask import Blueprint, jsonify, request
 from sqlalchemy.exc import IntegrityError, DataError
+
 from werkzeug.exceptions import Unauthorized, BadRequest
 
 from ..dtos.client_dto import ClientDTO
-from ..infrastructure.client_repository import ClientRepository, get_clients_by_seller_id
+from ..infrastructure.client_repository import ClientRepository, get_clients_by_seller_id, \
+    get_clients_by_seller_id_paginated
+from ..infrastructure.client_sort_field import ClientSortField
 from ..models.client_model import Client
 
 bp = Blueprint('clients', __name__, url_prefix='/clients')
@@ -34,7 +37,6 @@ def __valid_uuid(uuid_string: str, uuid_name: str) -> uuid.uuid4:
     except ValueError:
         raise BadRequest(description=f'Invalid {uuid_name}')
 
-
 @bp.route('/create', methods=('POST',))
 def create_client():
     there_is_token()
@@ -52,9 +54,6 @@ def create_client():
     if user_id is None:
         return jsonify({'message': 'user_id is required'}), 400
 
-    if seller_id is None:
-        return jsonify({'message': 'seller_id is required'}), 400
-
     if name is None:
         return jsonify({'message': 'name is required'}), 400
 
@@ -68,7 +67,7 @@ def create_client():
         return jsonify({'message': 'address is required'}), 400
 
     if client_type is None:
-        return jsonify({'message': 'client_type is required'}), 400
+        return jsonify({'message': 'type is required'}), 400
 
     if zone is None:
         return jsonify({'message': 'zone is required'}), 400
@@ -84,10 +83,12 @@ def create_client():
         zone=zone
     )
 
-    create_client_response = client_repository.create_client(client_dto=client_dto)
+    create_client_response, saved_seller_id = client_repository.create_client(client_dto=client_dto)
 
     if isinstance(create_client_response, Client):
-        return jsonify(create_client_response.to_dict()), 201
+        response_client = create_client_response.to_dict()
+        response_client.setdefault("seller_id", saved_seller_id)
+        return jsonify(response_client), 201
 
     return create_client_response
 
@@ -140,6 +141,58 @@ def get_seller_by_id(client_id: str, seller_id: str):
 
     return jsonify(client.to_dict()), 200
 
+
+@bp.route('/associate_seller', methods=('POST',))
+def associate_seller():
+    there_is_token()
+
+    data = request.get_json()
+    client_id = data.get('client_id')
+    seller_id = data.get('seller_id')
+
+    if client_id is None:
+        return jsonify({'message': 'client_id is required'}), 400
+
+    if seller_id is None:
+        return jsonify({'message': 'seller_id is required'}), 400
+
+    client, missing_clients = client_repository.get_clients_by_ids(client_ids=client_id)
+
+    if missing_clients > 0:
+        return jsonify({'message': 'clients not found'}), 404
+
+    clients = client_repository.associate_seller(client_id, seller_id)
+
+    if clients is None:
+        return jsonify({'message': 'clients not found'}), 404
+
+    return jsonify(clients), 200
+
+
+@bp.route('/seller/pag/<string:seller_id>', methods=['GET'])
+def get_seller_clients_paginated(seller_id):
+    there_is_token()
+    # Get query parameters with default values
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    sort_by_str = request.args.get('sort_by', default='name', type=str).lower()
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+
+    if sort_by_str not in [field.value for field in ClientSortField]:
+        return jsonify({"message": f"Invalid sort_by field: {sort_by_str}"}), 400
+
+
+    sort_by = ClientSortField(sort_by_str)
+    """Get all clients for a specific seller"""
+    clients_data = get_clients_by_seller_id(
+        seller_id=seller_id,
+        page=page,
+        per_page=per_page,
+        sort_by=sort_by,
+        sort_order=sort_order
+    )
+
+    return jsonify(clients_data), 200
 
 @bp.errorhandler(400)
 @bp.errorhandler(401)

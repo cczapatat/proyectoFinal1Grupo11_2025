@@ -88,6 +88,11 @@
       <h3><i class="bi bi-person"></i> {{ 'NAV.SELLER' | translate }}</h3>
       <ul class="nav flex-column">
         <li class="nav-item">
+          <a id="nav_associate_customers" class="nav-link" (click)="navigate('/salespeople/assign-customers')">
+            <i class="bi bi-grid"></i> {{ 'NAV.ASSIGN_CUSTOMERS' | translate }}
+          </a>
+        </li>
+        <li class="nav-item">
           <a id="nav_create_order" class="nav-link" (click)="navigate('/order/create')">
             <i class="bi bi-cart-plus"></i> {{ 'NAV.CREATE_ORDER' | translate }}
           </a>
