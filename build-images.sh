@@ -11,7 +11,7 @@ TAG=$1
 REGISTRY="us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1"
 
 # Lista de servicios a construir
-services="client document_manager manufacture_api manufacturers_worker massive_worker order product seller stocks_api stocks_worker stores user_session_manager"
+services="client document_manager manufacture_api manufacturers_worker massive_worker order product seller stocks_api stocks_worker stores user_session_manager web-smartstock"
 
 # Función para construir y publicar imagen
 build_and_push() {
@@ -24,11 +24,24 @@ build_and_push() {
     # Cambiar al directorio del servicio
     cd $service
     
-    # Construir imagen
-    docker build -t "$REGISTRY/$service:$TAG" .
-    
-    # Publicar imagen
-    docker push "$REGISTRY/$service:$TAG"
+    # Verificar si $service no tiene guion medio
+    if [ -z "$(echo $service | grep -)" ]; then
+        echo "$service do not have hyphen, building image..."
+        # Construir imagen
+        docker build -t "$REGISTRY/$service:$TAG" .
+        
+        # Publicar imagen
+        docker push "$REGISTRY/$service:$TAG"
+    else
+        service_with_underscore=$(echo "$service" | sed 's/-/_/g')
+        echo "Building $service_with_underscore instead of $service as it contains a hyphen"
+        
+        # Construir imagen
+        docker build -t "$REGISTRY/$service_with_underscore:$TAG" .
+        
+        # Publicar imagen
+        docker push "$REGISTRY/$service_with_underscore:$TAG"
+    fi
     
     # Volver al directorio raíz y limpiar credenciales
     cd ..
