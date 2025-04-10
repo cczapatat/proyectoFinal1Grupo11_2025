@@ -253,7 +253,7 @@ def associate_client_to_seller():
 
     return jsonify(associate_client_response.json()), 200
 
-@bp.route('/sellers', methods=('GET',))
+@bp.route('/sellers/pag', methods=('GET',))
 def get_sellers():
     there_is_token()
 
@@ -269,7 +269,7 @@ def get_sellers():
     sort_by = SellerSortField(sort_by_str).value
     """Get all sellers"""
 
-    url = f"{host_seller}/sellers?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
+    url = f"{host_seller}/sellers/sellers?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
     headers = request.headers
     get_sellers_response = requests.get(url, headers=headers)
     data = get_sellers_response.json()

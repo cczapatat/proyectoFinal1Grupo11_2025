@@ -226,7 +226,7 @@ def test_get_sellers_success(client, headers, faker):
 
 
     # Then get the sellers
-    response = client.get('/sellers/', headers=headers)
+    response = client.get('/sellers/sellers', headers=headers)
     assert response.status_code == 200
     data = json.loads(response.data)
     assert len(data) > 1

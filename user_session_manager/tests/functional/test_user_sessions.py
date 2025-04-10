@@ -265,7 +265,7 @@ def test_associate_clients_to_seller(client, headers):
 
 def test_get_sellers(client, headers):
     with requests_mock.Mocker() as m:
-        m.get(f'{host_seller}/sellers?page=1&per_page=10&sort_by=name&sort_order=asc', json={
+        m.get(f'{host_seller}/sellers/sellers?page=1&per_page=10&sort_by=name&sort_order=asc', json={
             "data": [
                 {
                     "created_at": "2025-04-09T19:22:16.825716",
@@ -334,7 +334,7 @@ def test_get_sellers(client, headers):
             "total_pages": 1
         }, status_code=200)
 
-        response = client.get('/user_sessions/sellers',
+        response = client.get('/user_sessions/sellers/pag',
                                headers=headers
                                )
         assert response.status_code == 200

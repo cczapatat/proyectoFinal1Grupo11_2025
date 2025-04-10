@@ -66,14 +66,6 @@ def get_seller_by_user_id(user_id: str):
 
     return jsonify(seller.to_dict()), 200
 
-@bp.errorhandler(400)
-@bp.errorhandler(401)
-@bp.errorhandler(404)
-def handle_validation_error(error):
-    return jsonify({
-        'message': str(error.description)
-    }), error.code
-
 @bp.route('/id/<id>', methods=('GET',))
 def get_seller_by_id_full(id: str):
     __there_is_token()
@@ -115,7 +107,7 @@ def handle_validation_error(error):
     }), error.code
 
 
-@bp.route('/', methods=('GET',))
+@bp.route('/sellers', methods=('GET',))
 def get_sellers_paginated():
     __there_is_token()
     # Get query parameters with default values
