@@ -705,6 +705,11 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: REDIS_PORT
+            - name: "PRODUCTS_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: PRODUCTS_PATH
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
@@ -1016,6 +1021,16 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: INTERNAL_TOKEN
+            - name: "REDIS_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: REDIS_HOST
+            - name: "REDIS_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: REDIS_PORT
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1

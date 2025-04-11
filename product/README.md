@@ -1,11 +1,11 @@
-# StocksApi Component
+# Product Component
 
 ## Commands Utils
 
 ### Run App
 
 ```bash
-flask --app . run --host=0.0.0.0 --port=3010
+flask --app . run --host=0.0.0.0 --port=3017
 ```
 
 ### Run Tests

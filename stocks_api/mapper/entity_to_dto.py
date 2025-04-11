@@ -1,4 +1,3 @@
-
 from ..dtos.store_x_products_dto import ProductStockDTO, StoreXProductsDTO
 
 
@@ -21,4 +20,3 @@ class EntityMapper:
             product_stocks.append(product_stock)
 
         return StoreXProductsDTO(id_store=store_id, stocks=product_stocks)
-    

@@ -74,7 +74,6 @@ class StockRepository:
 
                 result = {
                     "product_id": str(updated_stock.id),
-                    "product_name": updated_stock.product_name,
                     "last_quantity": stock.last_quantity,
                     "new_quantity": updated_stock.quantity_in_stock,
                     "status": update_attempt.status.value

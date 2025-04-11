@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, Integer, Boolean, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from app.core.db import Base
 
@@ -15,8 +15,8 @@ class Stock(Base):
     quantity_in_stock = Column(Integer(), nullable=True, default=0)
     last_quantity = Column(Integer(), nullable=True, default=0)
     enabled = Column(Boolean(), default=True)
-    update_date = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    creation_date = Column(DateTime, default=datetime.utcnow)
+    update_date = Column(DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    creation_date = Column(DateTime, default=datetime.datetime.utcnow)
 
     def to_dict(self):
         return {
