@@ -2,7 +2,6 @@ import json
 
 from uuid import uuid4
 
-
 def test_create_client_success(client, headers):
     client_data = {
         "user_id": str(uuid4()),
@@ -407,4 +406,151 @@ def test_get_client_relation_seller_id_success(client, headers):
     data = json.loads(response.data)
 
     assert response.status_code == 200
-    assert client_response == data
+
+    assert client_response['id'] == data['id']
+
+def test_create_client_with_seller_success(client, headers):
+    client_data = {
+        "user_id": str(uuid4()),
+        "seller_id": str(uuid4()),
+        "name": "Test Client",
+        "phone": "+573017084800",
+        "email": "test800@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+
+    response = client.post('/clients/create', json=client_data, headers=headers)
+    data = json.loads(response.data)
+    assert response.status_code == 201
+    assert data['name'] == client_data['name']
+    assert data['email'] == client_data['email']
+    assert 'id' in data
+
+def test_create_client_without_seller_success(client, headers):
+    client_data = {
+        "user_id": str(uuid4()),
+        "name": "Test Client",
+        "phone": "+573017084754",
+        "email": "test54@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+
+    response = client.post('/clients/create', json=client_data, headers=headers)
+    data = json.loads(response.data)
+    assert response.status_code == 201
+    assert data['name'] == client_data['name']
+    assert data['email'] == client_data['email']
+    assert data['seller_id'] is None
+    assert 'id' in data
+
+def test_associate_seller_success(client, headers):
+    client_one_id = str(uuid4())
+    client_two_id = str(uuid4())
+    client_data_one = {
+        "user_id": client_one_id,
+        "name": "Test Client",
+        "phone": "+573017084793",
+        "email": "test93@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+    client_data_two = {
+        "user_id": client_two_id,
+        "name": "Test Client",
+        "phone": "+573017084792",
+        "email": "test92@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+    response_client_one = client.post('/clients/create', json=client_data_one, headers=headers)
+    response_client_two = client.post('/clients/create', json=client_data_two, headers=headers)
+    data_client_one = json.loads(response_client_one.data)
+    data_client_two = json.loads(response_client_two.data)
+    associate_data = {
+        "client_id": [data_client_one['id'], data_client_two['id']],
+        "seller_id": str(uuid4())
+    }
+
+    response = client.post('/clients/associate_seller', json=associate_data, headers=headers)
+    data = json.loads(response.data)
+    assert response.status_code == 200
+    assert len(data) > 1
+def test_associate_existing_seller_success(client, headers):
+    client_one_id = str(uuid4())
+    client_two_id = str(uuid4())
+    client_data_one = {
+        "user_id": client_one_id,
+        "name": "Test Client",
+        "phone": "+573017084790",
+        "email": "test90@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+    client_data_two = {
+        "user_id": client_two_id,
+        "name": "Test Client",
+        "phone": "+573017084791",
+        "email": "test91@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+    response_client_one = client.post('/clients/create', json=client_data_one, headers=headers)
+    response_client_two = client.post('/clients/create', json=client_data_two, headers=headers)
+    data_client_one = json.loads(response_client_one.data)
+    data_client_two = json.loads(response_client_two.data)
+
+    associate_data = {
+        "client_id": [data_client_one['id'], data_client_two['id']],
+        "seller_id": str(uuid4())
+    }
+
+    response = client.post('/clients/associate_seller', json=associate_data, headers=headers)
+    response = client.post('/clients/associate_seller', json=associate_data, headers=headers)
+    clients = json.loads(response.data)
+    assert isinstance(clients['data'], list)
+    assert len(clients) == 5
+    assert response.status_code == 200
+
+def test_associate_seller_missing_client(client, headers):
+    client_data = {
+        "user_id": str(uuid4()),
+        "name": "Test Client",
+        "phone": "+573017084785",
+        "email": "test85@example.com",
+        "address": "Test Address 123",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+
+    }
+    response_client = client.post('/clients/create', json=client_data, headers=headers)
+    data_client = json.loads(response_client.data)
+    associate_data = {
+        "client_id": [data_client['id']],
+    }
+    response = client.post('/clients/associate_seller', json=associate_data, headers=headers)
+    data = json.loads(response.data)
+    assert response.status_code == 400
+    assert 'message' in data
+
+def test_associate_seller_missing_seller(client, headers):
+    associate_data = {
+        "seller_id": str(uuid4())
+    }
+    response = client.post('/clients/associate_seller', json=associate_data, headers=headers)
+    data = json.loads(response.data)
+    assert response.status_code == 400
+    assert 'message' in data

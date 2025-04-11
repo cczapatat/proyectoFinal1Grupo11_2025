@@ -94,7 +94,6 @@ def test_invalid_token(client, faker):
     assert response.status_code == 401
     assert b'authorization required' in response.data
 
-
 def test_get_seller_by_seller_id_wrong_id(client, headers):
     seller_id = str(uuid.uuid4()) + 'a'
 
@@ -160,3 +159,74 @@ def test_get_all_sellers(client, headers, faker):
 
     assert response_get.status_code == 200
     assert len(data_get) == 1
+
+def test_get_seller_by_entity_id_success(client, headers, faker):
+    # First create a seller
+    user_id = str(uuid.uuid4())
+    seller_data = {
+        "user_id": user_id,
+        "name": faker.name(),
+        "phone": generate_valid_phone(),
+        "email": faker.email(),
+        "zone": "NORTH",
+        "quota_expected": 1000.0,
+        "currency_quota": "USD",
+        "quartely_target": 2000.0,
+        "currency_target": "USD",
+        "performance_recomendations": faker.text(max_nb_chars=250)
+    }
+    response = client.post('/sellers/create', json=seller_data, headers=headers)
+    assert response.status_code == 201
+    created_seller = json.loads(response.data)
+    id = created_seller['id']
+    # Then get the seller by ID
+    response = client.get(f'/sellers/id/{id}', headers=headers)
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert data['email'] == seller_data['email']
+
+def test_get_seller_by_entity_id_not_found(client, headers, faker):
+    # get the seller by ID
+    id =str(uuid.uuid4())
+    response = client.get(f'/sellers/id/{id}', headers=headers)
+    assert response.status_code == 404
+    data = json.loads(response.data)
+    assert 'message' in data
+
+def test_get_sellers_success(client, headers, faker):
+    # First create a seller
+    seller_data_one = {
+        "user_id": str(uuid.uuid4()),
+        "name": faker.name(),
+        "phone": generate_valid_phone(),
+        "email": faker.email(),
+        "zone": "NORTH",
+        "quota_expected": 1000.0,
+        "currency_quota": "USD",
+        "quartely_target": 2000.0,
+        "currency_target": "USD",
+        "performance_recomendations": faker.text(max_nb_chars=250)
+    }
+    seller_data_two = {
+        "user_id": str(uuid.uuid4()),
+        "name": faker.name(),
+        "phone": generate_valid_phone(),
+        "email": faker.email(),
+        "zone": "NORTH",
+        "quota_expected": 1000.0,
+        "currency_quota": "USD",
+        "quartely_target": 2000.0,
+        "currency_target": "USD",
+        "performance_recomendations": faker.text(max_nb_chars=250)
+    }
+    response_a = client.post('/sellers/create', json=seller_data_one, headers=headers)
+    assert response_a.status_code == 201
+    response_b = client.post('/sellers/create', json=seller_data_two, headers=headers)
+    assert response_b.status_code == 201
+
+
+    # Then get the sellers
+    response = client.get('/sellers/sellers', headers=headers)
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert len(data) > 1
