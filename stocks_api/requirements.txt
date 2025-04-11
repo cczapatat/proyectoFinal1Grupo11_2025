@@ -9,3 +9,4 @@ redis==5.2.1
 requests
 pytest==8.3.5
 coverage==7.7.1
+requests-mock==1.11.0

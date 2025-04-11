@@ -61,8 +61,9 @@ def get_stocks_paginate():
 
     page = max(1, request.args.get('page', default=1, type=int))
     per_page = min(max(1, request.args.get('per_page', default=10, type=int)), 50)
+    [stocks, total] = stock_manager.get_stocks_paginate(page=page, per_page=per_page)
 
-    return jsonify(stock_manager.get_stocks_paginate(page, per_page))
+    return jsonify({'stocks': stocks, 'total': total, 'page': page, 'per_page': per_page}), 200
 
 
 @bp.route('/by-ids', methods=('POST',))
@@ -83,7 +84,7 @@ def get_stocks_by_ids():
     for id in ids:
         __valid_uuid(id)
 
-    return jsonify(stock_manager.get_stocks_by_ids(ids))
+    return jsonify(stock_manager.get_stocks_by_ids(ids)), 200
 
 @bp.route('/by-store-id', methods=('GET',))
 def get_stocks_by_store_id():

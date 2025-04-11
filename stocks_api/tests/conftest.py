@@ -1,6 +1,7 @@
 import os
 import uuid
 import pytest
+import uuid
 
 from stocks_api import create_app
 

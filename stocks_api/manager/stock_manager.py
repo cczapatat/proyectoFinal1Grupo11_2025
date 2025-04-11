@@ -3,6 +3,7 @@ import uuid
 from ..dtos.store_x_products_dto import StoreXProductsDTO
 from ..infrastructure.cache_repository import CacheRepository
 from ..infrastructure.stock_repository import StockRepository
+from ..http_services.products_http import get_products_by_id
 
 stock_repository = StockRepository()
 cache_repository = CacheRepository()
@@ -41,25 +42,41 @@ def sync_quantity_in_stock(stocks: list, page: int, per_page: int):
             cache_repository.delete_multiple(stocks_id_to_delete)
 
 
+def populate_products(stocks: list):
+    if len(stocks) > 0:
+        products_id = [stock['product_id'] for stock in stocks]
+        products = get_products_by_id(products_id)
+        products_dict = {product['id']: product for product in products}
+
+        for stock in stocks:
+            if stock['product_id'] in products_dict:
+                stock['product'] = products_dict[stock['product_id']]
+            else:
+                stock['product'] = {}
+
+
 class StockManager:
     @staticmethod
-    def get_stocks_paginate(page: int, per_page: int):
+    def get_stocks_paginate(page: int, per_page: int) -> [list[dict], int]:
         cached_stocks = get_stocks_paginate_from_cache(page, per_page)
         if cached_stocks is not None:
             sync_quantity_in_stock(cached_stocks, page, per_page)
-            return cached_stocks
+            populate_products(cached_stocks)
+            stocks_dict = cached_stocks
+        else:
+            stocks = stock_repository.get_documents(page=page, per_page=per_page)
+            stocks_dict = [stock.to_dict() for stock in stocks]
+            set_cache_stocks_paginate(page, per_page, stocks_dict)
+            populate_products(stocks_dict)
 
-        stocks = stock_repository.get_documents(page=page, per_page=per_page)
-        stocks_dict = [stock.to_dict() for stock in stocks]
-
-        set_cache_stocks_paginate(page, per_page, stocks_dict)
-
-        return stocks_dict
+        total_stocks = stock_repository.get_total_documents()
+        return [stocks_dict, total_stocks]
 
     @staticmethod
     def get_stocks_by_ids(ids: list[uuid.uuid4]) -> list[dict]:
         stocks = stock_repository.get_documents_by_ids(ids)
         stocks_dict = [stock.to_dict() for stock in stocks]
+        populate_products(stocks_dict)
 
         return stocks_dict
     

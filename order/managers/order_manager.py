@@ -27,14 +27,16 @@ class OrderManager:
         if len(product_stocks) != len(order_in_dto.products):
             raise BadRequest(description='product stocks not found')
 
+        total_order_value = 0.0
         for product in order_in_dto.products:
             product_on_stock = next((p for p in product_stocks if p['id'] == product.product_id), None)
             if product_on_stock is None or (product_on_stock['quantity_in_stock'] - product.units) < 0:
                 raise BadRequest(description=f'not enough product stocks {product.product_id}')
+            total_order_value += float(product_on_stock['product'].get('unit_price', 0.0)) * product.units
 
         def transaction_operations() -> [Order, OrderProduct]:
             order_id = uuid.uuid4()
-            order_internal = self.order_repository.create_order(order_id, order_in_dto)
+            order_internal = self.order_repository.create_order(order_id, float(total_order_value), order_in_dto)
             products_internal = self.order_product_repository.create_order_products(order_id, order_in_dto.products)
             return [order_internal, products_internal]
 

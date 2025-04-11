@@ -12,9 +12,17 @@ class StockRepository:
     @staticmethod
     def get_documents(page: int = 1, per_page: int = 10) -> list[Stock]:
         offset = (page - 1) * per_page
-        stocks = db.session.query(Stock).order_by(asc(Stock.id)).offset(offset).limit(per_page).all()
+        stocks = db.session.query(Stock).filter(Stock.quantity_in_stock > 0).order_by(
+            asc(Stock.creation_date)).offset(
+            offset).limit(per_page).all()
 
         return stocks
+
+    @staticmethod
+    def get_total_documents() -> int:
+        total = db.session.query(Stock).filter(Stock.quantity_in_stock > 0).count()
+
+        return total
 
     @staticmethod
     def get_documents_by_ids(ids: list[uuid.uuid4]) -> list[Stock]:

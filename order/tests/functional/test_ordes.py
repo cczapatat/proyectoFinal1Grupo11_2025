@@ -230,8 +230,8 @@ def test_create_order_products_not_enough_not_found(client, headers):
               json={'id': client_id})
         # Mock products not found
         m.post(f'{stocks_api_path}/stocks-api/stocks/by-ids', json=[
-            {'id': str(uuid.uuid4()), 'quantity_in_stock': 10},
-            {'id': str(uuid.uuid4()), 'quantity_in_stock': 10},
+            {'id': str(uuid.uuid4()), 'quantity_in_stock': 10, 'product': {'unit_price': 10}},
+            {'id': str(uuid.uuid4()), 'quantity_in_stock': 10, 'product': {'unit_price': 10.5}},
         ])
 
         response = client.post('/orders/create', headers=headers, json=order_data_mock)
@@ -257,8 +257,8 @@ def test_create_order_products_not_enough_quantity_in_stock(client, headers):
               json={'id': client_id})
         # Mock products found with stock
         m.post(f'{stocks_api_path}/stocks-api/stocks/by-ids', json=[
-            {'id': product_one_id, 'quantity_in_stock': 5},
-            {'id': product_two_id, 'quantity_in_stock': 5}
+            {'id': product_one_id, 'quantity_in_stock': 5, 'product': {'unit_price': 10}},
+            {'id': product_two_id, 'quantity_in_stock': 5, 'product': {'unit_price': 10}},
         ])
 
         order_data_mock_in = order_data_mock.copy()
@@ -286,8 +286,8 @@ def test_create_order_success(client, headers, mock_pubsub):
               json={'id': client_id})
         # Mock products found with stock
         m.post(f'{stocks_api_path}/stocks-api/stocks/by-ids', json=[
-            {'id': product_one_id, 'quantity_in_stock': 100},
-            {'id': product_two_id, 'quantity_in_stock': 50}
+            {'id': product_one_id, 'quantity_in_stock': 100, 'product': {'unit_price': 10}},
+            {'id': product_two_id, 'quantity_in_stock': 50, 'product': {'unit_price': 10}},
         ])
 
         order_data_mock_in = order_data_mock.copy()
@@ -319,8 +319,10 @@ def test_create_order_error_bd_integrity(client, headers):
               json={'id': client_id})
         # Mock products found with stock
         m.post(f'{stocks_api_path}/stocks-api/stocks/by-ids', json=[
-            {'id': product_one_id, 'quantity_in_stock': 99999999999999999999999999999999999},
-            {'id': product_two_id, 'quantity_in_stock': 99999999999999999999999999999999999}
+            {'id': product_one_id, 'quantity_in_stock': 99999999999999999999999999999999999,
+             'product': {'unit_price': 10}},
+            {'id': product_two_id, 'quantity_in_stock': 99999999999999999999999999999999999,
+             'product': {'unit_price': 10}},
         ])
 
         order_data_mock_in = order_data_mock.copy()
@@ -331,3 +333,14 @@ def test_create_order_error_bd_integrity(client, headers):
 
     assert response.status_code == 409
     assert data['message'] == 'Database integrity error. 9h9h'
+
+
+def test_all_security_levels(client, headers):
+    response = client.get('/orders/all-payment-methods', headers=headers)
+    data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert len(data) == 3
+    assert 'PAYMENT_ON_DELIVERY' in data
+    assert 'CREDIT_CARD' in data
+    assert 'DEBIT_CARD' in data

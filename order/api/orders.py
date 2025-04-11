@@ -9,6 +9,7 @@ from google.cloud import pubsub_v1
 from sqlalchemy.exc import DataError
 from werkzeug.exceptions import Unauthorized, InternalServerError
 
+from ..models.enums import PAYMENT_METHOD
 from ..dtos.order_in_dto import OrderInDTO
 from ..dtos.order_product_in_dto import OrderProductInDTO
 from ..managers.order_manager import OrderManager
@@ -115,6 +116,12 @@ def create_order():
     __publish_order_created(order_created)
 
     return jsonify(order_created), 201
+
+
+@bp.route('/all-payment-methods', methods=('GET',))
+def get_security_levels():
+    __there_is_token()
+    return jsonify([payment_method.name for payment_method in PAYMENT_METHOD]), 200
 
 
 @bp.errorhandler(400)

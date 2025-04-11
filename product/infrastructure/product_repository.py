@@ -1,10 +1,15 @@
+import uuid
 from datetime import datetime
-from sqlalchemy.exc import IntegrityError
-from flask import jsonify, make_response
 
+from flask import jsonify, make_response
+from sqlalchemy.exc import IntegrityError
+
+from .cache_repository import CacheRepository
 from ..config.db import db
-from ..models.product_model import Product
 from ..dtos.product_dto import ProductDTO
+from ..models.product_model import Product
+
+cache_repository = CacheRepository()
 
 
 class ProductRepository:
@@ -43,7 +48,7 @@ class ProductRepository:
             return response
 
         return product
-    
+
     @staticmethod
     def get_product_by_id(product_id: str) -> Product:
         product = Product.query.get(product_id)
@@ -54,7 +59,7 @@ class ProductRepository:
             return response
 
         return product
-    
+
     @staticmethod
     def update_product(product_id: str, product_dto: ProductDTO) -> Product:
         product = Product.query.get(product_id)
@@ -80,6 +85,7 @@ class ProductRepository:
 
         try:
             db.session.commit()
+            cache_repository.delete(f"product:{product_id}")
         except IntegrityError as e:
             db.session.rollback()
             response = make_response(
@@ -94,7 +100,7 @@ class ProductRepository:
             return response
 
         return product
-    
+
     @staticmethod
     def get_all_products() -> list[Product]:
         products = Product.query.all()
@@ -107,3 +113,21 @@ class ProductRepository:
         products = Product.query.offset(offset).limit(per_page).all()
 
         return products
+
+    @staticmethod
+    def get_products_by_ids(ids: list[uuid.uuid4]) -> list[Product]:
+        cache_keys = [f"product:{product_id}" for product_id in ids]
+        products_cached = cache_repository.get_multiple(cache_keys)
+        ids_cached = [cached['id'] for cached in products_cached]
+        if products_cached:
+            ids = [product_id for product_id in ids if product_id not in ids_cached]
+
+        if len(ids) == 0:
+            return products_cached
+        else:
+            products = Product.query.filter(Product.id.in_(ids)).all()
+
+        for product in products:
+            cache_repository.set(f"product:{product.id}", product.to_dict())
+
+        return [product.to_dict() for product in products] + products_cached
