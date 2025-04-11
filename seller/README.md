@@ -1,4 +1,4 @@
-# ORDER Component
+# Seller Component
 
 ## Commands Utils
 

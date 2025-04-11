@@ -140,8 +140,8 @@ def test_get_stocks_by_ids_success(client, headers, create_test_stocks):
 
     with requests_mock.Mocker() as m:
         m.post(f'{products_path}/products/by-ids', json=[
-            {'id': str(stock_one.product_id), 'name': 'Product One'},
-            {'id': str(stock_two.product_id), 'name': 'Product Two'}
+            {'id': str(stock_one.id_product), 'name': 'Product One'},
+            {'id': str(stock_two.id_product), 'name': 'Product Two'}
         ], status_code=200)
 
         response_ids = client.post('/stocks-api/stocks/by-ids', headers=headers,
@@ -154,15 +154,15 @@ def test_get_stocks_by_ids_success(client, headers, create_test_stocks):
     assert data_ids[0]['product']['name'] == 'Product One'
     assert data_ids[1]['id'] == str(stock_id_two)
     assert data_ids[1]['product']['name'] == 'Product Two'
-    
+
 
 def test_get_stocks_by_ids_http_products_fail(client, headers, create_test_stocks):
     stock_id_one = uuid.uuid4()
-    stock_one = Stock(id=stock_id_one, product_id=uuid.uuid4(), store_id=uuid.uuid4(), quantity_in_stock=100,
+    stock_one = Stock(id=stock_id_one, id_product=uuid.uuid4(), id_store=uuid.uuid4(), quantity_in_stock=100,
                       last_quantity=100, enabled=True)
     db.session.add(stock_one)
     stock_id_two = uuid.uuid4()
-    stock_two = Stock(id=stock_id_two, product_id=uuid.uuid4(), store_id=uuid.uuid4(), quantity_in_stock=200,
+    stock_two = Stock(id=stock_id_two, id_product=uuid.uuid4(), id_store=uuid.uuid4(), quantity_in_stock=200,
                       last_quantity=200, enabled=True)
     db.session.add(stock_two)
     db.session.commit()
@@ -175,17 +175,16 @@ def test_get_stocks_by_ids_http_products_fail(client, headers, create_test_stock
 
     assert response_ids.status_code == 404
     assert data_ids['message'] == 'products not found'
-    
+
 
 def test_assign_stock_to_store_success(client, headers, create_test_stocks):
-    
     data = {
         "store_id": "ca2b8eb4-431d-4abf-8afe-96f687890dac",
-        "stocks" : [
+        "stocks": [
             {
-                "id" : "",
-                "product_id" : "d707e529-3b7c-44ab-bac5-97b926889eba",
-                "assigned_stock" : "120"
+                "id": "",
+                "product_id": "d707e529-3b7c-44ab-bac5-97b926889eba",
+                "assigned_stock": "120"
             }
         ]
     }
@@ -196,15 +195,15 @@ def test_assign_stock_to_store_success(client, headers, create_test_stocks):
     assert response.status_code == 200
     assert data_response['message'] == 'Stocks assigned successfully'
 
+
 def test_assign_stock_to_store_invalid(client, headers, create_test_stocks):
-    
     data = {
         "store_id": "ca2b8eb4-431d-4abf-8afe-96f687890dac",
-        "stocks" : [
+        "stocks": [
             {
-                "id" : "",
-                "product_id" : "",
-                "assigned_stock" : ""
+                "id": "",
+                "product_id": "",
+                "assigned_stock": ""
             }
         ]
     }
@@ -215,23 +214,24 @@ def test_assign_stock_to_store_invalid(client, headers, create_test_stocks):
     assert response.status_code == 400
     assert data_response['message'] == 'Error: Invalid product or stock data'
 
+
 def test_assign_stock_to_store_update(client, headers, create_test_stocks):
-    
     stock_id_one = uuid.uuid4()
     id_store = uuid.uuid4()
     id_product = uuid.uuid4()
-    stock_one = Stock(id=stock_id_one, id_store=id_store, id_product=id_product, quantity_in_stock=100, last_quantity=100,
+    stock_one = Stock(id=stock_id_one, id_store=id_store, id_product=id_product, quantity_in_stock=100,
+                      last_quantity=100,
                       enabled=True)
     db.session.add(stock_one)
     db.session.commit()
 
     data = {
         "store_id": id_store,
-        "stocks" : [
+        "stocks": [
             {
-                "id" : stock_id_one,
-                "product_id" : id_product,
-                "assigned_stock" : "120"
+                "id": stock_id_one,
+                "product_id": id_product,
+                "assigned_stock": "120"
             }
         ]
     }
@@ -242,16 +242,17 @@ def test_assign_stock_to_store_update(client, headers, create_test_stocks):
     # Verifying the stock was updated in the database
     updated_stock = Stock.query.get(stock_id_one)
 
-
     assert response.status_code == 200
     assert data_response['message'] == 'Stocks assigned successfully'
     assert updated_stock.quantity_in_stock == 120
+
 
 def test_get_stock_by_store_id(client, headers, create_test_stocks):
     store_id = uuid.uuid4()
     stock_id_one = uuid.uuid4()
     id_product = uuid.uuid4()
-    stock_one = Stock(id=stock_id_one, id_store=store_id, id_product=id_product, quantity_in_stock=100, last_quantity=100,
+    stock_one = Stock(id=stock_id_one, id_store=store_id, id_product=id_product, quantity_in_stock=100,
+                      last_quantity=100,
                       enabled=True)
     db.session.add(stock_one)
     db.session.commit()
@@ -261,4 +262,4 @@ def test_get_stock_by_store_id(client, headers, create_test_stocks):
 
     assert response.status_code == 200
     assert len(data_response) == 2
-    assert data_response['id_store'] == str(store_id)
+    assert data_response['store_id'] == str(store_id)

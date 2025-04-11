@@ -1,4 +1,4 @@
-# ORDER Component
+# Client Component
 
 ## Commands Utils
 

@@ -198,15 +198,15 @@ def update_product(product_id):
 @bp.route('/list', methods=('GET',))
 def list_products():
     there_is_token()
-    
+
     page = max(1, request.args.get('page', default=1, type=int))
     per_page = min(max(1, request.args.get('per_page', default=10, type=int)), 50)
     all_products = request.args.get('all', default=False, type=bool)
-    
+
     if all_products:
         products = product_repository.get_all_products()
         return jsonify([product.to_dict() for product in products]), 200
-    
+
     products = product_repository.get_products_by_page(page=page, per_page=per_page)
 
     if isinstance(products, list):

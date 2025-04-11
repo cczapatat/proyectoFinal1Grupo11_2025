@@ -32,7 +32,9 @@ class OrderManager:
             product_on_stock = next((p for p in product_stocks if p['id'] == product.product_id), None)
             if product_on_stock is None or (product_on_stock['quantity_in_stock'] - product.units) < 0:
                 raise BadRequest(description=f'not enough product stocks {product.product_id}')
-            total_order_value += float(product_on_stock['product'].get('unit_price', 0.0)) * product.units
+            price = (float(product_on_stock['product'].get('unit_price', 0.0))
+                     - float(product_on_stock['product'].get('discount_price', 0.0)))
+            total_order_value += price * product.units
 
         def transaction_operations() -> [Order, OrderProduct]:
             order_id = uuid.uuid4()

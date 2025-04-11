@@ -1,4 +1,4 @@
-# STORES Component
+# StocksApi Component
 
 ## Commands Utils
 

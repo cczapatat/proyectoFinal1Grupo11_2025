@@ -4,11 +4,8 @@ import uuid
 from flask import Blueprint, jsonify, request
 from werkzeug.exceptions import Unauthorized, BadRequest
 
-from ..dtos.store_x_products_dto import StoreXProductsDTO
-
-from ..mapper.entity_to_dto import EntityMapper
-
 from ..manager.stock_manager import StockManager
+from ..mapper.entity_to_dto import EntityMapper
 
 bp = Blueprint('stocks', __name__, url_prefix='/stocks-api/stocks')
 
@@ -42,18 +39,19 @@ def assign_stock_store():
 
     if data is None:
         return jsonify({'message': 'data is required'}), 400
-    
+
     store_x_products_dto = EntityMapper.json_to_dto(data)
 
     if store_x_products_dto is None:
         return jsonify({'message': 'invalid data'}), 400
-    
+
     result = stock_manager.assign_stock_store(store_x_products_dto)
 
     if result["message"].__contains__("Error"):
         return jsonify(result), 400
 
     return jsonify(result), 200
+
 
 @bp.route('/all', methods=('GET',))
 def get_stocks_paginate():
@@ -85,6 +83,7 @@ def get_stocks_by_ids():
         __valid_uuid(id)
 
     return jsonify(stock_manager.get_stocks_by_ids(ids)), 200
+
 
 @bp.route('/by-store-id', methods=('GET',))
 def get_stocks_by_store_id():

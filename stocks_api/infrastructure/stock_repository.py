@@ -2,9 +2,8 @@ import uuid
 
 from sqlalchemy import asc
 
-from ..dtos.store_x_products_dto import ProductStockDTO, StoreXProductsDTO
-
 from ..config.db import db
+from ..dtos.store_x_products_dto import ProductStockDTO, StoreXProductsDTO
 from ..models.stock_model import Stock
 
 
@@ -43,11 +42,10 @@ class StockRepository:
             store_x_products_dto.stocks.append(product_stock_dto)
 
         return store_x_products_dto
-    
 
     @staticmethod
     def assign_stock_to_store(id: uuid.uuid4, store_id: uuid.uuid4, product_id: uuid.uuid4, assigned_stock: int):
-        #Check if the Stock entry already exists
+        # Check if the Stock entry already exists
         if id is None or id == '':
             # Create a new Stock entry if it doesn't exist
             stock = Stock(id=uuid.uuid4(), id_product=product_id, id_store=store_id, quantity_in_stock=assigned_stock)

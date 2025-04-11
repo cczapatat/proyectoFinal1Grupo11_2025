@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
 
+
 @dataclass
 class ProductStockDTO:
-    id : str = field(default=None)
+    id: str = field(default=None)
     id_product: int = field(default=None)
     assigned_stock: int = field(default=None)
 
@@ -12,6 +13,7 @@ class ProductStockDTO:
             'product_id': str(self.id_product),
             'assigned_stock': int(self.assigned_stock)
         }
+
 
 @dataclass
 class StoreXProductsDTO:

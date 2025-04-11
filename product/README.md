@@ -1,4 +1,4 @@
-# STORES Component
+# Product Component
 
 ## Commands Utils
 
