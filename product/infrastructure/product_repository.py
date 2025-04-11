@@ -100,3 +100,10 @@ class ProductRepository:
         products = Product.query.all()
 
         return products
+    
+    @staticmethod
+    def get_products_by_page(page: int, per_page: int) -> list[Product]:
+        offset = (page - 1) * per_page
+        products = Product.query.offset(offset).limit(per_page).all()
+
+        return products

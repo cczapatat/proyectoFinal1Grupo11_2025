@@ -1,12 +1,14 @@
 import uuid
 from datetime import datetime
 
+from ..models.enums import STATE
+
 from ..config.db import db
 from ..dtos.store_in_dto import StoreInDTO
 from ..models.store_model import Store
 
 
-class StockRepository:
+class StoreRepository:
     @staticmethod
     def get_store_by_id(id_store: uuid.uuid4) -> Store | None:
         store = db.session.query(Store).filter_by(id=id_store).one_or_none()
@@ -30,3 +32,10 @@ class StockRepository:
         db.session.commit()
 
         return store
+
+    @staticmethod
+    def get_stores_by_page(page: int, per_page: int, state : STATE) -> list[Store]: 
+        offset = (page - 1) * per_page
+        stores = db.session.query(Store).filter_by(state=state).order_by(Store.name).offset(offset).limit(per_page).all()
+
+        return stores
