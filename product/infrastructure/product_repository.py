@@ -102,6 +102,54 @@ class ProductRepository:
         return product
 
     @staticmethod
+    def update_massive_products(products: list[Product]) -> list[Product]:
+        product_ids = [product.id for product in products]
+        existing_products = Product.query.filter(Product.id.in_(product_ids)).all()
+        
+        if not existing_products:
+            response = make_response(
+                jsonify({"error": "Products not found", "message": "Products not found"}), 404
+            )
+            return response
+        
+        existing_products_dict = {str(product.id): product for product in existing_products}
+
+        for product in products:
+            existing_product = existing_products_dict.get(product.id)
+
+            if existing_product:
+                existing_product.manufacturer_id = product.manufacturer_id
+                existing_product.name = product.name
+                existing_product.description = product.description
+                existing_product.category = product.category
+                existing_product.unit_price = product.unit_price
+                existing_product.currency_price = product.currency_price
+                existing_product.is_promotion = product.is_promotion
+                existing_product.discount_price = product.discount_price
+                existing_product.expired_at = product.expired_at
+                existing_product.url_photo = product.url_photo
+                existing_product.store_conditions = product.store_conditions
+                existing_product.updated_at = datetime.now()
+
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            response = make_response(
+                jsonify({"error": "Integrity error", "message": str(e.orig)}), 400
+            )
+            return response
+        except Exception as e:
+            db.session.rollback()
+            response = make_response(
+                jsonify({"error": "Internal server error", "message": str(e)}), 500
+            )
+            return response
+
+        return products
+
+    
+    @staticmethod
     def get_all_products() -> list[Product]:
         products = Product.query.all()
 

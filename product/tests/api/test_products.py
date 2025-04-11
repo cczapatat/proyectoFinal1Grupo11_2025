@@ -2,6 +2,7 @@ import json
 
 from faker import Faker
 
+
 from product import application as app
 from product.models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT
 
@@ -294,6 +295,126 @@ class TestProduct:
         response = self._put_product(product, productId)
 
         assert response.status_code == 500
+
+    def test_update_massive_products_error_empty_list(self):
+        response = self.test_client.put(
+            '/products/massive/update',
+            data=json.dumps([]),
+            headers={
+                'x-token': 'internal_token',
+                'content-type': 'application/json'
+            }
+        )
+
+        assert response.status_code == 400
+
+        json_response = json.loads(response.data)
+        assert json_response['message'] == 'products is required and must be a non-empty array'
+    
+    def test_update_massive_products_error_missing_field(self):
+        required_fields = [
+            "id", "manufacturer_id", "name", "description", "category",
+            "unit_price", "currency_price", "is_promotion",
+            "discount_price", "url_photo", "store_conditions"
+        ]
+
+        for field in required_fields:
+            product_data = self._generate_product_data()
+            product_response = self._post_product(product_data)
+
+            assert product_response.status_code == 201
+
+            product = json.loads(product_response.data)
+            product.pop(field)
+
+            response = self.test_client.put(
+                '/products/massive/update',
+                data=json.dumps([product]),
+                headers={
+                    'x-token': 'internal_token',
+                    'content-type': 'application/json'
+                }
+            )
+
+            assert response.status_code == 400
+
+            json_response = json.loads(response.data)
+            assert json_response['message'] == f'products[0].{field} is required'
+        
+
+
+    def test_update_massive_products_success(self):
+        product_data = self._generate_product_data()
+        product_response = self._post_product(product_data)
+
+        assert product_response.status_code == 201
+
+        product = json.loads(product_response.data)
+
+        nameUpdated = self.data_factory.word()
+        product['name'] = nameUpdated
+
+        response = self.test_client.put(
+            '/products/massive/update',
+            data=json.dumps([product]),
+            headers={
+                'x-token': 'internal_token',
+                'content-type': 'application/json'
+            }
+        )
+
+        response_data = json.loads(response.data)
+
+        assert response.status_code == 202
+        assert response_data["message"] == 'The update operation is being processed in the background'
+    
+    def test_update_massive_products_error_past_expired_at(self):
+        product_data = self._generate_product_data()
+        product_response = self._post_product(product_data)
+
+        assert product_response.status_code == 201
+
+        product = json.loads(product_response.data)
+
+        expired_at = (self.data_factory.past_datetime()).isoformat()
+        product['expired_at'] = expired_at
+
+        response = self.test_client.put(
+            '/products/massive/update',
+            data=json.dumps([product]),
+            headers={
+                'x-token': 'internal_token',
+                'content-type': 'application/json'
+            }
+        )
+
+        assert response.status_code == 400
+        json_response = json.loads(response.data)
+        assert json_response['message'] == 'products[0].expired_at must be a future date'
+    
+    def test_update_massive_products_error_invalid_format_expired_at(self):
+        product_data = self._generate_product_data()
+        product_response = self._post_product(product_data)
+
+        assert product_response.status_code == 201
+
+        product = json.loads(product_response.data)
+
+        expired_at = "BAD_DATE"
+        product['expired_at'] = expired_at
+
+        response = self.test_client.put(
+            '/products/massive/update',
+            data=json.dumps([product]),
+            headers={
+                'x-token': 'internal_token',
+                'content-type': 'application/json'
+            }
+        )
+
+        assert response.status_code == 400
+        json_response = json.loads(response.data)
+        assert json_response['message'] == 'products[0].expired_at must be a valid date'
 
     def test_get_product(self):
         product_data = self._generate_product_data()
