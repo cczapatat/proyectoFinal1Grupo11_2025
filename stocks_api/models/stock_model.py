@@ -13,7 +13,6 @@ class Stock(db.Model):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     id_product = Column(UUID(as_uuid=True), nullable=False)
     id_store = Column(UUID(as_uuid=True), nullable=False)
-    product_name = Column(String(255), nullable=True)  
     quantity_in_stock = Column(Integer(), nullable=True, default=0)
     last_quantity = Column(Integer(), nullable=True, default=0)
     enabled = Column(Boolean(), default=True)

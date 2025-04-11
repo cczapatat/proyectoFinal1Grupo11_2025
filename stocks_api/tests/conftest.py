@@ -1,4 +1,5 @@
 import os
+import uuid
 import pytest
 
 from stocks_api import create_app
@@ -33,11 +34,14 @@ def headers():
 def create_test_stocks(app):
     from stocks_api.config.db import db
     from stocks_api.models.stock_model import Stock
+    
+    id_store = uuid.uuid4()
 
     stocks = []
     for i in range(15):
         stock = Stock(
-            product_name=f"Product {i}",
+            id_product=uuid.uuid4(),
+            id_store=id_store,
             quantity_in_stock=100 + i,
             last_quantity=100 + i,
             enabled=True
