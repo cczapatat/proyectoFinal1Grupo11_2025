@@ -1,8 +1,8 @@
 import os
 import uuid
 from datetime import datetime
-
-from flask import Blueprint, jsonify, request
+from threading import Thread
+from flask import current_app, Blueprint, jsonify, request
 from werkzeug.exceptions import Unauthorized, BadRequest
 
 from ..dtos.product_dto import ProductDTO
@@ -194,6 +194,91 @@ def update_product(product_id):
 
     return update_product_response
 
+@bp.route('/massive/update', methods=('PUT',))
+def update_massive_products():
+    there_is_token()
+    
+    # Parse the JSON data from the request
+    data = request.get_json()
+
+    # Validate that the data is a list and contains products
+    if not isinstance(data, list) or len(data) == 0:
+        return jsonify({'message': 'products is required and must be a non-empty array'}), 400
+
+    products_to_update = []
+
+    # Iterate over the products in the data array
+    for index, product in enumerate(data):
+        id = product.get('id')
+        manufacturer_id = product.get('manufacturer_id')
+        name = product.get('name')
+        description = product.get('description')
+        category = product.get('category')
+        unit_price = product.get('unit_price')
+        currency_price = product.get('currency_price')
+        is_promotion = product.get('is_promotion')
+        discount_price = product.get('discount_price')
+        expired_at = product.get('expired_at')
+        url_photo = product.get('url_photo')
+        store_conditions = product.get('store_conditions')
+
+        # Validate required fields for each product
+        if id is None:
+            return jsonify({'message': f'products[{index}].id is required'}), 400
+        if manufacturer_id is None:
+            return jsonify({'message': f'products[{index}].manufacturer_id is required'}), 400
+        if name is None:
+            return jsonify({'message': f'products[{index}].name is required'}), 400
+        if description is None:
+            return jsonify({'message': f'products[{index}].description is required'}), 400
+        if category is None:
+            return jsonify({'message': f'products[{index}].category is required'}), 400
+        if unit_price is None:
+            return jsonify({'message': f'products[{index}].unit_price is required'}), 400
+        if currency_price is None:
+            return jsonify({'message': f'products[{index}].currency_price is required'}), 400
+        if is_promotion is None:
+            return jsonify({'message': f'products[{index}].is_promotion is required'}), 400
+        if discount_price is None:
+            return jsonify({'message': f'products[{index}].discount_price is required'}), 400
+        try:
+            if expired_at is not None and datetime.fromisoformat(expired_at) <= datetime.now():
+                return jsonify({'message': f'products[{index}].expired_at must be a future date'}), 400
+        except ValueError:
+            return jsonify({'message': f'products[{index}].expired_at must be a valid date'}), 400
+        if url_photo is None:
+            return jsonify({'message': f'products[{index}].url_photo is required'}), 400
+        if store_conditions is None:
+            return jsonify({'message': f'products[{index}].store_conditions is required'}), 400
+
+        # Create a Product object for each valid product
+        product_to_update = Product(
+            id=id,
+            manufacturer_id=manufacturer_id,
+            name=name,
+            description=description,
+            category=category,
+            unit_price=unit_price,
+            currency_price=currency_price,
+            is_promotion=is_promotion,
+            discount_price=discount_price,
+            expired_at=expired_at,
+            url_photo=url_photo,
+            store_conditions=store_conditions
+        )
+        products_to_update.append(product_to_update)
+
+    # Run the update operation in a separate thread
+    def update_products_async(app, products):
+        with app.app_context():  # Push the application context
+            product_repository.update_massive_products(products)
+
+    # Pass the current Flask app to the thread
+    app = current_app._get_current_object()
+    Thread(target=update_products_async, args=(app, products_to_update)).start()
+
+    # Immediately return a response
+    return jsonify({'message': 'The update operation is being processed in the background'}), 202
 
 @bp.route('/list', methods=('GET',))
 def list_products():
