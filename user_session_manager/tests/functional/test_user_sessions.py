@@ -216,7 +216,7 @@ def test_validate_token_client(client, headers):
 
 def test_get_clients_by_seller(client, headers):
     with requests_mock.Mocker() as m:
-        m.get(f'{host_client}/clients/seller/17d371c3-74be-47d6-ac25-4b469d693688', json=[
+        m.get(f'{host_client}/clients/seller/pag/17d371c3-74be-47d6-ac25-4b469d693688', json=[
             {
                 "address": "AV 123",
                 "client_type": "CORNER_STORE",
