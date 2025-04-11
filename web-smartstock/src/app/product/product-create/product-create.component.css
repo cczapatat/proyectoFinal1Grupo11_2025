@@ -8,12 +8,19 @@ body {
     margin-top: 40px;
   }
   
-  .title {
-    font-size: 28px;
-    font-weight: bold;
-    color: #5a2d0c;
-    margin-bottom: 20px;
-  }
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #5a2d0c;
+  margin-bottom: 20px;
+}
+
+.title_second {
+  font-size: 18px;
+  font-weight: bold;
+  color: #5a2d0c;
+  margin-bottom: 20px;
+}
   
   .form-container {
     background: #fff;

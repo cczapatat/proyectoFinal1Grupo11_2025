@@ -190,5 +190,32 @@
     "SUCCESS_TITLE": "Éxito",
     "ERROR_MESSAGE": "Ha ocurrido un error:",
     "ERROR_TITLE": "Error"
+  },
+  "SALESPEOPLE": {
+    "TITLE": "Lista de clientes de un Vendedor",
+    "SALESPEOPLE": "Vendedores",
+    "CUSTOMERS": "Clientes",
+    "FILTER_BY_NAME": "Filtrar por nombre",
+    "ZONE": "Zona",
+    "EMAIL": "Correo Electrónico",
+    "SELECT_SALESPERSON": "Seleccionar un vendedor",
+    "PREVIOUS": "Anterior",
+    "NEXT": "Siguiente",
+    "ERROR_MESSAGE": "Ha ocurrido un error:",
+    "ERROR_TITLE": "Error",
+    "EMPTY_SALESPEOPLE": "No se encontraron vendedores",
+    "EMPTY_CUSTOMERS":"No se encontraron clientes"
+  },
+  "ZONES":{
+    "NORTH": "Norte",
+    "SOUTH":"Sur",
+    "EAST":"Este",
+    "WEST":"Oeste",
+    "CENTER":"Centro",
+    "NOTRHEAST":"Norte-Este",
+    "NORTHEAST":"Norte-Este",
+    "NORTHWEST":"Norte-Oeste",
+    "SOUTHEAST":"Sur-Este",
+    "SOUTHWEST":"Sur-Oeste"
   }
 }

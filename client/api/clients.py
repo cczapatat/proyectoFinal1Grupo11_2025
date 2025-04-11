@@ -184,7 +184,7 @@ def get_seller_clients_paginated(seller_id):
 
     sort_by = ClientSortField(sort_by_str)
     """Get all clients for a specific seller"""
-    clients_data = get_clients_by_seller_id(
+    clients_data = get_clients_by_seller_id_paginated(
         seller_id=seller_id,
         page=page,
         per_page=per_page,
