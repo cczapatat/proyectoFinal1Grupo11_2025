@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime
 
 from flask import jsonify, make_response
+from sqlalchemy import asc, desc
 from sqlalchemy.exc import IntegrityError
 
 from .cache_repository import CacheRepository
@@ -179,3 +180,33 @@ class ProductRepository:
             cache_repository.set(f"product:{product.id}", product.to_dict())
 
         return [product.to_dict() for product in products] + products_cached
+    
+    @staticmethod
+    def get_products_paginated_full(page: int = 1, per_page: int = 10, sort_order: str = 'asc') -> dict:
+        """
+        Obtiene los productos paginados y ordenados por el campo 'name'.
+
+        Parámetros:
+        - page: Número de página a recuperar.
+        - per_page: Cantidad de registros por página.
+        - sort_order: 'asc' para orden ascendente, 'desc' para descendente.
+
+        Retorna:
+        Diccionario con la data (lista de productos en formato dict), total de registros,
+        página actual, total de páginas y cantidad de registros por página.
+        """
+        # Seleccionar función de ordenamiento
+        sort_fn = asc if sort_order.lower() == 'asc' else desc
+        # Por ahora, ordenamos solo por el campo 'name'
+        sort_column = Product.name
+
+        # Construir la consulta con orden y paginación. Se usa error_out=False para no lanzar excepción
+        pagination = Product.query.order_by(sort_fn(sort_column)).paginate(page=page, per_page=per_page, error_out=False)
+
+        return {
+            "data": [product.to_dict() for product in pagination.items],
+            "total": pagination.total,
+            "page": pagination.page,
+            "total_pages": pagination.pages,
+            "per_page": pagination.per_page
+        }

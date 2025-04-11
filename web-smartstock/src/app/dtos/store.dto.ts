@@ -1,39 +1,22 @@
 export class StoreDto {
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  capacity: number;
-  state: string;
-  security_level: string;
-
-  id?: string;
-  created_at?: Date;
-  updated_at?: Date;
-
   constructor(
-    name: string,
-    phone: string,
-    email: string,
-    address: string,
-    capacity: number,
-    state: string,
-    security_level: string,
+    public name: string,
+    public phone: string,
+    public email: string,
+    public address: string,
+    public capacity: number,
+    public state: string,
+    public security_level: string,
+    public id?: string,
+    public created_at?: Date,
+    public updated_at?: Date,
+  ) {}
+}
 
-    id?: string,
-    created_at?: Date,
-    updated_at?: Date,
-  ) {
-    this.name = name;
-    this.phone = phone;
-    this.email = email;
-    this.address = address;
-    this.capacity = capacity;
-    this.state = state;
-    this.security_level = security_level;
-
-    this.id = id;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
-  }
+export interface PaginatedStores {
+  data: StoreDto[];
+  page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
 }

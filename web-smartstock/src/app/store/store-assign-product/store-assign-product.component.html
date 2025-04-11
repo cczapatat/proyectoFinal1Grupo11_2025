@@ -1,3 +1,145 @@
-<div class="container">
-  <h2>Asignar Productos a Bodega</h2>
+<div class="container-fluid">
+  <!-- Main Title -->
+  <h2 class="text-center title" style="margin: 1.5rem 0 1rem 0;">Assign Products to Store</h2>
+  
+  <div class="row">
+    <!-- Left Column: Stores Table -->
+    <div class="col-md-7">
+      <h2 class="title_second">Stores</h2>
+      <table class="table custom-bordered-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th (click)="toggleStoreSortOrder()" style="cursor: pointer;">
+              Filter by name
+              <span [ngClass]="{'bi bi-arrow-down': storeSortOrder==='asc', 'bi bi-arrow-up': storeSortOrder==='desc'}"></span>
+            </th>
+            <th>Address</th>
+            <th>Email</th>
+          </tr>
+          <tr *ngIf="showStoreFilter">
+            <th colspan="4">
+              <input type="text" class="form-control" placeholder="Filter by store name">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="stores.length > 0; else noStores">
+            <tr *ngFor="let store of stores" [class.table-active]="store === selectedStore">
+              <td class="text-center align-middle">
+                <input type="checkbox" class="form-check-input" [checked]="store === selectedStore" (change)="onSelectStore(store)">
+              </td>
+              <td class="fw-bold">
+                <img [src]="'assets/images/' + store.id + '.png'" alt="{{ store.name }}" width="30" height="30">
+                {{ store.name }}
+              </td>
+              <td>{{ store.address }}</td>
+              <td>{{ store.email }}</td>
+            </tr>
+            <ng-container *ngIf="stores.length < 10">
+              <tr *ngFor="let i of [].constructor(10 - stores.length)" class="empty-row">
+                <td colspan="4">&nbsp;</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #noStores>
+            <tr class="empty-row">
+              <td colspan="4" class="text-center text-muted">No stores found</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+      <!-- Pagination for Stores -->
+      <div class="btn-group">
+        <button class="pagination-button" [disabled]="storePage <= 1" (click)="changeStorePage(-1)">
+          <i class="bi bi-arrow-left"></i> Previous
+        </button>
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationStorePages(storePage, totalStorePages)"
+                  class="pagination-button"
+                  [ngClass]="{'active': page === storePage}"
+                  (click)="onStorePageClick(page)">
+            {{ page }}
+          </button>
+        </div>
+        <button class="pagination-button" [disabled]="storePage >= totalStorePages" (click)="changeStorePage(1)">
+          Next <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Right Column: Products Table -->
+    <div class="col-md-5">
+      <h2 class="title_second">Products</h2>
+      <table class="table custom-bordered-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th (click)="toggleProductSortOrder()" style="cursor: pointer;">
+              Filter by name
+              <span [ngClass]="{'bi bi-arrow-down': productSortOrder==='asc', 'bi bi-arrow-up': productSortOrder==='desc'}"></span>
+            </th>
+            <th>Category</th>
+            <th>Quantity</th>
+          </tr>
+          <tr *ngIf="showProductFilter">
+            <th colspan="4">
+              <input type="text" class="form-control" placeholder="Filter by product name">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="products.length > 0; else noProducts">
+            <tr *ngFor="let product of products" [class.table-active]="product.selected">
+              <td class="text-center align-middle">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="product.selected" (change)="onProductSelect(product)">
+              </td>
+              <td class="fw-bold">
+                <img [src]="product.url_photo" alt="{{ product.name }}" width="30" height="30">
+                {{ product.name }}
+              </td>
+              <td>{{ product.category }}</td>
+              <td>
+                <input type="number" class="form-control" [(ngModel)]="product.quantity" min="0" [disabled]="!product.selected">
+              </td>
+            </tr>
+            <ng-container *ngIf="products.length < 10">
+              <tr *ngFor="let i of [].constructor(10 - products.length)" class="empty-row">
+                <td colspan="4">&nbsp;</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #noProducts>
+            <tr class="empty-row">
+              <td colspan="4" class="text-center text-muted">No products found</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+      <!-- Pagination for Products -->
+      <div class="btn-group">
+        <button class="pagination-button" [disabled]="productPage <= 1" (click)="changeProductPage(-1)">
+          <i class="bi bi-arrow-left"></i> Previous
+        </button>
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationProductPages(productPage, totalProductPages)"
+                  class="pagination-button"
+                  [ngClass]="{'active': page === productPage}"
+                  (click)="onProductPageClick(page)">
+            {{ page }}
+          </button>
+        </div>
+        <button class="pagination-button" [disabled]="productPage >= totalProductPages" (click)="changeProductPage(1)">
+          Next <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Save Button -->
+  <div class="row save-button-row">
+    <div class="col-12 text-center">
+      <button class="register-btn" [disabled]="!hasChanges" (click)="saveAssignments()">Save</button>
+    </div>
+  </div>
 </div>

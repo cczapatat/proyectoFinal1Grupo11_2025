@@ -59,3 +59,17 @@ class StockRepository:
             stock.quantity_in_stock = assigned_stock
         # Commit the changes to the database
         db.session.commit()
+
+    @staticmethod
+    def unassign_stock_to_store(id_store: uuid.uuid4, selected_stocks: list[ProductStockDTO]):
+        # get all the stocks by store id
+        stocks = db.session.query(Stock).filter_by(id_store=id_store).all()
+        # if any of the stocks are not in the selected stocks, remove them
+        for stock in stocks:
+            if stock.id_product not in [selected_stock.id_product for selected_stock in selected_stocks]:
+                db.session.delete(stock)
+        # commit the changes to the database
+        db.session.commit()
+        # return the stocks left
+        stocks = db.session.query(Stock).filter_by(id_store=id_store).all()
+        return stocks

@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment'
 import { Product } from '../product/product';
 import { ProductCategory } from '../dtos/product-category';
 import { ProductCurrency } from '../dtos/product-currency';
+import { PaginatedProducts } from '../dtos/product';
 
 @Injectable({
   providedIn: 'root'
@@ -64,4 +65,14 @@ export class ProductService {
     })
     return this.http.get<ProductCurrency[]>(`${this.apiProductUrl}/currencies`, { headers: headers })
   }
+
+  getProductsPaginated(page: number = 1, perPage: number = 10, sortOrder: string = 'asc'): Observable<PaginatedProducts> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+      'x-token': environment.xToken
+    })
+    return this.http.get<PaginatedProducts>(`${this.apiProductUrl}/paginated_full?page=${page}&per_page=${perPage}&sort_order=${sortOrder}`, { headers: headers })
+  }
+
 }
+
