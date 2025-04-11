@@ -94,6 +94,20 @@ def get_security_levels():
     there_is_token()
     return jsonify([security_level.name for security_level in SECURITY_LEVEL]), 200
 
+@bp.route('/paginated_full', methods=('GET',))
+def get_stores_paginated_full():
+    there_is_token()
+
+    # Obtener parámetros de paginación y ordenación con valores por defecto
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    # Para este caso, el sorting es solo por 'name' y se permite indicar el orden (asc o desc)
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+    
+    # Llamar al store_manager para obtener la data paginada y ordenada
+    stores_data = store_manager.get_stores_paginated_full(page=page, per_page=per_page, sort_order=sort_order)
+
+    return jsonify(stores_data), 200
 
 # Error Handlers
 @bp.errorhandler(400)
