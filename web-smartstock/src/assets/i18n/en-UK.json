@@ -184,5 +184,32 @@
     "SUCCESS_TITLE": "Success",
     "ERROR_MESSAGE": "An error occurred:",
     "ERROR_TITLE": "Error"
+  },
+  "SALESPEOPLE": {
+    "TITLE": "List customers of a salesperson",
+    "SALESPEOPLE": "Salespeople",
+    "CUSTOMERS": "Customers",
+    "FILTER_BY_NAME": "Filter by name",
+    "ZONE": "Zone",
+    "EMAIL": "Email",
+    "SELECT_SALESPERSON": "Select a salesperson",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "ERROR_MESSAGE": "An error occurred:",
+    "ERROR_TITLE": "Error",
+    "EMPTY_SALESPEOPLE": "Salespeople not found",
+    "EMPTY_CUSTOMERS":"Customers not found"
+  },
+  "ZONES":{
+    "NORTH": "North",
+    "SOUTH":"South",
+    "EAST":"East",
+    "WEST":"West",
+    "CENTER":"Center",
+    "NOTRHEAST":"North-East",
+    "NORTHEAST":"Norte-East",
+    "NORTHWEST":"North-West",
+    "SOUTHEAST":"South-East",
+    "SOUTHWEST":"South-West"
   }
 }

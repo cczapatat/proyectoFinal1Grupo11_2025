@@ -25,7 +25,11 @@ export class SellerService extends BaseService {
 
   getSellersPaginated(page: number = 1, perPage: number = 10, sortBy: string = 'name', sortOrder: string = 'asc'): Observable<PaginatedSellers> {
     const getAllSellerPag = `${this.userManagerAPI}/sellers/pag?page=${page}&per_page=${perPage}&sort_by=${sortBy}&sort_order=${sortOrder}`;
-    return this.http.get<PaginatedSellers>(getAllSellerPag);
+    return this.http.get<PaginatedSellers>(getAllSellerPag,
+      {
+        headers: this.defaultHeaders
+      }
+    );
   }
 
 

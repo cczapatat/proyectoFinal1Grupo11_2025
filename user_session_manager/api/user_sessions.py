@@ -226,7 +226,7 @@ def get_clients_by_seller(seller_id:str):
     sort_by = ClientSortField(sort_by_str).value
     """Get all clients for a specific seller"""
 
-    url = f"{host_client}/clients/seller/{seller_id}?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
+    url = f"{host_client}/clients/seller/pag/{seller_id}?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
     headers = request.headers
     get_client_response = requests.get(url, headers=headers)
     data = get_client_response.json()
