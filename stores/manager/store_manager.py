@@ -28,3 +28,18 @@ class StoreManager:
     def get_stores_paginate(state : any, page: int = 1, per_page: int = 10) -> list[dict]:
         stores = store_repository.get_stores_by_page(page=page, per_page=per_page, state=state)
         return [store.to_dict() for store in stores]
+    
+    @staticmethod
+    def get_stores_paginated_full(page: int = 1, per_page: int = 10, sort_order: str = "asc") -> dict:
+        """
+        Obtiene las tiendas paginadas y ordenadas.
+        
+        Parámetros:
+        - page: número de página a recuperar
+        - per_page: cantidad de registros por página
+        - sort_order: orden de clasificación ('asc' o 'desc')
+        
+        Retorna:
+        Un diccionario con la data paginada y los metadatos.
+        """
+        return store_repository.get_stores_paginated_full(page=page, per_page=per_page, sort_order=sort_order)
