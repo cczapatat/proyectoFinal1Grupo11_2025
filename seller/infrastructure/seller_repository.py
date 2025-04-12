@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import asc, desc
 from ..config.db import db
 
-from seller.infrastructure.seller_sort_field import SellerSortField
+from ..infrastructure.seller_sort_field import SellerSortField
 
 from ..models.seller_model import Seller
 

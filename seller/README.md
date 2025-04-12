@@ -14,7 +14,7 @@ flask --app . run --host=0.0.0.0 --port=3007
 python -m pytest -vv
 ```
 
-### Run Tests with Coverage
+### Run Tests With Coverage
 
 ```bash
 coverage run -m pytest -vv
