@@ -123,3 +123,9 @@ body {
 .register-btn[disabled] {
   cursor: not-allowed;
 }
+
+.img {
+  width: 10%;
+  height: 10%;
+  margin: 0 auto;
+}

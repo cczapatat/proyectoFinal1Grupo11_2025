@@ -159,4 +159,11 @@ def test_get_stores_paginate(client, headers):
 
     assert response.status_code == 200
     assert isinstance(data, list)
+
+def test_get_stores_paginated_full(client, headers):
+    response = client.get('/stores/paginated_full', headers=headers)
+    data = json.loads(response.data)
+
+    assert response.status_code == 200    
+    assert len(data) > 0
    
