@@ -7,7 +7,7 @@ from werkzeug.exceptions import Unauthorized, BadRequest
 from ..config.db import db
 from ..dtos.seller_dto import SellerDTO
 from ..infrastructure.seller_repository import SellerRepository
-from seller.infrastructure.seller_sort_field import SellerSortField
+from ..infrastructure.seller_sort_field import SellerSortField
 
 from sqlalchemy.exc import IntegrityError, DataError
 
