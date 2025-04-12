@@ -27,10 +27,12 @@
           <ng-container *ngIf="stores.length > 0; else noStores">
             <tr *ngFor="let store of stores" [class.table-active]="store === selectedStore">
               <td class="text-center align-middle">
-                <input type="checkbox" class="form-check-input" [checked]="store === selectedStore" (change)="onSelectStore(store)">
+                <input type="checkbox" class="form-check-input" 
+                       [checked]="store === selectedStore" 
+                       (change)="onSelectStore(store)">
               </td>
               <td class="fw-bold">
-                <img [src]="'assets/images/' + store.id + '.png'" alt="{{ store.name }}" width="30" height="30">
+                <img [src]="'assets/images/stores/' + store.image" alt="{{ store.name }}" width="30" height="30">
                 {{ store.name }}
               </td>
               <td>{{ store.address }}</td>
@@ -92,15 +94,20 @@
           <ng-container *ngIf="products.length > 0; else noProducts">
             <tr *ngFor="let product of products" [class.table-active]="product.selected">
               <td class="text-center align-middle">
-                <input type="checkbox" class="form-check-input" [(ngModel)]="product.selected" (change)="onProductSelect(product)">
+                <input type="checkbox" class="form-check-input" 
+                       [(ngModel)]="product.selected" 
+                       (ngModelChange)="onProductSelect(product)">
               </td>
               <td class="fw-bold">
-                <img [src]="product.url_photo" alt="{{ product.name }}" width="30" height="30">
+                <img [src]="'assets/images/products/' + product.local_image" alt="{{ product.name }}" width="30" height="30">
                 {{ product.name }}
               </td>
               <td>{{ product.category }}</td>
               <td>
-                <input type="number" class="form-control" [(ngModel)]="product.quantity" min="0" [disabled]="!product.selected">
+                <input type="number" class="form-control" 
+                       [(ngModel)]="product.quantity" 
+                       (ngModelChange)="onProductQuantityChange(product)"
+                       min="0" [disabled]="!product.selected">
               </td>
             </tr>
             <ng-container *ngIf="products.length < 10">
@@ -136,10 +143,15 @@
     </div>
   </div>
   
-  <!-- Save Button -->
+  <!-- Save Button with dynamic color -->
   <div class="row save-button-row">
     <div class="col-12 text-center">
-      <button class="register-btn" [disabled]="!hasChanges" (click)="saveAssignments()">Save</button>
+      <button class="register-btn"
+              [ngStyle]="{'background-color': hasChanges ? '#984C0C' : '#6C757D'}"
+              [disabled]="!hasChanges"
+              (click)="saveAssignments()">
+        Save
+      </button>
     </div>
   </div>
 </div>
