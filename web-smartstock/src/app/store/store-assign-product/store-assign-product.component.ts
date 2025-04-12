@@ -24,31 +24,31 @@ interface ExtendedStore extends StoreDto {
   styleUrls: ['./store-assign-product.component.css']
 })
 export class StoreAssignProductComponent implements OnInit {
-  // Extended stores and products loaded via service calls.
+  // Tiendas extendidas y productos cargados a través de llamadas a servicios.
   stores: ExtendedStore[] = [];
   products: ProductExtended[] = [];
 
-  // Dictionary to persist product selections across pagination.
+  // Diccionario para persistir las selecciones de productos entre paginaciones.
   productSelections: { [id: string]: { selected: boolean, quantity: number } } = {};
 
-  // Currently selected store.
+  // Tienda actualmente seleccionada.
   selectedStore: ExtendedStore | null = null;
 
-  // Pagination and sorting settings for stores.
+  // Configuración de paginación y ordenamiento para tiendas.
   storePage: number = 1;
   totalStorePages: number = 1;
   storeSortOrder: string = 'asc';
 
-  // Pagination and sorting settings for products.
+  // Configuración de paginación y ordenamiento para productos.
   productPage: number = 1;
   totalProductPages: number = 1;
   productSortOrder: string = 'asc';
 
-  // Flags for showing/hiding filter textbox.
+  // Flags para mostrar/ocultar el cuadro de texto de filtro.
   showStoreFilter: boolean = false;
   showProductFilter: boolean = false;
 
-  // Flag to track unsaved changes.
+  // Flag para rastrear cambios no guardados.
   hasChanges: boolean = false;
 
   constructor(
@@ -65,24 +65,24 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Transforms a store name into an image filename.
-   * For example, "Grupo Éxito" becomes "grupo_éxito.png".
+   * Transforma el nombre de una tienda en un nombre de archivo de imagen.
+   * Por ejemplo, "Grupo Éxito" se convierte en "grupo_éxito.png".
    */
   private transformStoreName(name: string): string {
     return name.toLowerCase().trim().replace(/\s+/g, '_') + '.png';
   }
 
   /**
-   * Transforms a product name into a local image filename.
-   * For example, "Chocolate Bar" becomes "chocolate_bar.png".
+   * Transforma el nombre de un producto en un nombre de archivo de imagen local.
+   * Por ejemplo, "Chocolate Bar" se convierte en "chocolate_bar.png".
    */
   private transformProductName(name: string): string {
     return name.toLowerCase().trim().replace(/\s+/g, '_') + '.png';
   }
 
   /**
-   * Loads paginated stores using StoreService.
-   * Each store is extended with an "image" property.
+   * Carga tiendas paginadas usando StoreService.
+   * Cada tienda se extiende con una propiedad "image".
    */
   loadStores(page: number): void {
     this.storeService.getPaginatedStores(page, 10, this.storeSortOrder)
@@ -94,14 +94,14 @@ export class StoreAssignProductComponent implements OnInit {
         this.storePage = response.page;
         this.totalStorePages = response.total_pages;
       }, error => {
-        console.error('Error loading stores:', error);
+        console.error('Error al cargar tiendas:', error);
         this.toastr.error(this.translate.instant('STORE.LOAD_ERROR'));
       });
   }
 
   /**
-   * Loads paginated products using ProductService.
-   * Each product is extended with a "local_image" property and merged with persisted selections.
+   * Carga productos paginados usando ProductService.
+   * Cada producto se extiende con una propiedad "local_image" y se fusiona con selecciones persistidas.
    */
   loadProducts(page: number): void {
     this.productService.getProductsPaginated(page, 10, this.productSortOrder)
@@ -119,26 +119,26 @@ export class StoreAssignProductComponent implements OnInit {
         this.productPage = response.page;
         this.totalProductPages = response.total_pages;
       }, error => {
-        console.error('Error loading products:', error);
+        console.error('Error al cargar productos:', error);
         this.toastr.error(this.translate.instant('PRODUCT.LOAD_ERROR'));
       });
   }
 
-  // Toggle store sort order.
+  // Alterna el orden de clasificación de las tiendas.
   toggleStoreSortOrder(): void {
     this.storeSortOrder = this.storeSortOrder === 'asc' ? 'desc' : 'asc';
     this.loadStores(this.storePage);
   }
 
-  // Toggle product sort order.
+  // Alterna el orden de clasificación de los productos.
   toggleProductSortOrder(): void {
     this.productSortOrder = this.productSortOrder === 'asc' ? 'desc' : 'asc';
     this.loadProducts(this.productPage);
   }
 
   /**
-   * Handles selection of a store.
-   * When a store is selected, loads its assigned product stocks.
+   * Maneja la selección de una tienda.
+   * Cuando se selecciona una tienda, carga los stocks de productos asignados.
    */
   onSelectStore(store: ExtendedStore): void {
     if (this.selectedStore && this.selectedStore.id === store.id) {
@@ -164,14 +164,14 @@ export class StoreAssignProductComponent implements OnInit {
           });
           this.hasChanges = false;
         }, error => {
-          console.error('Error retrieving assigned stocks:', error);
+          console.error('Error al recuperar stocks asignados:', error);
           this.toastr.error(this.translate.instant('STORE.STOCKS_LOAD_ERROR'));
         });
     }
   }
 
   /**
-   * Resets product selections and clears the persistent dictionary.
+   * Restablece las selecciones de productos y limpia el diccionario persistente.
    */
   resetProductSelections(): void {
     this.products.forEach(product => {
@@ -183,7 +183,7 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Handles changes in product selection.
+   * Maneja los cambios en la selección de productos.
    */
   onProductSelect(product: ProductExtended): void {
     product.selected = !product.selected;
@@ -195,7 +195,7 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Handles changes in product quantity.
+   * Maneja los cambios en la cantidad de productos.
    */
   onProductQuantityChange(product: ProductExtended): void {
     if (product.quantity < 0) {
@@ -206,7 +206,7 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Generates an array of page numbers for store pagination.
+   * Genera un array de números de página para la paginación de tiendas.
    */
   getPaginationStorePages(currentPage: number, totalPages: number): number[] {
     const pages: number[] = [];
@@ -217,7 +217,7 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Generates an array of page numbers for product pagination.
+   * Genera un array de números de página para la paginación de productos.
    */
   getPaginationProductPages(currentPage: number, totalPages: number): number[] {
     const pages: number[] = [];
@@ -227,7 +227,7 @@ export class StoreAssignProductComponent implements OnInit {
     return pages;
   }
 
-  // Change store page.
+  // Cambia la página de tiendas.
   changeStorePage(delta: number): void {
     const newPage = this.storePage + delta;
     if (newPage >= 1 && newPage <= this.totalStorePages) {
@@ -236,7 +236,7 @@ export class StoreAssignProductComponent implements OnInit {
     }
   }
 
-  // Change product page. Persist selections before loading new products.
+  // Cambia la página de productos. Persiste las selecciones antes de cargar nuevos productos.
   changeProductPage(delta: number): void {
     this.products.forEach(product => {
       this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0 };
@@ -262,8 +262,8 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Constructs an AssignedStockDto and saves the assignments.
-   * After a successful save, it unselects all items in both tables.
+   * Construye un AssignedStockDto y guarda las asignaciones.
+   * Después de un guardado exitoso, deselecciona todos los elementos en ambas tablas.
    */
   saveAssignments(): void {
     if (!this.selectedStore) {
@@ -279,7 +279,7 @@ export class StoreAssignProductComponent implements OnInit {
       .map(product => ({
         product_id: product.id,
         assigned_stock: product.quantity,
-        id: '' // Empty indicates a new assignment.
+        id: '' // Vacío indica una nueva asignación.
       }));
     const dto: AssignedStockDto = {
       store_id: this.selectedStore.id as string,
@@ -289,11 +289,11 @@ export class StoreAssignProductComponent implements OnInit {
       .subscribe(response => {
         this.hasChanges = false;
         this.toastr.success(this.translate.instant('STORE.ASSIGN_SUCCESS'));
-        // Unselect all items.
+        // Deselecciona todos los elementos.
         this.selectedStore = null;
         this.resetProductSelections();
       }, error => {
-        console.error('Error saving assignments:', error);
+        console.error('Error al guardar asignaciones:', error);
         this.toastr.error(this.translate.instant('STORE.ASSIGN_ERROR'));
       });
   }
