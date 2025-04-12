@@ -580,3 +580,23 @@ class TestProduct:
 
         assert response_cached.status_code == 200
         assert data == data_cached
+    
+    def test_get_products_paginated_full(self):
+        product_data = self._generate_product_data()
+        product_response = self._post_product(product_data)
+
+        assert product_response.status_code == 201
+
+        product_data = json.loads(product_response.data)
+
+        response = self.test_client.get('/products/paginated_full', headers={
+            'x-token': 'internal_token',
+            'content-type': 'application/json',
+            'page': 1,
+            'per_page' : 2
+        })
+
+        assert response.status_code == 200
+        json_response = json.loads(response.data)
+        assert json_response is not None
+        assert len(json_response) == 5

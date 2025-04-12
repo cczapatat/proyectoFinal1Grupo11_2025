@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { BaseService } from "./base.service";
-import { StoreDto } from "../dtos/store.dto";
+import { PaginatedStores, StoreDto } from "../dtos/store.dto";
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +14,14 @@ export class StoreService extends BaseService {
 
   constructor(private http: HttpClient) {
     super();
+  }
+
+  getPaginatedStores(page: number = 1, perPage: number = 10, sortOrder: string = 'asc') : Observable<PaginatedStores> {
+     const paginatedStores = `${this.apiStoreUrl}/paginated_full?page=${page}&per_page=${perPage}&sort_order=${sortOrder}`;
+        return this.http.get<PaginatedStores>(paginatedStores,
+          {
+            headers: this.defaultHeaders
+          });
   }
 
   getStates(): Observable<string[]> {

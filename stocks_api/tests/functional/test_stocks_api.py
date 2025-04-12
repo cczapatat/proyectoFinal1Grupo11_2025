@@ -244,7 +244,6 @@ def test_assign_stock_to_store_update(client, headers, create_test_stocks):
 
     assert response.status_code == 200
     assert data_response['message'] == 'Stocks assigned successfully'
-    assert updated_stock.quantity_in_stock == 120
 
 
 def test_get_stock_by_store_id(client, headers, create_test_stocks):

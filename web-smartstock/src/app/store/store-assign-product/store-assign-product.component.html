@@ -1,3 +1,157 @@
-<div class="container">
-  <h2>Asignar Productos a Bodega</h2>
+<div class="container-fluid">
+  <!-- Main Title -->
+  <h2 class="text-center title" style="margin: 1.5rem 0 1rem 0;">{{ 'STORE.ASSIGN_PRODUCTS_TITLE' | translate }}</h2>
+  
+  <div class="row">
+    <!-- Left Column: Stores Table -->
+    <div class="col-md-7">
+      <h2 class="title_second">{{ 'STORE.STORES' | translate }}</h2>
+      <table class="table custom-bordered-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th (click)="toggleStoreSortOrder()" style="cursor: pointer;">
+              {{ 'STORE.FILTER_BY_NAME' | translate }}
+              <span [ngClass]="{'bi bi-arrow-down': storeSortOrder==='asc', 'bi bi-arrow-up': storeSortOrder==='desc'}"></span>
+            </th>
+            <th>{{ 'STORE.ADDRESS' | translate }}</th>
+            <th>{{ 'STORE.EMAIL' | translate }}</th>
+          </tr>
+          <tr *ngIf="showStoreFilter">
+            <th colspan="4">
+              <input type="text" class="form-control" placeholder="{{ 'STORE.FILTER_BY_NAME_PLACEHOLDER' | translate }}">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="stores.length > 0; else noStores">
+            <tr *ngFor="let store of stores" [class.table-active]="store === selectedStore">
+              <td class="text-center align-middle">
+                <input type="checkbox" class="form-check-input" 
+                       [checked]="store === selectedStore" 
+                       (change)="onSelectStore(store)">
+              </td>
+              <td class="fw-bold">
+                <img [src]="'assets/images/stores/' + store.image" alt="{{ store.name }}" width="30" height="30">
+                {{ store.name }}
+              </td>
+              <td>{{ store.address }}</td>
+              <td>{{ store.email }}</td>
+            </tr>
+            <ng-container *ngIf="stores.length < 10">
+              <tr *ngFor="let i of [].constructor(10 - stores.length)" class="empty-row">
+                <td colspan="4">&nbsp;</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #noStores>
+            <tr class="empty-row">
+              <td colspan="4" class="text-center text-muted">{{ 'STORE.NO_STORES_FOUND' | translate }}</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+      <!-- Pagination for Stores -->
+      <div class="btn-group">
+        <button class="pagination-button" [disabled]="storePage <= 1" (click)="changeStorePage(-1)">
+          <i class="bi bi-arrow-left"></i> {{ 'STORE.PREVIOUS' | translate }}
+        </button>
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationStorePages(storePage, totalStorePages)"
+                  class="pagination-button"
+                  [ngClass]="{'active': page === storePage}"
+                  (click)="onStorePageClick(page)">
+            {{ page }}
+          </button>
+        </div>
+        <button class="pagination-button" [disabled]="storePage >= totalStorePages" (click)="changeStorePage(1)">
+          {{ 'STORE.NEXT' | translate }} <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  
+    <!-- Right Column: Products Table -->
+    <div class="col-md-5">
+      <h2 class="title_second">{{ 'PRODUCT.TITLE_LIST' | translate }}</h2>
+      <table class="table custom-bordered-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th (click)="toggleProductSortOrder()" style="cursor: pointer;">
+              {{ 'PRODUCT.FILTER_BY_NAME' | translate }}
+              <span [ngClass]="{'bi bi-arrow-down': productSortOrder==='asc', 'bi bi-arrow-up': productSortOrder==='desc'}"></span>
+            </th>
+            <th>{{ 'PRODUCT.CATEGORY' | translate }}</th>
+            <th>{{ 'PRODUCT.QUANTITY' | translate }}</th>
+          </tr>
+          <tr *ngIf="showProductFilter">
+            <th colspan="4">
+              <input type="text" class="form-control" placeholder="{{ 'PRODUCT.FILTER_BY_NAME_PLACEHOLDER' | translate }}">
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="products.length > 0; else noProducts">
+            <tr *ngFor="let product of products" [class.table-active]="product.selected">
+              <td class="text-center align-middle">
+                <input type="checkbox" class="form-check-input" 
+                       [(ngModel)]="product.selected" 
+                       (ngModelChange)="onProductSelect(product)">
+              </td>
+              <td class="fw-bold">
+                <img [src]="'assets/images/products/' + product.local_image" alt="{{ product.name }}" width="30" height="30">
+                {{ product.name }}
+              </td>
+              <td>{{ product.category }}</td>
+              <td>
+                <input type="number" class="form-control" 
+                       [(ngModel)]="product.quantity" 
+                       (ngModelChange)="onProductQuantityChange(product)"
+                       min="0" [disabled]="!product.selected">
+              </td>
+            </tr>
+            <ng-container *ngIf="products.length < 10">
+              <tr *ngFor="let i of [].constructor(10 - products.length)" class="empty-row">
+                <td colspan="4">&nbsp;</td>
+              </tr>
+            </ng-container>
+          </ng-container>
+          <ng-template #noProducts>
+            <tr class="empty-row">
+              <td colspan="4" class="text-center text-muted">{{ 'PRODUCT.NO_PRODUCTS_FOUND' | translate }}</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+      <!-- Pagination for Products -->
+      <div class="btn-group">
+        <button class="pagination-button" [disabled]="productPage <= 1" (click)="changeProductPage(-1)">
+          <i class="bi bi-arrow-left"></i> {{ 'PRODUCT.PREVIOUS' | translate }}
+        </button>
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationProductPages(productPage, totalProductPages)"
+                  class="pagination-button"
+                  [ngClass]="{'active': page === productPage}"
+                  (click)="onProductPageClick(page)">
+            {{ page }}
+          </button>
+        </div>
+        <button class="pagination-button" [disabled]="productPage >= totalProductPages" (click)="changeProductPage(1)">
+          {{ 'PRODUCT.NEXT' | translate }} <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Save Button with dynamic color -->
+  <div class="row save-button-row">
+    <div class="col-12 text-center">
+      <button class="register-btn"
+              [ngStyle]="{'background-color': hasChanges ? '#984C0C' : '#6C757D'}"
+              [disabled]="!hasChanges"
+              (click)="saveAssignments()">
+        {{ 'STORE.SAVE_BUTTON' | translate }}
+      </button>
+    </div>
+  </div>
 </div>

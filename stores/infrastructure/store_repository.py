@@ -7,6 +7,8 @@ from ..config.db import db
 from ..dtos.store_in_dto import StoreInDTO
 from ..models.store_model import Store
 
+from sqlalchemy import asc, desc
+
 
 class StoreRepository:
     @staticmethod
@@ -39,3 +41,22 @@ class StoreRepository:
         stores = db.session.query(Store).filter_by(state=state).order_by(Store.name).offset(offset).limit(per_page).all()
 
         return stores
+    
+    @staticmethod
+    def get_stores_paginated_full(page: int = 1, per_page: int = 10, sort_order: str = "asc") -> dict:  
+        # Validar orden de clasificación: usar función asc o desc
+        sort_fn = asc if sort_order.lower() == "asc" else desc
+
+        # Se ordena por el nombre de la tienda por defecto
+        sort_column = Store.name
+
+        # Construir y paginar la consulta. Se utiliza error_out=False para evitar levantar excepciones si la página no existe.
+        pagination = Store.query.order_by(sort_fn(sort_column)).paginate(page=page, per_page=per_page, error_out=False)
+
+        return {
+            "data": [store.to_dict() for store in pagination.items],
+            "total": pagination.total,
+            "page": pagination.page,
+            "total_pages": pagination.pages,
+            "per_page": pagination.per_page
+        }

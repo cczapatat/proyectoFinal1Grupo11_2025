@@ -94,7 +94,10 @@ class StockManager:
 
         if not stocks:
             return {'message': 'No products to assign'}
-
+        
+        # Clean the unselected stock
+        stock_repository.unassign_stock_to_store(store_id, stocks)
+        # Assign the new stock
         for stock in stocks:
             if stock.id_product is '' or stock.assigned_stock is '':
                 return {'message': 'Error: Invalid product or stock data'}

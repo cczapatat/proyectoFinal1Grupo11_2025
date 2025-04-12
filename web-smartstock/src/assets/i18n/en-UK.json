@@ -58,7 +58,18 @@
     "REGISTER_ERROR_TITLE": "Creation Error",
     "REGISTER_ERROR_MESSAGE": "An error has occurred: the store cannot be registered.",
     "REGISTER_ENUMS_ERROR_TITLE": "Error",
-    "REGISTER_ENUMS_ERROR_MESSAGE": "An error has occurred: information could not be loaded."
+    "REGISTER_ENUMS_ERROR_MESSAGE": "An error has occurred: information could not be loaded.",
+    "ASSIGN_PRODUCTS_TITLE": "Assign Products to Store",
+    "FILTER_BY_NAME": "Filter by name",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "NO_STORES_FOUND": "No stores found",
+    "SAVE_BUTTON": "Save",
+    "PLEASE_SELECT_STORE": "Please select a store first.",
+    "NO_CHANGES": "No changes to save.",
+    "ASSIGN_SUCCESS": "Assignments saved successfully.",
+    "ASSIGN_ERROR": "Error saving assignments.",
+    "STORES" : "Stores"
   },
   "PRODUCT": {
     "TITLE_CREATE": "Create Product",
@@ -116,7 +127,13 @@
     "EDIT_CATEGORY_ERROR_MESSAGE": "An error has occurred: categories could not be loaded.",
     "EDIT_PRODUCT_ERROR_MESSAGE": "An error has occurred: the product could not be loaded.",
     "LIST_ERROR_TITLE": "Error",
-    "LIST_ERROR_MESSAGE": "An error has occurred: the products could not be loaded."
+    "LIST_ERROR_MESSAGE": "An error has occurred: the products could not be loaded.",
+    "FILTER_BY_NAME": "Filter by name",
+    "NO_PRODUCTS_FOUND": "No products found",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",   
+    "QUANTITY": "Quantity",
+    "TITLE_LIST": "Products"
   },
   "LOGIN": {
     "TITLE": "Login As Seller",

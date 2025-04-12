@@ -58,7 +58,18 @@
     "REGISTER_ERROR_TITLE": "Error de Registro",
     "REGISTER_ERROR_MESSAGE": "Ha ocurrido un error: no se puede crear el almacén.",
     "REGISTER_ENUMS_ERROR_TITLE": "Error",
-    "REGISTER_ENUMS_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar información."
+    "REGISTER_ENUMS_ERROR_MESSAGE": "Ha ocurrido un error: no se ha logrado cargar información.",
+    "ASSIGN_PRODUCTS_TITLE": "Asignar Productos a Bodega",
+    "FILTER_BY_NAME": "Filtrar por nombre",
+    "PREVIOUS": "Anterior",
+    "NEXT": "Siguiente",
+    "NO_STORES_FOUND": "No se encontraron bodegas",
+    "SAVE_BUTTON": "Guardar",
+    "PLEASE_SELECT_STORE": "Por favor, seleccione una bodega.",
+    "NO_CHANGES": "No hay cambios para guardar.",
+    "ASSIGN_SUCCESS": "Asignaciones guardadas exitosamente.",
+    "ASSIGN_ERROR": "Error al guardar las asignaciones.",
+    "STORES" : "Bodegas"
   },
   "PRODUCT": {
     "TITLE_CREATE": "Crear Producto",
@@ -117,7 +128,13 @@
     "EDIT_CATEGORY_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar las categorías.",
     "EDIT_PRODUCT_ERROR_MESSAGE": "Ocurrió un error: no se pudo cargar el producto.",
     "LIST_ERROR_TITLE": "Error",
-    "LIST_ERROR_MESSAGE": "Ocurrió un error: no se pudo cargar la lista de productos."
+    "LIST_ERROR_MESSAGE": "Ocurrió un error: no se pudo cargar la lista de productos.",
+    "FILTER_BY_NAME": "Filtrar por nombre",
+    "NO_PRODUCTS_FOUND": "No se encontraron productos",
+    "PREVIOUS": "Anterior",
+    "NEXT": "Siguiente",  
+    "QUANTITY": "Cantidad",
+    "TITLE_LIST": "Productos"
   },
   "LOGIN": {
     "TITLE": "Ingresa como Vendedor",

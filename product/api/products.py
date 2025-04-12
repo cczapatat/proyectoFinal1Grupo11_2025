@@ -318,6 +318,20 @@ def get_all_currencies():
     ]
     return jsonify(currencies), 200
 
+@bp.route('/paginated_full', methods=['GET'])
+def get_products_paginated_full():
+    there_is_token()  
+
+    
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    # Por ahora el único campo de ordenación es 'name'
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+   
+    products_data = product_repository.get_products_paginated_full(page=page, per_page=per_page, sort_order=sort_order)
+
+    return jsonify(products_data), 200
+
 
 @bp.route('/by-ids', methods=('POST',))
 def get_products_by_ids():
