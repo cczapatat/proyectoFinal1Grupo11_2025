@@ -53,12 +53,14 @@ class StockRepository:
         else:
             # Update the existing Stock entry
             stock = db.session.query(Stock).filter_by(id=id).first()
-            stock.id_product = product_id
-            stock.id_store = store_id
-            stock.last_quantity = stock.quantity_in_stock
-            stock.quantity_in_stock = assigned_stock
+
+            if stock is not None:
+                stock.id_product = product_id
+                stock.id_store = store_id
+                stock.last_quantity = stock.quantity_in_stock
+                stock.quantity_in_stock = assigned_stock
         # Commit the changes to the database
-        db.session.commit()
+                db.session.commit()
 
     @staticmethod
     def unassign_stock_to_store(id_store: uuid.uuid4, selected_stocks: list[ProductStockDTO]):
