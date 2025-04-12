@@ -1,25 +1,25 @@
 <div class="container-fluid">
   <!-- Main Title -->
-  <h2 class="text-center title" style="margin: 1.5rem 0 1rem 0;">Assign Products to Store</h2>
+  <h2 class="text-center title" style="margin: 1.5rem 0 1rem 0;">{{ 'STORE.ASSIGN_PRODUCTS_TITLE' | translate }}</h2>
   
   <div class="row">
     <!-- Left Column: Stores Table -->
     <div class="col-md-7">
-      <h2 class="title_second">Stores</h2>
+      <h2 class="title_second">{{ 'STORE.STORES' | translate }}</h2>
       <table class="table custom-bordered-table">
         <thead>
           <tr>
             <th></th>
             <th (click)="toggleStoreSortOrder()" style="cursor: pointer;">
-              Filter by name
+              {{ 'STORE.FILTER_BY_NAME' | translate }}
               <span [ngClass]="{'bi bi-arrow-down': storeSortOrder==='asc', 'bi bi-arrow-up': storeSortOrder==='desc'}"></span>
             </th>
-            <th>Address</th>
-            <th>Email</th>
+            <th>{{ 'STORE.ADDRESS' | translate }}</th>
+            <th>{{ 'STORE.EMAIL' | translate }}</th>
           </tr>
           <tr *ngIf="showStoreFilter">
             <th colspan="4">
-              <input type="text" class="form-control" placeholder="Filter by store name">
+              <input type="text" class="form-control" placeholder="{{ 'STORE.FILTER_BY_NAME_PLACEHOLDER' | translate }}">
             </th>
           </tr>
         </thead>
@@ -46,7 +46,7 @@
           </ng-container>
           <ng-template #noStores>
             <tr class="empty-row">
-              <td colspan="4" class="text-center text-muted">No stores found</td>
+              <td colspan="4" class="text-center text-muted">{{ 'STORE.NO_STORES_FOUND' | translate }}</td>
             </tr>
           </ng-template>
         </tbody>
@@ -54,7 +54,7 @@
       <!-- Pagination for Stores -->
       <div class="btn-group">
         <button class="pagination-button" [disabled]="storePage <= 1" (click)="changeStorePage(-1)">
-          <i class="bi bi-arrow-left"></i> Previous
+          <i class="bi bi-arrow-left"></i> {{ 'STORE.PREVIOUS' | translate }}
         </button>
         <div class="inner-page-group">
           <button *ngFor="let page of getPaginationStorePages(storePage, totalStorePages)"
@@ -65,28 +65,28 @@
           </button>
         </div>
         <button class="pagination-button" [disabled]="storePage >= totalStorePages" (click)="changeStorePage(1)">
-          Next <i class="bi bi-arrow-right"></i>
+          {{ 'STORE.NEXT' | translate }} <i class="bi bi-arrow-right"></i>
         </button>
       </div>
     </div>
   
     <!-- Right Column: Products Table -->
     <div class="col-md-5">
-      <h2 class="title_second">Products</h2>
+      <h2 class="title_second">{{ 'PRODUCT.TITLE_LIST' | translate }}</h2>
       <table class="table custom-bordered-table">
         <thead>
           <tr>
             <th></th>
             <th (click)="toggleProductSortOrder()" style="cursor: pointer;">
-              Filter by name
+              {{ 'PRODUCT.FILTER_BY_NAME' | translate }}
               <span [ngClass]="{'bi bi-arrow-down': productSortOrder==='asc', 'bi bi-arrow-up': productSortOrder==='desc'}"></span>
             </th>
-            <th>Category</th>
-            <th>Quantity</th>
+            <th>{{ 'PRODUCT.CATEGORY' | translate }}</th>
+            <th>{{ 'PRODUCT.QUANTITY' | translate }}</th>
           </tr>
           <tr *ngIf="showProductFilter">
             <th colspan="4">
-              <input type="text" class="form-control" placeholder="Filter by product name">
+              <input type="text" class="form-control" placeholder="{{ 'PRODUCT.FILTER_BY_NAME_PLACEHOLDER' | translate }}">
             </th>
           </tr>
         </thead>
@@ -118,7 +118,7 @@
           </ng-container>
           <ng-template #noProducts>
             <tr class="empty-row">
-              <td colspan="4" class="text-center text-muted">No products found</td>
+              <td colspan="4" class="text-center text-muted">{{ 'PRODUCT.NO_PRODUCTS_FOUND' | translate }}</td>
             </tr>
           </ng-template>
         </tbody>
@@ -126,7 +126,7 @@
       <!-- Pagination for Products -->
       <div class="btn-group">
         <button class="pagination-button" [disabled]="productPage <= 1" (click)="changeProductPage(-1)">
-          <i class="bi bi-arrow-left"></i> Previous
+          <i class="bi bi-arrow-left"></i> {{ 'PRODUCT.PREVIOUS' | translate }}
         </button>
         <div class="inner-page-group">
           <button *ngFor="let page of getPaginationProductPages(productPage, totalProductPages)"
@@ -137,7 +137,7 @@
           </button>
         </div>
         <button class="pagination-button" [disabled]="productPage >= totalProductPages" (click)="changeProductPage(1)">
-          Next <i class="bi bi-arrow-right"></i>
+          {{ 'PRODUCT.NEXT' | translate }} <i class="bi bi-arrow-right"></i>
         </button>
       </div>
     </div>
@@ -150,7 +150,7 @@
               [ngStyle]="{'background-color': hasChanges ? '#984C0C' : '#6C757D'}"
               [disabled]="!hasChanges"
               (click)="saveAssignments()">
-        Save
+        {{ 'STORE.SAVE_BUTTON' | translate }}
       </button>
     </div>
   </div>

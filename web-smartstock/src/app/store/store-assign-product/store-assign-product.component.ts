@@ -3,6 +3,7 @@ import { StoreService } from 'src/app/services/store.service';
 import { ProductService } from 'src/app/services/product.service';
 import { StocksService } from 'src/app/services/stocks.service';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { PaginatedStores, StoreDto } from 'src/app/dtos/store.dto';
 import { ProductDto as Product, PaginatedProducts } from 'src/app/dtos/product';
 import { AssignedStockDto } from 'src/app/dtos/assignedStock';
@@ -54,7 +55,8 @@ export class StoreAssignProductComponent implements OnInit {
     private storeService: StoreService,
     private productService: ProductService,
     private stocksService: StocksService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -79,11 +81,12 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Loads paginated stores via StoreService and extends each with an "image" property.
+   * Loads paginated stores using StoreService.
+   * Each store is extended with an "image" property.
    */
   loadStores(page: number): void {
     this.storeService.getPaginatedStores(page, 10, this.storeSortOrder)
-      .subscribe((response: PaginatedStores) => {
+      .subscribe((response) => {
         this.stores = response.data.map(store => ({
           ...store,
           image: this.transformStoreName(store.name)
@@ -92,17 +95,17 @@ export class StoreAssignProductComponent implements OnInit {
         this.totalStorePages = response.total_pages;
       }, error => {
         console.error('Error loading stores:', error);
-        this.toastr.error('Error loading stores.');
+        this.toastr.error(this.translate.instant('STORE.LOAD_ERROR'));
       });
   }
 
   /**
-   * Loads paginated products via ProductService.
+   * Loads paginated products using ProductService.
    * Each product is extended with a "local_image" property and merged with persisted selections.
    */
   loadProducts(page: number): void {
     this.productService.getProductsPaginated(page, 10, this.productSortOrder)
-      .subscribe((response: PaginatedProducts) => {
+      .subscribe((response) => {
         const newProducts: ProductExtended[] = response.data.map(p => {
           const selection = this.productSelections[p.id] || { selected: false, quantity: 0 };
           return {
@@ -117,7 +120,7 @@ export class StoreAssignProductComponent implements OnInit {
         this.totalProductPages = response.total_pages;
       }, error => {
         console.error('Error loading products:', error);
-        this.toastr.error('Error loading products.');
+        this.toastr.error(this.translate.instant('PRODUCT.LOAD_ERROR'));
       });
   }
 
@@ -134,8 +137,8 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Handles selection of a store. Only one store can be selected.
-   * Loads the assigned stocks for the selected store.
+   * Handles selection of a store.
+   * When a store is selected, loads its assigned product stocks.
    */
   onSelectStore(store: ExtendedStore): void {
     if (this.selectedStore && this.selectedStore.id === store.id) {
@@ -162,7 +165,7 @@ export class StoreAssignProductComponent implements OnInit {
           this.hasChanges = false;
         }, error => {
           console.error('Error retrieving assigned stocks:', error);
-          this.toastr.error('Error retrieving assigned stocks.');
+          this.toastr.error(this.translate.instant('STORE.STOCKS_LOAD_ERROR'));
         });
     }
   }
@@ -259,16 +262,16 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   /**
-   * Constructs an AssignedStockDto from current selections and saves assignments.
+   * Constructs an AssignedStockDto and saves the assignments.
    * After a successful save, it unselects all items in both tables.
    */
   saveAssignments(): void {
     if (!this.selectedStore) {
-      this.toastr.warning('Please select a store first.');
+      this.toastr.warning(this.translate.instant('STORE.PLEASE_SELECT_STORE'));
       return;
     }
     if (!this.hasChanges) {
-      this.toastr.info('No changes to save.');
+      this.toastr.info(this.translate.instant('STORE.NO_CHANGES'));
       return;
     }
     const stocks = this.products
@@ -276,7 +279,7 @@ export class StoreAssignProductComponent implements OnInit {
       .map(product => ({
         product_id: product.id,
         assigned_stock: product.quantity,
-        id: '' // Empty indicates new assignment
+        id: '' // Empty indicates a new assignment.
       }));
     const dto: AssignedStockDto = {
       store_id: this.selectedStore.id as string,
@@ -285,13 +288,13 @@ export class StoreAssignProductComponent implements OnInit {
     this.stocksService.assignStockToStore(dto)
       .subscribe(response => {
         this.hasChanges = false;
-        this.toastr.success('Assignments saved successfully.');
-        // Unselect all items in both tables after save.
+        this.toastr.success(this.translate.instant('STORE.ASSIGN_SUCCESS'));
+        // Unselect all items.
         this.selectedStore = null;
         this.resetProductSelections();
       }, error => {
         console.error('Error saving assignments:', error);
-        this.toastr.error('Error saving assignments.');
+        this.toastr.error(this.translate.instant('STORE.ASSIGN_ERROR'));
       });
   }
 }
