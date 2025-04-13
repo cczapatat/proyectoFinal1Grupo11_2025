@@ -7,6 +7,28 @@ body {
   font-family: Arial, sans-serif;
 }
 
+select,
+input[type="date"],
+.pointer {
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #FD7E14 ;
+  border-color: #FD7E14 ;
+}
+
 .container {
   max-width: 800px;
   margin-top: 40px;
@@ -95,14 +117,33 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 10px;
+  flex-wrap: nowrap !important;
 }
 
-.quantity-control input {
-  width: 50px;
-  text-align: center;
-  border: none;
+.quantity-btn {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #5C3317;
+  border-radius: 8px;
   background-color: transparent;
+  color: #5C3317;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.quantity-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.quantity-value {
+  font-size: 18px;
+  color: #555E6B;
+  font-weight: 500;
 }
 
 .btn-icon {
@@ -134,6 +175,12 @@ body {
 
 .payment-method-group .form-check {
   margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.payment-method-group .form-check input[type="radio"],
+.payment-method-group .form-check label {
+  cursor: pointer;
 }
 
 .payment-method-group .form-check-input:checked {
@@ -159,15 +206,19 @@ body {
 }
 
 .btn-create {
-  background-color: #c86e1d;
+  background-color: #6C757D;
   color: white;
   font-weight: bold;
   padding: 10px 40px;
   font-size: 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   display: block;
-  margin: 30px auto 0;
+  transition: background-color 0.3s;
+}
+
+.btn-create-active {
+  background-color: #FD7E14 !important;
 }
 
 .btn-create:hover {

@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { SessionManager } from 'src/app/services/session-manager.service';
 import { TranslateService } from '@ngx-translate/core';
-import { UtilAdmin } from 'src/app/utils/util-admin';
+import { UtilAToken } from 'src/app/utils/util-token';
 
 @Component({
   selector: 'app-header',
@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.isAdmin = UtilAdmin.isAdmin();
+    this.isAdmin = UtilAToken.isAdmin();
     this.initializeLanguage();
   }
 

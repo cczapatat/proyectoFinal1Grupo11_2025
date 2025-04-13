@@ -4,13 +4,14 @@ import { ToastrService } from 'ngx-toastr';
 import { ClientDTO } from 'src/app/dtos/client.dto';
 import { ProductStockDTO } from 'src/app/dtos/stock.dto';
 import { SellerDTO } from 'src/app/dtos/seller.dto';
+import { OrderCreateDTO } from "src/app/dtos/order.dto";
 
 import { ClientService } from 'src/app/services/client.service';
 import { StocksService } from 'src/app/services/stocks.service';
 import { SellerService } from 'src/app/services/seller.service';
 import { OrderService } from 'src/app/services/order.service';
 
-import { UtilAdmin } from 'src/app/utils/util-admin';
+import { UtilAToken } from 'src/app/utils/util-token';
 import { UtilPagination } from 'src/app/utils/util-pagination';
 
 interface Product extends ProductStockDTO {
@@ -23,6 +24,9 @@ interface InfoProductStocksPaginate {
   total: number;
   total_page: number;
 }
+
+const PAGE = 1;
+const PER_PAGE = 5;
 
 @Component({
   selector: 'app-order-create',
@@ -45,7 +49,7 @@ export class OrderCreateComponent implements OnInit {
   availableProducts: Product[] = [];
 
   selectedModalProducts: { [id: string]: number } = {};
-  infoProductStocksPaginate: InfoProductStocksPaginate = { page: 1, per_page: 5, total: 0, total_page: 0 };
+  infoProductStocksPaginate: InfoProductStocksPaginate = { page: PAGE, per_page: PER_PAGE, total: 0, total_page: 0 };
 
   isAdmin: boolean = false;
 
@@ -57,14 +61,14 @@ export class OrderCreateComponent implements OnInit {
     private stocksService: StocksService,
     private orderService: OrderService,
   ) {
-    this.isAdmin = UtilAdmin.isAdmin();
+    this.isAdmin = UtilAToken.isAdmin();
   }
 
   ngOnInit(): void {
     if (this.isAdmin) {
       this.loadDataAsAdmin();
     } else {
-      this.selectedSeller = UtilAdmin.getUserId();
+      this.selectedSeller = UtilAToken.getUserId();
       this.loadDataAsSeller(this.selectedSeller);
     }
     this.loadResources();
@@ -151,6 +155,15 @@ export class OrderCreateComponent implements OnInit {
     return date.toISOString().slice(0, 10);
   }
 
+  selectSellerFromAdmin() {
+    this.selectedClient = '';
+    this.clients = [];
+
+    if (this.selectedSeller != '') {
+      this.loadDataAsSeller(this.selectedSeller);
+    }
+  }
+
   incrementQuantity(product: Product) {
     product.quantitySelected++;
   }
@@ -232,17 +245,54 @@ export class OrderCreateComponent implements OnInit {
     this.loadProductStocks();
   }
 
+  get validOrder(): boolean {
+    return this.selectedSeller !== '' && this.selectedClient !== '' && this.products.length > 0 && this.deliveryDate !== '' && this.selectedPayment !== '';
+  }
+
+  resetForm() {
+    this.selectedSeller = '';
+    this.selectedClient = '';
+    this.deliveryDate = this.formatDate(new Date());
+    this.selectedPayment = '';
+    this.products = [];
+    this.selectedModalProducts = {};
+    this.availableProducts = [];
+    this.infoProductStocksPaginate = { page: PAGE, per_page: PER_PAGE, total: 0, total_page: 0 };
+    this.loadProductStocks();
+  }
+
   createOrder() {
-    const payload = {
+    const newOrder: OrderCreateDTO = {
       client_id: this.selectedClient,
-      delivery_date: this.deliveryDate,
+      delivery_date: `${this.deliveryDate} 00:00:00`,
       payment_method: this.selectedPayment,
       products: this.products.map(p => ({
         product_id: p.id,
-        units: p.quantity_in_stock
+        units: p.quantitySelected,
       })),
     };
-    console.log('Creating Order:', payload);
-    // Aquí se puede integrar con un servicio de backend
+
+    if (this.isAdmin) {
+      newOrder.seller_id = this.selectedSeller;
+    }
+
+    this.orderService.createOrder(newOrder).subscribe({
+      next: (response) => {
+        this.toastr.success(
+          this.translate.instant('ORDER.CREATE_SUCCESS_MESSAGE'),
+          this.translate.instant('ORDER.CREATE_SUCCESS_TITLE'),
+          { closeButton: true },
+        );
+        this.resetForm();
+      },
+      error: (error) => {
+        console.error(error);
+        this.toastr.error(
+          this.translate.instant('ORDER.CREATE_ERROR_MESSAGE'),
+          this.translate.instant('ORDER.CREATE_ERROR_TITLE'),
+          { closeButton: true },
+        );
+      }
+    });
   }
 }

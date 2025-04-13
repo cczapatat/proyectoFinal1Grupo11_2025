@@ -33,7 +33,7 @@ export class HttpErrorInterceptorService extends HttpErrorResponse {
               else {
                 const error = typeof httpErrorResponse.error === 'string'
                   ? httpErrorResponse.error
-                  : httpErrorResponse.error.mensaje;
+                  : httpErrorResponse.error.message;
                 errorMessage = `Ha ocurrido un error. ${error}`;
               }
             }
