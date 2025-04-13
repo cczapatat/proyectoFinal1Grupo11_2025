@@ -132,7 +132,7 @@
             <td *ngIf="initialEntry" colspan="3" class="text-center fw-bold text-muted align-middle" style="height: 48px;">
               {{'SALESPEOPLE.SELECT_SALESPERSON' | translate}}
             </td>
-            <td *ngIf="!initialEntry" colspan="3" class="text-center fw-bold text-muted align-middle" style="height: 48px;">
+            <td id="empty-customer" *ngIf="!initialEntry" colspan="3" class="text-center fw-bold text-muted align-middle" style="height: 48px;">
               {{'SALESPEOPLE.EMPTY_CUSTOMERS' | translate}}
             </td>
           </tr>
