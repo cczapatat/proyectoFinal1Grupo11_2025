@@ -79,6 +79,6 @@ describe('Create Product Test', () => {
     cy.get("#product_edit_title").click();
     cy.get('.register-btn').should('exist').should('not.be.disabled');
     cy.get('.register-btn').click();
-    cy.contains('El producto ha sido editado exitosamente');
+    cy.contains('El producto fue editado con éxito.');
   });
 });
