@@ -11,9 +11,9 @@ class Stock(db.Model):
     __tablename__ = 'stocks'
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    id_product = Column(UUID(as_uuid=True), nullable=False)
-    id_store = Column(UUID(as_uuid=True), nullable=False)
-    quantity_in_stock = Column(Integer(), nullable=True, default=0)
+    id_product = Column(UUID(as_uuid=True), nullable=False, index=True)
+    id_store = Column(UUID(as_uuid=True), nullable=False, index=True)
+    quantity_in_stock = Column(Integer(), nullable=True, default=0, index=True)
     last_quantity = Column(Integer(), nullable=True, default=0)
     enabled = Column(Boolean(), default=True)
     update_date = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

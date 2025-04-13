@@ -10,12 +10,13 @@ from ..models.stock_model import Stock
 class StockRepository:
     @staticmethod
     def get_documents(page: int = 1, per_page: int = 10) -> list[Stock]:
-        offset = (page - 1) * per_page
-        stocks = db.session.query(Stock).filter(Stock.quantity_in_stock > 0).order_by(
-            asc(Stock.creation_date)).offset(
-            offset).limit(per_page).all()
+        stocks_query = db.session.query(Stock).filter(Stock.quantity_in_stock > 0).order_by(asc(Stock.creation_date))
 
-        return stocks
+        if per_page > 0:
+            offset = (page - 1) * per_page
+            stocks_query = stocks_query.offset(offset).limit(per_page)
+
+        return stocks_query.all()
 
     @staticmethod
     def get_total_documents() -> int:
@@ -58,7 +59,7 @@ class StockRepository:
                 stock.id_store = store_id
                 stock.last_quantity = stock.quantity_in_stock
                 stock.quantity_in_stock = assigned_stock
-    # Commit the changes to the database
+        # Commit the changes to the database
         db.session.commit()
 
     @staticmethod

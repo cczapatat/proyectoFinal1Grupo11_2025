@@ -68,8 +68,14 @@ class StockManager:
             set_cache_stocks_paginate(page, per_page, stocks_dict)
             populate_products(stocks_dict)
 
-        total_stocks = stock_repository.get_total_documents()
+        total_stocks = stock_repository.get_total_documents() if per_page > 0 else -1
         return [stocks_dict, total_stocks]
+
+    @staticmethod
+    def get_stocks() -> list[dict]:
+        [stocks, _] = StockManager.get_stocks_paginate(page=-1, per_page=-1)
+
+        return stocks
 
     @staticmethod
     def get_stocks_by_ids(ids: list[uuid.uuid4]) -> list[dict]:
@@ -94,10 +100,7 @@ class StockManager:
 
         if not stocks:
             return {'message': 'No products to assign'}
-        
-        # Clean the unselected stock
-        stock_repository.unassign_stock_to_store(store_id, stocks)
-        # Assign the new stock
+
         for stock in stocks:
             if stock.id_product is '' or stock.assigned_stock is '':
                 return {'message': 'Error: Invalid product or stock data'}
