@@ -204,17 +204,53 @@ body {
 }
 
 /* Pagination styles */
-.pagination .page-link {
-  border-radius: 50px;
-  padding: 0.4rem 0.8rem;
-  color: #3b240e;
-  border: 1px solid #e0e0e0;
+.pagination-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  /* PrimeNG-style spacing */
+  margin-top: 1rem;
 }
 
-.pagination .page-item.active .page-link {
-  background-color: #d4c2a8;
+.pagination-button {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  background-color: transparent;
+  color: #495057;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #e9ecef;
+}
+
+.pagination-button.active {
+  background-color: #984C0C;
   color: white;
-  border-color: #d4c2a8;
+  border-color: #984C0C;
+}
+
+.pagination-button.ellipsis {
+  cursor: default;
+  background-color: transparent;
+  border: none;
+}
+
+.pagination-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inner-page-group {
+  display: flex;
+  gap: 0.25rem;
+  /* Tight space between page number buttons */
 }
 
 /* Quantity input group buttons */

@@ -71,7 +71,7 @@ export class UserSessionLoginComponent implements OnInit {
   loginUser(userSession: UserSession) {
     this.userSessionService.login(userSession).subscribe({
       next: (res) => {
-        this.userSessionService.saveSession(res.token, res.userId, res.type);
+        this.userSessionService.saveSession(res.token, res.user_id, res.type);
         this.toastrService.success(
           this.translate.instant('LOGIN.SUCCESS_MESSAGE'),
           this.translate.instant('LOGIN.SUCCESS_TITLE'),

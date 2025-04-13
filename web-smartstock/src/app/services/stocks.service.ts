@@ -4,7 +4,7 @@ import { environment } from 'src/environments/environment';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
 import { AssignedStockDto } from '../dtos/assignedStock';
-import { ProductStockDTO } from '../dtos/stock.dto';
+import { ProductStockPaginateDTO } from '../dtos/stock.dto';
 
 
 @Injectable({
@@ -34,8 +34,8 @@ export class StocksService extends BaseService {
       });
   }
 
-  getProductsOnStock(page: number, perPage: number): Observable<ProductStockDTO[]> {
-    return this.http.get<ProductStockDTO[]>(`${this.stockApi}/stocks/all?page=${page}&per_page=${perPage}`, {
+  getProductsOnStock(page: number, perPage: number): Observable<ProductStockPaginateDTO> {
+    return this.http.get<ProductStockPaginateDTO>(`${this.stockApi}/stocks/all?page=${page}&per_page=${perPage}`, {
       headers: this.defaultHeaders,
     });
   }

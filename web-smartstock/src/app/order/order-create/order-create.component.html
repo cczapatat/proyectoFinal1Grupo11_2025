@@ -5,7 +5,8 @@
   <!-- Client and Date Selection -->
   <div class="row mb-4 order-form-row">
     <div class="col-md-6 order-form-group">
-      <label id="order_created_client_label" class="form-label order-form-label">{{ 'ORDER.CLIENT' | translate }}</label>
+      <label id="order_created_client_label" class="form-label order-form-label">{{ 'ORDER.CLIENT' | translate
+        }}</label>
       <div class="input-group">
         <select id="order_created_client" class="form-select" [(ngModel)]="selectedClient"
           [attr.aria-label]="'ORDER.CLIENT_SELECTED' | translate">
@@ -16,7 +17,7 @@
       </div>
     </div>
     <div class="col-md-6 order-form-group">
-      <label class="form-label order-form-label">Delivery Date</label>
+      <label class="form-label order-form-label">{{ 'ORDER.DELIVERY_METHOD' | translate }}</label>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-calendar"></i></span>
         <input type="date" class="form-control" [ngModel]="deliveryDate" />
@@ -36,7 +37,7 @@
           <th>Quantity</th>
           <th>Total</th>
           <th>
-            <button class="btn btn-sm btn-primary btn-add-product" (click)="openModal()" data-bs-toggle="modal"
+            <button class="btn btn-sm btn-primary btn-add-product" data-bs-toggle="modal"
               data-bs-target="#addProductModal">
               <i class="bi bi-plus"></i>
             </button>
@@ -45,22 +46,25 @@
       </thead>
       <tbody>
         <tr *ngFor="let product of products; let i = index">
-          <td>{{ product.product_name }}</td>
-          <td>{{ product.product_name }}</td>
-          <td>100 GBR</td>
+          <td>{{ product.product.name }}</td>
+          <td>{{ product.product.description }}</td>
+          <td>{{ product.product.unit_price }} {{ product.product.currency_price}}</td>
           <td>{{ product.quantity_in_stock }}</td>
           <td>
             <div class="input-group quantity-control">
-              <button class="btn btn-sm btn-outline-secondary" (click)="decrementQuantity(product)">
+              <button class="btn btn-sm btn-outline-secondary" [disabled]="product?.quantitySelected <= 1"
+                (click)="decrementQuantity(product)">
                 <i class="bi bi-dash"></i>
               </button>
               <input type="text" class="form-control text-center" [value]="product?.quantitySelected || 0" readonly>
-              <button class="btn btn-sm btn-outline-secondary" (click)="incrementQuantity(product)">
+              <button class="btn btn-sm btn-outline-secondary"
+                [disabled]="selectedModalProducts[product.id] == product.quantitySelected"
+                (click)="incrementQuantity(product)">
                 <i class="bi bi-plus"></i>
               </button>
             </div>
           </td>
-          <td>{{ 100 * product.quantity_in_stock }} GBR</td>
+          <td>{{ product.product.unit_price * product.quantity_in_stock }} {{ product.product.currency_price }}</td>
           <td>
             <button class="btn btn-sm btn-dange btn-iconr" (click)="removeProduct(product)">
               <i class="bi bi-trash"></i>
@@ -83,7 +87,7 @@
     </div>
     <div class="col-md-6 text-end total-block">
       <p class="mb-1 fw-bold fs-5">Total</p>
-      <span class="text-primary fw-bold">{{ getTotal }} GBR</span>
+      <span class="text-primary fw-bold">{{ getTotal }} {{products[0]?.product?.currency_price || ''}}</span>
     </div>
   </div>
 
@@ -115,33 +119,52 @@
           </thead>
           <tbody>
             <tr *ngFor="let product of availableProducts">
-              <td><input type="checkbox" [checked]="product.selected" (change)="toggleSelectProduct(product)" /></td>
-              <td>{{ product.product_name }}</td>
-              <td>{{ product.product_name }}</td>
-              <td>100 GBR</td>
+              <td><input type="checkbox" [checked]="hasSelectedProductStock(product.id)"
+                  (change)="toggleSelectProduct(product)" /></td>
+              <td>{{ product.product.name }}</td>
+              <td>{{ product.product.description }}</td>
+              <td>{{ product.product.unit_price }} {{ product.product.currency_price}}</td>
               <td>{{ product.quantity_in_stock }}</td>
               <td>
                 <div class="input-group input-group-sm">
-                  <button class="btn btn-outline-secondary" [disabled]="!selectedModalProducts[product.id]"
+                  <button class="btn btn-outline-secondary"
+                    [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] <= 1"
                     (click)="decreaseModalQuantity(product.id)"><i class="bi bi-dash"></i></button>
                   <input type="text" class="form-control text-center" [value]="selectedModalProducts[product.id] || 0"
                     readonly>
                   <button class="btn btn-outline-secondary"
-                    [disabled]="selectedModalProducts[product.id] && selectedModalProducts[product.id] >= product.quantity_in_stock"
-                    (click)="increaseModalQuantity(product.id)"><i class="bi bi-plus"></i></button>
+                    [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] == product.quantity_in_stock"
+                    (click)="increaseModalQuantity(product.id, product.quantity_in_stock)"><i
+                      class="bi bi-plus"></i></button>
                 </div>
               </td>
             </tr>
           </tbody>
         </table>
-        <nav>
-          <ul class="pagination justify-content-end">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">next</a></li>
-          </ul>
-        </nav>
+        <div class="pagination-group">
+          <!-- Previous -->
+          <button class="pagination-button" [disabled]="infoProductStocksPaginate.page <= 1" (click)="setPage(-1)">
+            <i class="bi bi-arrow-left"></i>{{'ORDER.PREVIOUS' | translate}}
+          </button>
+
+          <!-- Page buttons -->
+          <div class="inner-page-group">
+            <button
+              *ngFor="let page of getPaginationProductStocksPages(infoProductStocksPaginate.page, infoProductStocksPaginate.total_page)"
+              class="pagination-button" [ngClass]="{
+              'active': +page === +infoProductStocksPaginate.page,
+              'ellipsis': page.toString() === '...'
+            }" (click)="setPagePos(+page)" [disabled]="page.toString() === '...'">
+              {{ page }}
+            </button>
+          </div>
+
+          <!-- Next -->
+          <button class="pagination-button"
+            [disabled]="infoProductStocksPaginate.page >= infoProductStocksPaginate.total_page" (click)="setPage(1)">
+            {{'ORDER.NEXT' | translate}}<i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
       </div>
       <div class="modal-footer justify-content-center">
         <button class="btn btn-primary" (click)="addProductsToOrder()" data-bs-dismiss="modal">Add</button>

@@ -4,6 +4,7 @@ import { Client, PaginatedClients } from 'src/app/dtos/client';
 import { PaginatedSellers, SellerDTO } from 'src/app/dtos/seller.dto';
 import { ClientService } from 'src/app/services/client.service';
 import { SellerService } from 'src/app/services/seller.service';
+import { UtilPagination } from 'src/app/utils/util-pagination';
 
 @Component({
   selector: 'app-salespeople-list-customers',
@@ -136,24 +137,7 @@ export class SalespeopleListCustomersComponent implements OnInit {
   }
 
   getPaginationSellerPages(current: number, total: number): (number | string)[] {
-    const range: (number | string)[] = [];
-    const delta = 2;
-    const left = Math.max(2, current - delta);
-    const right = Math.min(total - 1, current + delta);
-
-    range.push(1);
-
-    if (left > 2) range.push('...');
-
-    for (let i = left; i <= right; i++) {
-      range.push(i);
-    }
-
-    if (right < total - 1) range.push('...');
-
-    if (total > 1) range.push(total);
-
-    return range;
+    return UtilPagination.getPages(current, total);
   }
   changeSellerPage(delta: number): void {
     const newPage = this.sellerPage + delta;
@@ -176,24 +160,7 @@ export class SalespeopleListCustomersComponent implements OnInit {
   }
 
   getPaginationClientPages(current: number, total: number): (number | string)[] {
-    const range: (number | string)[] = [];
-    const delta = 2;
-    const left = Math.max(2, current - delta);
-    const right = Math.min(total - 1, current + delta);
-
-    range.push(1);
-
-    if (left > 2) range.push('...');
-
-    for (let i = left; i <= right; i++) {
-      range.push(i);
-    }
-
-    if (right < total - 1) range.push('...');
-
-    if (total > 1) range.push(total);
-
-    return range;
+    return UtilPagination.getPages(current, total);;
   }
   changeClientPage(delta: number): void {
     const newPage = this.clientPage + delta;

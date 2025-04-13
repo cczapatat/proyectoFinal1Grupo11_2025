@@ -1,16 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin } from 'rxjs';
 import { ClientDTO } from 'src/app/dtos/client.dto';
 import { ProductStockDTO } from 'src/app/dtos/stock.dto';
+import { SellerDTO } from 'src/app/dtos/seller.dto';
 
 import { ClientService } from 'src/app/services/client.service';
 import { StocksService } from 'src/app/services/stocks.service';
+import { SellerService } from 'src/app/services/seller.service';
+import { OrderService } from 'src/app/services/order.service';
+
+import { UtilAdmin } from 'src/app/utils/util-admin';
+import { UtilPagination } from 'src/app/utils/util-pagination';
 
 interface Product extends ProductStockDTO {
   quantitySelected?: number;
-  selected: boolean;
+}
+
+interface InfoProductStocksPaginate {
+  page: number;
+  per_page: number;
+  total: number;
+  total_page: number;
 }
 
 @Component({
@@ -19,54 +30,121 @@ interface Product extends ProductStockDTO {
   styleUrls: ['./order-create.component.css']
 })
 export class OrderCreateComponent implements OnInit {
+  sellers: SellerDTO[] = [];
+  selectedSeller: string = '';
+
   clients: ClientDTO[] = [];
   selectedClient: string = '';
 
   deliveryDate: string = '';
 
-  selectedPayment: string = 'Cash On Delivery';
-  paymentMethods = ['Cash On Delivery', 'Debit Card', 'Credit Card'];
+  selectedPayment: string = '';
+  paymentMethods = [];
 
   products: Product[] = [];
   availableProducts: Product[] = [];
 
   selectedModalProducts: { [id: string]: number } = {};
+  infoProductStocksPaginate: InfoProductStocksPaginate = { page: 1, per_page: 5, total: 0, total_page: 0 };
 
-  currentPage: number = 1;
-  pageSize: number = 10;
+  isAdmin: boolean = false;
 
   constructor(
     private toastr: ToastrService,
     private translate: TranslateService,
     private clientService: ClientService,
+    private sellerService: SellerService,
     private stocksService: StocksService,
-  ) { }
+    private orderService: OrderService,
+  ) {
+    this.isAdmin = UtilAdmin.isAdmin();
+  }
 
   ngOnInit(): void {
-    this.loadData();
+    if (this.isAdmin) {
+      this.loadDataAsAdmin();
+    } else {
+      this.selectedSeller = UtilAdmin.getUserId();
+      this.loadDataAsSeller(this.selectedSeller);
+    }
+    this.loadResources();
     this.deliveryDate = this.formatDate(new Date());
   }
 
-  loadData(): void {
-    forkJoin({
-      clients: this.clientService.getClientsBySellerIdList('4e5e0531-b49d-40c2-afbc-2e1772701431'),
-      stocks: this.stocksService.getProductsOnStock(this.pageSize, this.currentPage)
-    }).subscribe({
+  loadDataAsAdmin() {
+    this.sellerService.getSellersList().subscribe({
       next: (response) => {
-        this.clients = response.clients;
-        this.availableProducts = response.stocks.map(product => ({
-          ...product,
-          selected: false
-        }));
+        this.sellers = response;
       },
       error: (error) => {
         this.toastr.error(
-          this.translate.instant('ORDER.CREATE_LOAD_DATA_ERROR_MESSAGE'),
-          this.translate.instant('ORDER.CREATE_LOAD_DATA_ERROR_TITLE'),
+          this.translate.instant('ORDER.CREATE_LOAD_DATA_SELLERS_ERROR_MESSAGE'),
+          this.translate.instant('ORDER.CREATE_LOAD_DATA_SELLERS_ERROR_TITLE'),
+          { closeButton: true },
+        );
+      }
+    })
+  }
+
+  loadDataAsSeller(sellerId: string): void {
+    this.clientService.getClientsBySellerIdList(sellerId).subscribe({
+      next: (response) => {
+        this.clients = response;
+      },
+      error: (error) => {
+        this.toastr.error(
+          this.translate.instant('ORDER.CREATE_LOAD_DATA_CLIENTS_ERROR_MESSAGE'),
+          this.translate.instant('ORDER.CREATE_LOAD_DATA_CLIENTS_ERROR_TITLE'),
           { closeButton: true },
         );
       }
     });
+  }
+
+  loadResources() {
+    this.loadProductStocks();
+    this.loadPaymentMethods();
+  }
+
+  loadProductStocks() {
+    this.stocksService.getProductsOnStock(this.infoProductStocksPaginate.page, this.infoProductStocksPaginate.per_page)
+      .subscribe({
+        next: (response) => {
+          this.infoProductStocksPaginate = {
+            page: response.page,
+            per_page: response.per_page,
+            total: response.total,
+            total_page: Math.ceil(response.total / response.per_page),
+          };
+          this.availableProducts = response.stocks.map((p: ProductStockDTO) => ({
+            ...p,
+            quantitySelected: 1,
+            selected: !!this.selectedModalProducts[p.id],
+          }));
+        },
+        error: (error) => {
+          this.toastr.error(
+            this.translate.instant('ORDER.CREATE_LOAD_DATA_STOCKS_ERROR_MESSAGE'),
+            this.translate.instant('ORDER.CREATE_LOAD_DATA_STOCKS_ERROR_TITLE'),
+            { closeButton: true },
+          );
+        }
+      });
+  }
+
+  loadPaymentMethods() {
+    this.orderService.getPaymentMethods().subscribe({
+      next: (response) => {
+        this.paymentMethods = response;
+      },
+      error: (error) => {
+        this.toastr.error(
+          this.translate.instant('ORDER.CREATE_LOAD_DATA_PAYMENTS_ERROR_MESSAGE'),
+          this.translate.instant('ORDER.CREATE_LOAD_DATA_PAYMENTS_ERROR_TITLE'),
+          { closeButton: true },
+        );
+      }
+    })
   }
 
   formatDate(date: Date): string {
@@ -89,24 +167,16 @@ export class OrderCreateComponent implements OnInit {
   }
 
   get getTotal(): number {
-    return this.products.reduce((total, prod) => total + 100 * prod.quantitySelected, 0);
+    return this.products.reduce((total, prod) => total + (prod.product.unit_price * prod.quantitySelected), 0);
   }
 
-  openModal() {
-    this.selectedModalProducts = {};
-    this.availableProducts.forEach(p => {
-      const match = this.products.find(pr => pr.id === p.id);
-      p.selected = !!match;
-      
-      if (p.selected) {
-        this.selectedModalProducts[p.id] = match.quantitySelected || 1;
-      }
-    });
+  hasSelectedProductStock(productId: string): Boolean {
+    return !!this.selectedModalProducts[productId]
   }
 
   toggleSelectProduct(product: Product) {
-    product.selected = !product.selected;
-    if (product.selected) {
+    const selected = this.hasSelectedProductStock(product.id);
+    if (!selected) {
       this.selectedModalProducts[product.id] = product.quantity_in_stock;
     } else {
       delete this.selectedModalProducts[product.id];
@@ -114,8 +184,8 @@ export class OrderCreateComponent implements OnInit {
     }
   }
 
-  increaseModalQuantity(productId: string) {
-    if (this.selectedModalProducts[productId]) {
+  increaseModalQuantity(productId: string, quantity: number) {
+    if (this.selectedModalProducts[productId] < quantity) {
       this.selectedModalProducts[productId]++;
     }
   }
@@ -140,19 +210,26 @@ export class OrderCreateComponent implements OnInit {
     });
   }
 
-  get paginatedModalProducts(): Product[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.availableProducts.slice(start, start + this.pageSize);
-  }
-
-  totalPages(): number {
-    return Math.ceil(this.availableProducts.length / this.pageSize);
+  getPaginationProductStocksPages(current: number, total: number): (number | string)[] {
+    return UtilPagination.getPages(current, total);
   }
 
   setPage(page: number) {
-    if (page >= 1 && page <= this.totalPages()) {
-      this.currentPage = page;
+    const pageCurr = this.infoProductStocksPaginate.page + page;
+
+    if (pageCurr <= 0) {
+      this.infoProductStocksPaginate.page = 1;
+    } else if (pageCurr > this.infoProductStocksPaginate.total_page) {
+      this.infoProductStocksPaginate.page = this.infoProductStocksPaginate.total_page;
+    } else {
+      this.infoProductStocksPaginate.page = pageCurr;
     }
+    this.loadProductStocks();
+  }
+
+  setPagePos(page: number) {
+    this.infoProductStocksPaginate.page = page;
+    this.loadProductStocks();
   }
 
   createOrder() {
