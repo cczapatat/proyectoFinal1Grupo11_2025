@@ -38,7 +38,7 @@
       <label class="form-label order-form-label">{{ 'ORDER.DELIVERY_DATE' | translate }}</label>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-        <input type="date" class="form-control" [ngModel]="deliveryDate" />
+        <input type="date" class="form-control" [ngModel]="deliveryDate" id="order_created_delivery_date"/>
       </div>
     </div>
   </div>
@@ -56,7 +56,7 @@
           <th>{{ 'ORDER.QUANTITY' | translate }}</th>
           <th>{{ 'ORDER.TOTAL' | translate }}</th>
           <th>
-            <button class="btn btn-sm btn-primary btn-add-product" data-bs-toggle="modal"
+            <button id="btn_open_product_stocks" class="btn btn-sm btn-primary btn-add-product" data-bs-toggle="modal"
               data-bs-target="#addProductModal">
               <i class="bi bi-plus"></i>
             </button>
@@ -107,13 +107,13 @@
     </div>
     <div class="col-md-6 text-end total-block">
       <p class="mb-1 fw-bold fs-5">{{ 'ORDER.TOTAL' | translate }}</p>
-      <span class="text-primary fw-bold">{{ getTotal }} {{products[0]?.product?.currency_price || ''}}</span>
+      <span id="order_create_total_amount" class="text-primary fw-bold">{{ getTotal }} {{products[0]?.product?.currency_price || ''}}</span>
     </div>
   </div>
 
   <!-- Submit -->
   <div class="text-center">
-    <button class="btn btn-primary px-5 btn-create" [ngClass]="{'btn-create-active': validOrder}"
+    <button id="btn_create_order" class="btn btn-primary px-5 btn-create" [ngClass]="{'btn-create-active': validOrder}"
       [disabled]="!validOrder" (click)="createOrder()">{{ 'ORDER.CREATE' | translate }}</button>
   </div>
 </div>
@@ -188,7 +188,7 @@
         </div>
       </div>
       <div class="modal-footer justify-content-center">
-        <button class="btn btn-primary" (click)="addProductsToOrder()" data-bs-dismiss="modal">{{ 'ORDER.ADD' | translate }}</button>
+        <button id="btn_create_order_add_products" class="btn btn-primary" (click)="addProductsToOrder()" data-bs-dismiss="modal">{{ 'ORDER.ADD' | translate }}</button>
       </div>
     </div>
   </div>

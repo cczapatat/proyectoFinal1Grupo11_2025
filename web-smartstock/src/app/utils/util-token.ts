@@ -6,8 +6,8 @@ export class UtilAToken {
     return isAdmin;
   }
 
-  public static getUserId(): string | null {
-    const userId = localStorage.getItem('userId');
+  public static getEntityId(): string | null {
+    const userId = localStorage.getItem('entity_id');
     return userId;
   }
 

@@ -97,11 +97,8 @@ export class SalespeopleListCustomersComponent implements OnInit {
       this.clientSortOrder
     ).subscribe({
       next: (res: PaginatedClients) => {
-        console.log(res)
-        console.log(res.data)
         this.clients = res.data;
         this.totalClientPages = res.total_pages;
-        console.log(this.clients)
       },
       error: (err) => {
         console.error('Error fetching clients:', err);

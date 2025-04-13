@@ -60,15 +60,14 @@ export class OrderCreateComponent implements OnInit {
     private sellerService: SellerService,
     private stocksService: StocksService,
     private orderService: OrderService,
-  ) {
-    this.isAdmin = UtilAToken.isAdmin();
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.isAdmin = UtilAToken.isAdmin();
     if (this.isAdmin) {
       this.loadDataAsAdmin();
     } else {
-      this.selectedSeller = UtilAToken.getUserId();
+      this.selectedSeller = UtilAToken.getEntityId();
       this.loadDataAsSeller(this.selectedSeller);
     }
     this.loadResources();
@@ -122,8 +121,7 @@ export class OrderCreateComponent implements OnInit {
           };
           this.availableProducts = response.stocks.map((p: ProductStockDTO) => ({
             ...p,
-            quantitySelected: 1,
-            selected: !!this.selectedModalProducts[p.id],
+            quantitySelected: 0,
           }));
         },
         error: (error) => {
@@ -152,7 +150,9 @@ export class OrderCreateComponent implements OnInit {
   }
 
   formatDate(date: Date): string {
-    return date.toISOString().slice(0, 10);
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 3);
+    return newDate.toISOString().slice(0, 10);
   }
 
   selectSellerFromAdmin() {
@@ -228,15 +228,14 @@ export class OrderCreateComponent implements OnInit {
   }
 
   setPage(page: number) {
-    const pageCurr = this.infoProductStocksPaginate.page + page;
+    let pageCurr = this.infoProductStocksPaginate.page + page;
 
     if (pageCurr <= 0) {
-      this.infoProductStocksPaginate.page = 1;
+      pageCurr = 1;
     } else if (pageCurr > this.infoProductStocksPaginate.total_page) {
-      this.infoProductStocksPaginate.page = this.infoProductStocksPaginate.total_page;
-    } else {
-      this.infoProductStocksPaginate.page = pageCurr;
+      pageCurr = this.infoProductStocksPaginate.total_page;
     }
+    this.infoProductStocksPaginate.page = pageCurr;
     this.loadProductStocks();
   }
 
@@ -286,7 +285,6 @@ export class OrderCreateComponent implements OnInit {
         this.resetForm();
       },
       error: (error) => {
-        console.error(error);
         this.toastr.error(
           this.translate.instant('ORDER.CREATE_ERROR_MESSAGE'),
           this.translate.instant('ORDER.CREATE_ERROR_TITLE'),

@@ -1,12 +1,12 @@
 export const environment = {
     production: false,
-    apiUserSessionUrl: 'http://130.211.32.9/user_sessions',
-    apiStoresUrl: 'http://130.211.32.9/stores',
-    apiProductUrl: 'http://130.211.32.9/products',
-    apiManufacturerUrl: 'http://130.211.32.9/manufacture-api',
-    apiStocksUrl: 'http://130.211.32.9/stocks-api',
-    apiSellerUrl: 'http://130.211.32.9/sellers',
-    apiClientUrl: 'http://130.211.32.9/clients',
-    apiOrderUrl: 'http://130.211.32.9/orders',
-    xToken: 'internal_token'
+    apiUserSessionUrl: 'http://127.0.0.1:3008/user_sessions',
+    apiStoresUrl: 'http://127.0.1:3015/stores',
+    apiProductUrl: 'http://127.0.0.1:3017/products',
+    apiManufacturerUrl: 'http://127.0.0.1:3000/manufacture-api',
+    apiStocksUrl: 'http://127.0.0.1:3010/stocks-api',
+    apiSellerUrl: 'http://127.0.0.1:3007/sellers',
+    apiClientUrl: 'http://127.0.0.1:3009/clients',
+    apiOrderUrl: 'http://127.0.0.1:3006/orders',
+    xToken: 'internal_token',
 };
