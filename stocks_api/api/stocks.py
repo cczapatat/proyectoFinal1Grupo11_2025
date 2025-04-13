@@ -64,6 +64,14 @@ def get_stocks_paginate():
     return jsonify({'stocks': stocks, 'total': total, 'page': page, 'per_page': per_page}), 200
 
 
+@bp.route('/list-all', methods=('GET',))
+def get_stocks_list_all():
+    __there_is_token()
+    stocks = stock_manager.get_stocks()
+
+    return jsonify(stocks), 200
+
+
 @bp.route('/by-ids', methods=('POST',))
 def get_stocks_by_ids():
     __there_is_token()

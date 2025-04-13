@@ -93,6 +93,16 @@ def test_get_stocks_invalid_pagination(client, headers, create_test_stocks):
     assert len(data) <= 50  # Should be capped at 50
 
 
+def test_get_stocks_list_all(client, headers, create_test_stocks):
+    with requests_mock.Mocker() as m:
+        m.post(f'{products_path}/products/by-ids', headers=headers, json=[])
+        response = client.get('/stocks-api/stocks/list-all', headers=headers)
+        data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert len(data) == len(create_test_stocks)
+
+
 def test_get_stocks_by_ids_missing(client, headers, create_test_stocks):
     response = client.post('/stocks-api/stocks/by-ids', headers=headers, json={})
     data = json.loads(response.data)

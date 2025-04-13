@@ -1,8 +1,8 @@
 import json
 import os
 import uuid
+
 import requests_mock
-from unittest.mock import patch
 
 user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
 sellers_path = os.getenv('SELLERS_PATH', default='http://localhost:3007')
@@ -270,7 +270,7 @@ def test_create_order_products_not_enough_quantity_in_stock(client, headers):
     assert data['message'] == f'not enough product stocks {order_data_mock["products"][0]["product_id"]}'
 
 
-def test_create_order_success(client, headers, mock_pubsub):
+def test_create_order_success_with_admin(client, headers, mock_pubsub):
     headers['Authorization'] = 'Bearer valid_token'
     with requests_mock.Mocker() as m:
         # Mock auth response
@@ -301,6 +301,68 @@ def test_create_order_success(client, headers, mock_pubsub):
     assert data['seller_id'] == seller_id
     assert len(data['products']) == 2
     assert mock_pubsub.publish.called
+
+
+def test_create_order_success_with_client(client, headers, mock_pubsub):
+    headers['Authorization'] = 'Bearer valid_token'
+    with requests_mock.Mocker() as m:
+        user_session_id = str(uuid.uuid4())
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': user_session_id,
+            'user_id': str(uuid.uuid4()),
+            'user_type': 'CLIENT'
+        })
+        # Mock client found with user_id
+        m.get(f'{clients_path}/clients/seller-info/{user_session_id}', json={
+            'id': client_id,
+            'seller_id': seller_id,
+        })
+        # Mock seller found
+        m.get(f'{sellers_path}/sellers/by-id/{seller_id}', json={'id': seller_id})
+        # Mock client found
+        m.get(f'{clients_path}/clients/client-id/{client_id}/seller-id/{seller_id}',
+              json={'id': client_id})
+        # Mock products found with stock
+        m.post(f'{stocks_api_path}/stocks-api/stocks/by-ids', json=[
+            {'id': product_one_id, 'quantity_in_stock': 100, 'product': {'unit_price': 10}},
+            {'id': product_two_id, 'quantity_in_stock': 50, 'product': {'unit_price': 10}},
+        ])
+
+        order_data_mock_in = order_data_mock.copy()
+        order_data_mock_in['seller_id'] = seller_id
+        response = client.post('/orders/create', headers=headers, json=order_data_mock_in)
+        data = json.loads(response.data)
+
+    assert response.status_code == 201
+    assert 'id' in data
+    assert data['client_id'] == client_id
+    assert data['seller_id'] == seller_id
+    assert len(data['products']) == 2
+    assert mock_pubsub.publish.called
+
+
+def test_create_order_success_with_client_http_not_found(client, headers, mock_pubsub):
+    headers['Authorization'] = 'Bearer valid_token'
+    with requests_mock.Mocker() as m:
+        user_session_id = str(uuid.uuid4())
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': user_session_id,
+            'user_id': str(uuid.uuid4()),
+            'user_type': 'CLIENT'
+        })
+        # Mock client found with user_id
+        m.get(f'{clients_path}/clients/seller-info/{user_session_id}', json={}, status_code=404)
+
+        order_data_mock_in = order_data_mock.copy()
+        order_data_mock_in['seller_id'] = seller_id
+        response = client.post('/orders/create', headers=headers, json=order_data_mock_in)
+        data = json.loads(response.data)
+
+    assert response.status_code == 404
+    assert data['message'] == 'client not found by authorization'
+    assert not mock_pubsub.publish.called
 
 
 def test_create_order_error_bd_integrity(client, headers):

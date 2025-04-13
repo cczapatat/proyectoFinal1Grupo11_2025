@@ -9,10 +9,11 @@ from google.cloud import pubsub_v1
 from sqlalchemy.exc import DataError
 from werkzeug.exceptions import Unauthorized, InternalServerError
 
-from ..models.enums import PAYMENT_METHOD
 from ..dtos.order_in_dto import OrderInDTO
 from ..dtos.order_product_in_dto import OrderProductInDTO
+from ..http_services.users_http import get_client_by_user_id_with_seller_info
 from ..managers.order_manager import OrderManager
+from ..models.enums import PAYMENT_METHOD
 from ..schemas.create_order_schema import CREATE_ORDER_SCHEMA
 
 bp = Blueprint('orders', __name__, url_prefix='/orders')
@@ -103,8 +104,12 @@ def create_order():
 
     request_data = request.get_json()
 
-    if user_auth['user_type'] in ['ADMIN', 'CLIENT']:
+    if user_auth['user_type'] == 'ADMIN':
         seller_id = request_data.get('seller_id', None)
+    elif user_auth['user_type'] == 'CLIENT':
+        client_info = get_client_by_user_id_with_seller_info(user_id)
+        seller_id = client_info['seller_id']
+        request_data['client_id'] = client_info['id']
     elif user_auth['user_type'] == 'SELLER':
         seller_id = user_auth['user_id']
 

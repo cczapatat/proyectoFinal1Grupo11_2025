@@ -32,6 +32,17 @@ def get_client_by_id(client_id: uuid, seller_id: uuid) -> dict:
     return client_response.json()
 
 
+def get_client_by_user_id_with_seller_info(user_id: uuid) -> dict:
+    client_response = requests.get(f'{clients_path}/clients/seller-info/{user_id}', headers={
+        'x-token': internal_token,
+    })
+
+    if client_response.status_code != 200:
+        raise NotFound(description='client not found by authorization')
+
+    return client_response.json()
+
+
 def get_product_stocks_by_id(product_stocks_id: list[uuid]) -> dict:
     product_stocks_response = requests.post(
         f'{stocks_api_path}/stocks-api/stocks/by-ids',
