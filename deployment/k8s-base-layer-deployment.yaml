@@ -598,6 +598,26 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: GCP_STOCKS_TOPIC
+            - name: USER_SESSION_MANAGER_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: USER_SESSION_MANAGER_PATH
+            - name: SELLERS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SELLERS_PATH
+            - name: CLIENTS_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: CLIENTS_PATH
+            - name: STOCKS_API_PATH
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: STOCKS_API_PATH
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
