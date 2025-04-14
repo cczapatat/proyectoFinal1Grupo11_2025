@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional, Any
 
 from sqlalchemy import asc, desc
+from sqlalchemy.orm import joinedload
 
 from .client_sort_field import ClientSortField
 from ..config.db import db
@@ -116,6 +117,39 @@ class ClientRepository:
         missing_client_ids = len(client_ids) - len(found_clients)
 
         return found_clients, missing_client_ids
+
+    @staticmethod
+    def get_clients_paginated(
+            page: int = 1,
+            per_page: int = 10,
+            sort_by: Optional[ClientSortField] = ClientSortField.NAME,
+            sort_order: str = "asc") -> dict[str, int | list[Any] | Any]:
+        """Get all clients """
+        # Validate sort order
+        sort_fn = asc if sort_order.lower() == "asc" else desc
+
+        # Map enum to actual model field
+        sort_column = {
+            ClientSortField.NAME: Client.name,
+            ClientSortField.ZONE: Client.zone,
+            ClientSortField.EMAIL: Client.email
+        }.get(sort_by, Client.name)
+
+        # Build and paginate query
+        pagination = (
+            Client.query
+            .options(joinedload(Client.seller_association))
+            .order_by(sort_fn(sort_column))
+            .paginate(page=page, per_page=per_page, error_out=False)
+        )
+
+        return {
+            "data": [client.to_dict() for client in pagination.items],
+            "total": pagination.total,
+            "page": pagination.page,
+            "total_pages": pagination.pages,
+            "per_page": pagination.per_page
+        }
 
 
 def get_clients_by_seller_id(seller_id):

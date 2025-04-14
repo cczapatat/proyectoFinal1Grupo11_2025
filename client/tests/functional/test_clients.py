@@ -267,12 +267,10 @@ def test_get_clients_by_seller_success(client, headers):
                             json=client_data_one,
                             headers=headers)
     assert response1.status_code == 201
-
     response2 = client.post('/clients/create',
                             json=client_data_two,
                             headers=headers)
     assert response2.status_code == 201
-
     # Get all clients for this seller
     response = client.get(f'/clients/seller/{seller_id}',
                           headers=headers)
@@ -292,7 +290,7 @@ def test_get_clients_by_seller_success(client, headers):
         assert 'client_type' in client_data
         assert 'zone' in client_data
         # Verify seller_id is not in the response
-        assert 'seller_id' not in client_data
+        assert 'seller_id' in client_data
 
 
 def test_get_clients_by_seller_empty(client, headers):
@@ -554,3 +552,38 @@ def test_associate_seller_missing_seller(client, headers):
     data = json.loads(response.data)
     assert response.status_code == 400
     assert 'message' in data
+
+
+def test_get_all_clients_paginated_success(client, headers, faker):
+    # First create a seller
+    client_data_one = {
+        "user_id": str(uuid4()),
+        "seller_id": str(uuid4()),
+        "name": "Test Client",
+        "phone": "+573017084770",
+        "email": "userid123@gmail.com",
+        "address": "Test Address 122",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+    }
+    client_data_two = {
+        "user_id": str(uuid4()),
+        "seller_id": str(uuid4()),
+        "name": "Test Client",
+        "phone": "+573017084771",
+        "email": "userid456@gmail.com",
+        "address": "Test Address 122",
+        "client_type": "CORNER_STORE",
+        "zone": "NORTH"
+    }
+    response_a = client.post('/clients/create', json=client_data_one, headers=headers)
+    assert response_a.status_code == 201
+
+    response_b = client.post('/clients/create', json=client_data_two, headers=headers)
+    assert response_b.status_code == 201
+
+    # Then get the sellers
+    response = client.get('/clients/clients/pag', headers=headers)
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert len(data) > 1

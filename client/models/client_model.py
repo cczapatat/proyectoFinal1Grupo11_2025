@@ -50,7 +50,7 @@ class Client(db.Model):
     created_at = Column(DateTime(), default=datetime.now)
     updated_at = Column(DateTime(), default=datetime.now)
 
-    seller_association = relationship("ClientSeller", back_populates="client")
+    seller_association = relationship("ClientSeller",uselist=False, back_populates="client")
 
     def to_dict(self):
         return {
@@ -63,5 +63,6 @@ class Client(db.Model):
             'client_type': self.client_type.value,
             'zone': self.zone.value,
             'created_at': self.created_at,
-            'updated_at': self.updated_at
+            'updated_at': self.updated_at,
+            'seller_id': str(self.seller_association.seller_id) if self.seller_association else None
         }
