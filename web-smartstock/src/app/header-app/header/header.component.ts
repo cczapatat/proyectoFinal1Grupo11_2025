@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { SessionManager } from 'src/app/services/session-manager.service';
 import { TranslateService } from '@ngx-translate/core';
+import { UtilAToken } from 'src/app/utils/util-token';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +24,7 @@ export class HeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.isAdmin = this._isAdmin();
+    this.isAdmin = UtilAToken.isAdmin();
     this.initializeLanguage();
   }
 
@@ -47,13 +48,6 @@ export class HeaderComponent implements OnInit {
       this.translate.instant('NAV.LOGOUT'),
       { closeButton: true }
     );
-  }
-
-  private _isAdmin(): boolean {
-    const type = localStorage.getItem('type');
-    const isAdmin = type === 'ADMIN';
-
-    return isAdmin;
   }
 
   private initializeLanguage() {

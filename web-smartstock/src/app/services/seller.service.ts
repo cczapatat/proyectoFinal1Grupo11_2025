@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SellerService extends BaseService {
 
+  private readonly sellerApi = environment.apiSellerUrl;
   private readonly userManagerAPI = environment.apiUserSessionUrl;
 
   constructor(protected http: HttpClient) {
@@ -32,5 +33,9 @@ export class SellerService extends BaseService {
     );
   }
 
-
+  getSellersList(): Observable<SellerDTO[]> {
+    return this.http.get<SellerDTO[]>(`${this.sellerApi}/all`, {
+      headers: this.defaultHeaders,
+    });
+  }
 }

@@ -1,5 +1,5 @@
-import json
 import os
+
 import requests
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, current_user, jwt_required
@@ -9,8 +9,8 @@ from .client_sort_field import ClientSortField
 from .seller_sort_field import SellerSortField
 from ..dtos.user_session_dto import UserSessionDTO
 from ..infrastructure.user_session_repository import UserSessionRepository
-from ..models.user_session_model import UserSession
 from ..models.data_classes import LoginIn
+from ..models.user_session_model import UserSession
 
 bp = Blueprint('user_sessions', __name__, url_prefix='/user_sessions')
 host_seller = os.environ.get('SELLERS_PATH', 'http://localhost:3007')
@@ -211,7 +211,7 @@ def validate_token():
 
 
 @bp.route('/clients/seller/<seller_id>', methods=('GET',))
-def get_clients_by_seller(seller_id:str):
+def get_clients_by_seller(seller_id: str):
     there_is_token()
 
     # Get query parameters with default values
@@ -232,7 +232,7 @@ def get_clients_by_seller(seller_id:str):
     data = get_client_response.json()
     if get_client_response.status_code != 200:
         print(f"[Client] Failed to get clients {url}, status code: {get_client_response.status_code}")
-        return jsonify(data),  get_client_response.status_code
+        return jsonify(data), get_client_response.status_code
 
     return get_client_response.json()
 
@@ -249,9 +249,10 @@ def associate_client_to_seller():
     data = associate_client_response.json()
     if associate_client_response.status_code != 200:
         print(f"[Client] Failed to associate clients {url}, status code: {associate_client_response.status_code}")
-        return jsonify(data),  associate_client_response.status_code
+        return jsonify(data), associate_client_response.status_code
 
     return jsonify(associate_client_response.json()), 200
+
 
 @bp.route('/sellers/pag', methods=('GET',))
 def get_sellers():
@@ -274,9 +275,10 @@ def get_sellers():
     get_sellers_response = requests.get(url, headers=headers)
     data = get_sellers_response.json()
     if get_sellers_response.status_code != 200:
-        return jsonify(data),  get_sellers_response.status_code
+        return jsonify(data), get_sellers_response.status_code
 
     return get_sellers_response.json()
+
 
 @bp.route('/sellers/id/<id>', methods=('GET',))
 def get_seller_by_id(id: str):
@@ -285,6 +287,6 @@ def get_seller_by_id(id: str):
     get_seller_response = requests.get(url, headers=headers)
     data = get_seller_response.json()
     if get_seller_response.status_code != 200:
-        return jsonify(data),  get_seller_response.status_code
+        return jsonify(data), get_seller_response.status_code
 
     return get_seller_response.json()

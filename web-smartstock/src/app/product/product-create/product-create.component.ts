@@ -132,7 +132,6 @@ export class ProductCreateComponent implements OnInit {
           this.translate.instant('PRODUCT.CREATE_ERROR_MESSAGE'),
           this.translate.instant('PRODUCT.CREATE_ERROR_TITLE'),
         );
-        console.error(error);
       });
     }
   }

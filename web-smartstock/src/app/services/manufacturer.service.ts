@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Manufacturer } from '../dtos/manufacturer';
 
@@ -9,7 +9,7 @@ import { Manufacturer } from '../dtos/manufacturer';
 })
 export class ManufacturerService {
 
-  private apiManufactuerUrl = environment.apiManufacturerUrl;
+  private apiManufactureUrl = environment.apiManufacturerUrl;
 
   constructor(
     private http: HttpClient
@@ -20,7 +20,7 @@ export class ManufacturerService {
       'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
       'x-token': environment.xToken
     })
-    return this.http.get<Manufacturer[]>(`${this.apiManufactuerUrl}/manufacturers/all`, { headers: headers })
+    return this.http.get<Manufacturer[]>(`${this.apiManufactureUrl}/manufacturers/all`, { headers: headers })
   }
 
 }

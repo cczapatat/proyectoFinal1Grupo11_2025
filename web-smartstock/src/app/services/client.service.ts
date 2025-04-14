@@ -1,18 +1,20 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 import { BaseService } from './base.service';
 import { Observable } from 'rxjs';
+import { ClientDTO } from '../dtos/client.dto';
 import { PaginatedClients } from '../dtos/client';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClientService extends BaseService  {
+export class ClientService extends BaseService {
 
+  private readonly clientApi = environment.apiClientUrl;
   private readonly userManagerAPI = environment.apiUserSessionUrl;
 
-  constructor(protected http: HttpClient) { 
+  constructor(protected http: HttpClient) {
     super();
   }
 
@@ -22,5 +24,11 @@ export class ClientService extends BaseService  {
       {
         headers: this.defaultHeaders
       });
+  }
+
+  getClientsBySellerIdList(sellerId: string): Observable<ClientDTO[]> {
+    return this.http.get<ClientDTO[]>(`${this.clientApi}/seller/${sellerId}`, {
+      headers: this.defaultHeaders,
+    });
   }
 }

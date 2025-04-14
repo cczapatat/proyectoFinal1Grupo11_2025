@@ -33,7 +33,7 @@
       </div>
       <div class="row">
         <div class="col-md-6 mb-3">
-          <label class="form-label">{{ 'STORE.ESTATE' | translate }}</label>
+          <label class="form-label">{{ 'STORE.STATE' | translate }}</label>
           <select id="store_state" class="form-select" formControlName="state" [attr.aria-label]="'STORE.STATE_SELECTED' | translate">
             <option value="">{{ 'STORE.STATE_SELECTED' | translate }}</option>
             <option *ngFor="let state of states" [value]="state">{{ 'STORE.STATE_' + state | translate }}</option>

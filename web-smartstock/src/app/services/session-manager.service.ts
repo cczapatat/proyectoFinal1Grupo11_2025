@@ -44,9 +44,10 @@ export class SessionManager  extends BaseService {
   }
 
   //Guarda el token y el tiempo de inicio de sesión en localStorage.
-  saveSession(token: string, userId: string, type: string): void {
+  saveSession(token: string, entityId, userId: string, type: string): void {
     localStorage.setItem('token', token);
     localStorage.setItem('loginTime', Date.now().toString());
+    localStorage.setItem('entity_id', entityId);
     localStorage.setItem('userId', userId);
     localStorage.setItem('type', type);
     localStorage.setItem('decodedToken', this.jwtHelper.decodeToken(token));

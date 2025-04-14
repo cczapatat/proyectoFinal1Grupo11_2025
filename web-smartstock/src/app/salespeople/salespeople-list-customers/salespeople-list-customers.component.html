@@ -10,7 +10,8 @@
             <th></th> <!-- Checkbox column -->
             <th (click)="toggleSellerSortOrder()" style="cursor: pointer" class="text-start ">
               {{'SALESPEOPLE.FILTER_BY_NAME' | translate}}
-              <span [ngClass]="{'bi bi-arrow-down': sellerSortOrder === 'asc', 'bi bi-arrow-up': sellerSortOrder === 'desc'}"></span>
+              <span
+                [ngClass]="{'bi bi-arrow-down': sellerSortOrder === 'asc', 'bi bi-arrow-up': sellerSortOrder === 'desc'}"></span>
             </th>
             <th class="text-start">{{'SALESPEOPLE.ZONE' | translate}} <i class="bi bi-info-circle"></i></th>
             <th class="text-start">{{'SALESPEOPLE.EMAIL' | translate}}</th>
@@ -21,31 +22,28 @@
             <!-- Render sellers -->
             <tr *ngFor="let seller of sellers" [class.table-active]="seller === selectedSeller">
               <td class="text-center align-middle">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  [checked]="seller === selectedSeller"
-                  (change)="onSelectSellerCheckbox(seller)"
-                />
+                <input type="checkbox" class="form-check-input" [checked]="seller === selectedSeller"
+                  (change)="onSelectSellerCheckbox(seller)" />
               </td>
               <td class="text-start fw-bold">{{ seller.name }}</td>
               <td class="text-start">{{ 'ZONES.'+ seller.zone | translate }}</td>
               <td class="text-start">{{ seller.email }}</td>
             </tr>
-      
+
             <!-- Empty filler rows to keep table height consistent -->
             <tr *ngFor="let i of [].constructor(10 - sellers.length)" class="empty-row">
               <td colspan="4">&nbsp;</td>
             </tr>
           </ng-container>
-      
+
           <!-- Message when no sellers -->
           <ng-template #noSellers>
             <tr *ngFor="let i of [].constructor(4)" class="empty-row">
               <td colspan="4">&nbsp;</td>
             </tr>
             <tr class="empty-row">
-              <td colspan="4" class="no-data-message align-middle text-muted fw-bold">{{'SALESPEOPLE.EMPTY_SALESPEOPLE' | translate}}</td>
+              <td colspan="4" class="no-data-message align-middle text-muted fw-bold">{{'SALESPEOPLE.EMPTY_SALESPEOPLE'
+                | translate}}</td>
             </tr>
             <tr *ngFor="let i of [].constructor(5)" class="empty-row">
               <td colspan="4">&nbsp;</td>
@@ -59,24 +57,19 @@
         <button class="pagination-button" [disabled]="sellerPage <= 1" (click)="changeSellerPage(-1)">
           <i class="bi bi-arrow-left"></i>{{'SALESPEOPLE.PREVIOUS' | translate}}
         </button>
-      
+
         <!-- Page buttons -->
-         <div class="inner-page-group">
-          <button
-          *ngFor="let page of getPaginationSellerPages(sellerPage, totalSellerPages)"
-            class="pagination-button"
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationSellerPages(sellerPage, totalSellerPages)" class="pagination-button"
             [ngClass]="{
               'active': page === sellerPage,
               'ellipsis': page === '...'
-            }"
-            (click)="onClickSellerPage(page)"
-            [disabled]="page === '...'"
-          >
+            }" (click)="onClickSellerPage(page)" [disabled]="page === '...'">
             {{ page }}
           </button>
-         </div>
-        
-      
+        </div>
+
+
         <!-- Next -->
         <button class="pagination-button" [disabled]="sellerPage >= totalSellerPages" (click)="changeSellerPage(1)">
           {{'SALESPEOPLE.NEXT' | translate}}<i class="bi bi-arrow-right"></i>
@@ -85,7 +78,7 @@
     </div>
 
     <!-- Clients Section (5 columns) -->
-    <div class="col-md-5" >
+    <div class="col-md-5">
       <h2 class="title_second">{{'SALESPEOPLE.CUSTOMERS' | translate}}</h2>
       <table class="table custom-bordered-table">
         <thead>
@@ -93,79 +86,73 @@
             <th></th> <!-- Checkbox column -->
             <th (click)="toggleClientSortOrder()" style="cursor: pointer" class="text-start">
               {{'SALESPEOPLE.FILTER_BY_NAME' | translate}}
-              <span [ngClass]="{'bi bi-arrow-down': clientSortOrder === 'asc', 'bi bi-arrow-up': clientSortOrder === 'desc'}"></span>
+              <span
+                [ngClass]="{'bi bi-arrow-down': clientSortOrder === 'asc', 'bi bi-arrow-up': clientSortOrder === 'desc'}"></span>
             </th>
             <th class="text-start">{{'SALESPEOPLE.ZONE' | translate}} <i class="bi bi-info-circle"></i></th>
           </tr>
         </thead>
         <tbody>
-            <!-- Show clients if available -->
-        <ng-container *ngIf="clients.length > 0; else noClients">
-          <tr *ngFor="let client of clients" [class.table-active]="client === selectedClient">
-            <td class="text-center align-middle">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                [checked]="client === selectedClient"
-                (change)="onSelectClientCheckbox(client)"
-              />
-            </td>
-            <td class="text-start pt-0 pb-0">
-              <p class="mb-1 pt-0 pb-0 align-middle fw-bold">{{ client.name }}</p>
-              <p class="mb-0 pt-0 pb-0 align-middle">{{ client.email }}</p>
-            </td>
-            <td class="text-start pt-0 pb-0 align-middle">{{ 'ZONES.'+ client.zone | translate }}</td>
-          </tr>
+          <!-- Show clients if available -->
+          <ng-container *ngIf="clients.length > 0; else noClients">
+            <tr *ngFor="let client of clients" [class.table-active]="client === selectedClient">
+              <td class="text-center align-middle">
+                <input type="checkbox" class="form-check-input" [checked]="client === selectedClient"
+                  (change)="onSelectClientCheckbox(client)" />
+              </td>
+              <td class="text-start pt-0 pb-0">
+                <p class="mb-1 pt-0 pb-0 align-middle fw-bold">{{ client.name }}</p>
+                <p class="mb-0 pt-0 pb-0 align-middle">{{ client.email }}</p>
+              </td>
+              <td class="text-start pt-0 pb-0 align-middle">{{ 'ZONES.'+ client.zone | translate }}</td>
+            </tr>
 
-          <!-- Fill remaining rows to keep table height consistent -->
-          <tr *ngFor="let i of [].constructor(10 - clients.length)" class="empty-row">
-            <td colspan="3">&nbsp;</td>
-          </tr>
-        </ng-container>
+            <!-- Fill remaining rows to keep table height consistent -->
+            <tr *ngFor="let i of [].constructor(10 - clients.length)" class="empty-row">
+              <td colspan="3">&nbsp;</td>
+            </tr>
+          </ng-container>
 
-        <!-- Template to show when no clients at all -->
-        <ng-template #noClients>
-          <tr *ngFor="let i of [].constructor(4)" class="empty-row">
-            <td colspan="3">&nbsp;</td>
-          </tr>
-          <tr class="empty-row">
-            <td *ngIf="initialEntry" colspan="3" class="text-center fw-bold text-muted align-middle" style="height: 48px;">
-              {{'SALESPEOPLE.SELECT_SALESPERSON' | translate}}
-            </td>
-            <td id="empty-customer" *ngIf="!initialEntry" colspan="3" class="text-center fw-bold text-muted align-middle" style="height: 48px;">
-              {{'SALESPEOPLE.EMPTY_CUSTOMERS' | translate}}
-            </td>
-          </tr>
-          <tr *ngFor="let i of [].constructor(5)" class="empty-row">
-            <td colspan="3">&nbsp;</td>
-          </tr>
-        </ng-template>
+          <!-- Template to show when no clients at all -->
+          <ng-template #noClients>
+            <tr *ngFor="let i of [].constructor(4)" class="empty-row">
+              <td colspan="3">&nbsp;</td>
+            </tr>
+            <tr class="empty-row">
+              <td *ngIf="initialEntry" colspan="3" class="text-center fw-bold text-muted align-middle"
+                style="height: 48px;">
+                {{'SALESPEOPLE.SELECT_SALESPERSON' | translate}}
+              </td>
+              <td id="empty-customer" *ngIf="!initialEntry" colspan="3"
+                class="text-center fw-bold text-muted align-middle" style="height: 48px;">
+                {{'SALESPEOPLE.EMPTY_CUSTOMERS' | translate}}
+              </td>
+            </tr>
+            <tr *ngFor="let i of [].constructor(5)" class="empty-row">
+              <td colspan="3">&nbsp;</td>
+            </tr>
+          </ng-template>
         </tbody>
       </table>
-      
-      <div class="btn-group ">
+
+      <div class="btn-group">
         <!-- Previous -->
         <button class="pagination-button" [disabled]="clientPage <= 1" (click)="changeClientPage(-1)">
           <i class="bi bi-arrow-left"></i>{{'SALESPEOPLE.PREVIOUS' | translate}}
         </button>
-      
+
         <!-- Page buttons -->
-         <div class="inner-page-group">
-          <button
-          *ngFor="let page of getPaginationClientPages(clientPage, totalClientPages)"
-            class="pagination-button"
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationClientPages(clientPage, totalClientPages)" class="pagination-button"
             [ngClass]="{
               'active': page === clientPage,
               'ellipsis': page === '...'
-            }"
-            (click)="onClickClientPage(page)"
-            [disabled]="page === '...'"
-          >
+            }" (click)="onClickClientPage(page)" [disabled]="page === '...'">
             {{ page }}
           </button>
-         </div>
-        
-      
+        </div>
+
+
         <!-- Next -->
         <button class="pagination-button" [disabled]="clientPage >= totalClientPages" (click)="changeClientPage(1)">
           {{'SALESPEOPLE.NEXT' | translate}}<i class="bi bi-arrow-right"></i>

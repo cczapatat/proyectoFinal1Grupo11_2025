@@ -7,7 +7,7 @@ import { StoreDto } from '../dtos/store.dto';
 describe('StoreService', () => {
   let service: StoreService;
   let httpMock: HttpTestingController;
-  const apiUrl = environment.storesUrl;
+  const apiUrl = environment.apiStoresUrl;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

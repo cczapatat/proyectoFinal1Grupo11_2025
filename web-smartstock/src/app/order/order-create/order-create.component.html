@@ -1,3 +1,195 @@
-<div class="container">
-  <h2>Crear Pedido</h2>
+<!-- create-order.component.html -->
+<div class="container py-4 create-order-container">
+  <h2 id="order_created_title" class="text-center mb-4 title create-order-title">{{ 'ORDER.TITLE' | translate }}</h2>
+
+  <!-- Seller Selection (Admin Only) -->
+  <ng-container *ngIf="isAdmin">
+    <div class="row mb-5 order-form-row">
+      <div class="col-md-12 order-form-group">
+        <label id="order_created_seller_label" class="form-label order-form-label">{{ 'ORDER.SELLER' | translate
+          }}</label>
+        <div class="input-group">
+          <select id="order_created_seller" class="form-select" [(ngModel)]="selectedSeller"
+            [attr.aria-label]="'ORDER.SELLER_SELECTED' | translate" (change)="selectSellerFromAdmin()">
+            <option value="">{{ 'ORDER.SELLER_SELECTED' | translate }}</option>
+            <option *ngFor="let seller of sellers" [value]="seller.id">{{seller.name}} ({{ seller.email }})</option>
+          </select>
+          <span class="input-group-text"><i class="bi bi-caret-down-fill"></i></span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Client and Date Selection -->
+  <div class="row mb-5 order-form-row">
+    <div class="col-md-6 order-form-group">
+      <label id="order_created_client_label" class="form-label order-form-label">{{ 'ORDER.CLIENT' | translate
+        }}</label>
+      <div class="input-group">
+        <select id="order_created_client" class="form-select" [(ngModel)]="selectedClient"
+          [attr.aria-label]="'ORDER.CLIENT_SELECTED' | translate">
+          <option value="">{{ 'ORDER.CLIENT_SELECTED' | translate }}</option>
+          <option *ngFor="let client of clients" [value]="client.id">{{client.name}} ({{ client.email }})</option>
+        </select>
+        <span class="input-group-text"><i class="bi bi-caret-down-fill"></i></span>
+      </div>
+    </div>
+    <div class="col-md-6 order-form-group">
+      <label class="form-label order-form-label">{{ 'ORDER.DELIVERY_DATE' | translate }}</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+        <input type="date" class="form-control" [ngModel]="deliveryDate" id="order_created_delivery_date"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Table -->
+  <div class="table-responsive mb-4">
+    <label id="order_created_products_label" class="form-label order-form-label">{{ 'ORDER.PRODUCTS' | translate }}</label>
+    <table class="table table-bordered align-middle products-table">
+      <thead class="table-light">
+        <tr>
+          <th>{{ 'ORDER.NAME' | translate }}</th>
+          <th>{{ 'ORDER.DESCRIPTION' | translate }}</th>
+          <th>{{ 'ORDER.UNIT_PRICE' | translate }}</th>
+          <th>{{ 'ORDER.UNIT_AVAILABLE' | translate }}</th>
+          <th>{{ 'ORDER.QUANTITY' | translate }}</th>
+          <th>{{ 'ORDER.TOTAL' | translate }}</th>
+          <th>
+            <button id="btn_open_product_stocks" class="btn btn-sm btn-primary btn-add-product" data-bs-toggle="modal"
+              data-bs-target="#addProductModal">
+              <i class="bi bi-plus"></i>
+            </button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products; let i = index">
+          <td>{{ product.product.name }}</td>
+          <td>{{ product.product.description }}</td>
+          <td>{{ product.product.unit_price }} {{ product.product.currency_price}}</td>
+          <td>{{ product.quantity_in_stock }}</td>
+          <td>
+            <div class="input-group quantity-control">
+              <button class="quantity-btn" [disabled]="selectedModalProducts[product.id] == product.quantitySelected"
+                (click)="incrementQuantity(product)">
+                <i class="bi bi-plus"></i>
+              </button>
+              <span class="quantity-value">{{ product?.quantitySelected || 0 }}</span>
+              <button class="quantity-btn" [disabled]="product?.quantitySelected <= 1"
+                (click)="decrementQuantity(product)">
+                <i class="bi bi-dash"></i>
+              </button>
+            </div>
+          </td>
+          <td>{{ product.product.unit_price * product.quantity_in_stock }} {{ product.product.currency_price }}</td>
+          <td>
+            <button class="btn btn-sm btn-dange btn-iconr" (click)="removeProduct(product)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Payment and Total -->
+  <div class="row align-items-center mb-4 order-summary-row">
+    <div class="col-md-6 payment-method-group">
+      <label class="form-label d-block">{{ 'ORDER.PAYMENT_METHOD' | translate }}</label>
+      <div *ngFor="let payment of paymentMethods" class="form-check">
+        <input class="form-check-input" type="radio" [value]="payment" [name]="'paymentMethod'"
+          [(ngModel)]="selectedPayment" id="paymentMethod_{{ payment }}">
+        <label class="form-check-label" for="paymentMethod_{{ payment }}" (click)="selectedPayment = payment">
+          {{ 'ORDER.PAYMENT_METHOD_' + payment | translate }}
+        </label>
+      </div>
+    </div>
+    <div class="col-md-6 text-end total-block">
+      <p class="mb-1 fw-bold fs-5">{{ 'ORDER.TOTAL' | translate }}</p>
+      <span id="order_create_total_amount" class="text-primary fw-bold">{{ getTotal }} {{products[0]?.product?.currency_price || ''}}</span>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="text-center">
+    <button id="btn_create_order" class="btn btn-primary px-5 btn-create" [ngClass]="{'btn-create-active': validOrder}"
+      [disabled]="!validOrder" (click)="createOrder()">{{ 'ORDER.CREATE' | translate }}</button>
+  </div>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ 'ORDER.ADD_PRODUCT_TO_ORDER' | translate }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th></th>
+              <th>{{ 'ORDER.NAME' | translate }}</th>
+              <th>{{ 'ORDER.DESCRIPTION' | translate }}</th>
+              <th>{{ 'ORDER.UNIT_PRICE' | translate }}</th>
+              <th>{{ 'ORDER.UNIT_AVAILABLE' | translate }}</th>
+              <th>{{ 'ORDER.UNITIES' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let product of availableProducts">
+              <td><input class="pointer" type="checkbox" [checked]="hasSelectedProductStock(product.id)"
+                  (click)="toggleSelectProduct(product)" /></td>
+              <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.name }}</td>
+              <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.description }}</td>
+              <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.unit_price }} {{
+                product.product.currency_price}}</td>
+              <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.quantity_in_stock }}</td>
+              <td>
+                <div class="input-group input-group-sm quantity-control">
+                  <button class="quantity-btn"
+                    [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] == product.quantity_in_stock"
+                    (click)="increaseModalQuantity(product.id, product.quantity_in_stock)"><i
+                      class="bi bi-plus"></i></button>
+                  <span class="quantity-value">{{ selectedModalProducts[product.id] || 0 }}</span>
+                  <button class="quantity-btn"
+                    [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] <= 1"
+                    (click)="decreaseModalQuantity(product.id)"><i class="bi bi-dash"></i></button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination-group">
+          <!-- Previous -->
+          <button class="pagination-button" [disabled]="infoProductStocksPaginate.page <= 1" (click)="setPage(-1)">
+            <i class="bi bi-arrow-left"></i>{{'ORDER.PREVIOUS' | translate}}
+          </button>
+
+          <!-- Page buttons -->
+          <div class="inner-page-group">
+            <button
+              *ngFor="let page of getPaginationProductStocksPages(infoProductStocksPaginate.page, infoProductStocksPaginate.total_page)"
+              class="pagination-button" [ngClass]="{
+              'active': +page === +infoProductStocksPaginate.page,
+              'ellipsis': page.toString() === '...'
+            }" (click)="setPagePos(+page)" [disabled]="page.toString() === '...'">
+              {{ page }}
+            </button>
+          </div>
+
+          <!-- Next -->
+          <button class="pagination-button"
+            [disabled]="infoProductStocksPaginate.page >= infoProductStocksPaginate.total_page" (click)="setPage(1)">
+            {{'ORDER.NEXT' | translate}}<i class="bi bi-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button id="btn_create_order_add_products" class="btn btn-primary" (click)="addProductsToOrder()" data-bs-dismiss="modal">{{ 'ORDER.ADD' | translate }}</button>
+      </div>
+    </div>
+  </div>
 </div>
