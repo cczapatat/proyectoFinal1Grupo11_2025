@@ -253,6 +253,20 @@ def test_associate_clients_to_seller(client, headers):
                 "zone": "CENTER"
             }
         ], status_code=200)
+        m.get(f'{host_seller}/sellers/id/76687dc4-22bf-4277-a983-659e51b84c41', json=[
+            {
+                "address": "AV 123",
+                "client_type": "CORNER_STORE",
+                "created_at": "Mon, 07 Apr 2025 23:23:18 GMT",
+                "email": "pedro20@sta.com",
+                "id": "76687dc4-22bf-4277-a983-659e51b84c41",
+                "name": "Seller",
+                "phone": "+573017084721",
+                "updated_at": "Mon, 07 Apr 2025 23:23:18 GMT",
+                "user_id": "e3182826-cb26-43ab-a017-4a8bf8f5bbfb",
+                "zone": "CENTER"
+            }
+        ], status_code=200)
 
         response = client.post('/user_sessions/clients/associate_seller',
                               headers=headers,
@@ -335,6 +349,56 @@ def test_get_sellers(client, headers):
         }, status_code=200)
 
         response = client.get('/user_sessions/sellers/pag',
+                               headers=headers
+                               )
+        assert response.status_code == 200
+        assert len(response.json['data']) > 1
+
+def test_get_clients(client, headers):
+    with requests_mock.Mocker() as m:
+        m.get(f'{host_client}/clients/clients/pag?page=1&per_page=10&sort_by=name&sort_order=asc', json={
+            "data": [
+                {
+                    "name": "aclientcypress1",
+                    "phone": "+573218084903",
+                    "seller_id": "dcd9d589-8d52-4ff3-b095-2ffce2ce5af3",
+                    "email": "aclientcypress1@sta.com",
+                    "password": "1234567",
+                    "address": "AV 123",
+                    "type": "CLIENT",
+                    "client_type": "CORNER_STORE",
+                    "zone": "CENTER"
+                },
+                {
+                    "name": "aclientcypress2",
+                    "phone": "+573218084903",
+                    "seller_id": "dcd9d589-8d52-4ff3-b095-2ffce2ce5af3",
+                    "email": "aclientcypress2@sta.com",
+                    "password": "1234567",
+                    "address": "AV 123",
+                    "type": "CLIENT",
+                    "client_type": "CORNER_STORE",
+                    "zone": "CENTER"
+                },
+                {
+                    "name": "aclientcypress3",
+                    "phone": "+573218084903",
+                    "seller_id": "dcd9d589-8d52-4ff3-b095-2ffce2ce5af3",
+                    "email": "aclientcypress3@sta.com",
+                    "password": "1234567",
+                    "address": "AV 123",
+                    "type": "CLIENT",
+                    "client_type": "CORNER_STORE",
+                    "zone": "CENTER"
+                }
+            ],
+            "page": 1,
+            "per_page": 10,
+            "total": 3,
+            "total_pages": 1
+        }, status_code=200)
+
+        response = client.get('/user_sessions/clients/pag',
                                headers=headers
                                )
         assert response.status_code == 200

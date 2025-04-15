@@ -242,8 +242,27 @@ def associate_client_to_seller():
     there_is_token()
 
     data = request.get_json()
+    # Check if seller exists
+    seller_id = data.get('seller_id')
+    url_seller = f"{host_seller}/sellers/id/{seller_id}"
+    headers = request.headers
+    get_seller_response = requests.get(url_seller, headers=headers)
+    data_seller = get_seller_response.json()
+    if get_seller_response.status_code != 200:
+        return jsonify(data_seller), get_seller_response.status_code
 
-    url = f"{host_client}/clients/associate_seller"
+    # Get query parameters with default values
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    sort_by_str = request.args.get('sort_by', default='name', type=str).lower()
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+
+    if sort_by_str not in [field.value for field in ClientSortField]:
+        return jsonify({"message": f"Invalid sort_by field: {sort_by_str}"}), 400
+
+    sort_by = ClientSortField(sort_by_str).value
+
+    url = f"{host_client}/clients/associate_seller?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
     headers = request.headers
     associate_client_response = requests.post(url, json=data, headers=headers)
     data = associate_client_response.json()
@@ -264,7 +283,7 @@ def get_sellers():
     sort_by_str = request.args.get('sort_by', default='name', type=str).lower()
     sort_order = request.args.get('sort_order', default='asc', type=str).lower()
 
-    if sort_by_str not in [field.value for field in ClientSortField]:
+    if sort_by_str not in [field.value for field in SellerSortField]:
         return jsonify({"message": f"Invalid sort_by field: {sort_by_str}"}), 400
 
     sort_by = SellerSortField(sort_by_str).value
@@ -290,3 +309,29 @@ def get_seller_by_id(id: str):
         return jsonify(data), get_seller_response.status_code
 
     return get_seller_response.json()
+
+
+@bp.route('/clients/pag', methods=('GET',))
+def get_clients():
+    there_is_token()
+
+    # Get query parameters with default values
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    sort_by_str = request.args.get('sort_by', default='name', type=str).lower()
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+
+    if sort_by_str not in [field.value for field in ClientSortField]:
+        return jsonify({"message": f"Invalid sort_by field: {sort_by_str}"}), 400
+
+    sort_by = ClientSortField(sort_by_str).value
+    """Get all clients"""
+
+    url = f"{host_client}/clients/clients/pag?page={page}&per_page={per_page}&sort_by={sort_by}&sort_order={sort_order}"
+    headers = request.headers
+    get_clients_response = requests.get(url, headers=headers)
+    data = get_clients_response.json()
+    if get_clients_response.status_code != 200:
+        return jsonify(data), get_clients_response.status_code
+
+    return get_clients_response.json()

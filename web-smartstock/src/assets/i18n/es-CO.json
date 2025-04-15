@@ -206,6 +206,8 @@
   },
   "SALESPEOPLE": {
     "TITLE": "Lista de clientes de un Vendedor",
+    "ASSIGN_TITLE": "Asignar clientes a un Vendedor",
+    "SAVE": "Guardar",
     "SALESPEOPLE": "Vendedores",
     "CUSTOMERS": "Clientes",
     "FILTER_BY_NAME": "Filtrar por nombre",
@@ -217,7 +219,14 @@
     "ERROR_MESSAGE": "Ha ocurrido un error:",
     "ERROR_TITLE": "Error",
     "EMPTY_SALESPEOPLE": "No se encontraron vendedores",
-    "EMPTY_CUSTOMERS":"No se encontraron clientes"
+    "EMPTY_CUSTOMERS":"No se encontraron clientes",
+    "LIST_ERROR_TITLE": "Error",
+    "LIST_ERROR_SALESPEOPLE": "Un error ha ocurrido: la consulta de vendedores no pudo ser realizada",
+    "LIST_ERROR_CUSTOMER": "Un error ha ocurrido: la consulta de clientes no pudo ser realizada",
+    "ASSOCIATE_SUCCESS_TITLE": "Asociación Éxitosa",
+    "ASSOCIATE_SUCCESS_MESSAGE": "Los clientes han sido asignados correctamente",
+    "ASSOCIATE_ERROR_TITLE": "Error",
+    "ASSOCIATE_ERROR_MESSAGE": "Un error ha ocurrido: la asociación no pudo ser creada"
   },
   "ZONES":{
     "NORTH": "Norte",

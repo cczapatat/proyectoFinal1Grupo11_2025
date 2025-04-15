@@ -205,6 +205,8 @@
   },
   "SALESPEOPLE": {
     "TITLE": "List customers of a salesperson",
+    "ASSIGN_TITLE": "Assign customers to a salesperson",
+    "SAVE": "Save",
     "SALESPEOPLE": "Salespeople",
     "CUSTOMERS": "Customers",
     "FILTER_BY_NAME": "Filter by name",
@@ -216,7 +218,14 @@
     "ERROR_MESSAGE": "An error occurred:",
     "ERROR_TITLE": "Error",
     "EMPTY_SALESPEOPLE": "Salespeople not found",
-    "EMPTY_CUSTOMERS":"Customers not found"
+    "EMPTY_CUSTOMERS":"Customers not found",
+    "LIST_ERROR_TITLE": "Error",
+    "LIST_ERROR_SALESPEOPLE": "An error has occurred: Sellers consult cannot be made",
+    "LIST_ERROR_CUSTOMER": "An error has occurred: Customers consult cannot be made",
+    "ASSOCIATE_SUCCESS_TITLE": "Successful association",
+    "ASSOCIATE_SUCCESS_MESSAGE": "Customers have been successfully assigned",
+    "ASSOCIATE_ERROR_TITLE": "Error",
+    "ASSOCIATE_ERROR_MESSAGE": "An error has occurred: the association cannot be created"
   },
   "ZONES":{
     "NORTH": "North",
