@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Client, PaginatedClients } from 'src/app/dtos/client';
 import { PaginatedSellers, SellerDTO } from 'src/app/dtos/seller.dto';
@@ -15,7 +16,8 @@ export class SalespeopleListCustomersComponent implements OnInit {
   constructor(
     private toastr: ToastrService,
     private readonly sellerService: SellerService,
-    private readonly clientService: ClientService
+    private readonly clientService: ClientService,
+    private translate: TranslateService
   ) {}
   initialEntry: boolean = true;
   // Sellers
@@ -61,6 +63,11 @@ export class SalespeopleListCustomersComponent implements OnInit {
         this.totalSellerPages = res.total_pages;
       },
       error: (err) => {
+        this.toastr.error(
+          this.translate.instant('SALESPEOPLE.LIST_ERROR_SALESPEOPLE'),
+          this.translate.instant('SALESPEOPLE.LIST_ERROR_TITLE'),
+          { closeButton: true },
+        );
         console.error('Error fetching sellers:', err);
       }
     });
@@ -101,6 +108,11 @@ export class SalespeopleListCustomersComponent implements OnInit {
         this.totalClientPages = res.total_pages;
       },
       error: (err) => {
+        this.toastr.error(
+          this.translate.instant('SALESPEOPLE.LIST_ERROR_CUSTOMER'),
+          this.translate.instant('SALESPEOPLE.LIST_ERROR_TITLE'),
+          { closeButton: true },
+        );
         console.error('Error fetching clients:', err);
       }
     });

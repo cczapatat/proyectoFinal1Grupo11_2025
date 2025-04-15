@@ -65,7 +65,10 @@ class ClientRepository:
         db.session.rollback()
 
     @staticmethod
-    def associate_seller(client_ids:List[str], seller_id):
+    def associate_seller(client_ids:List[str], seller_id,page: int = 1,
+            per_page: int = 10,
+            sort_by: Optional[ClientSortField] = ClientSortField.NAME,
+            sort_order: str = "asc"):
         # Check if client already has a seller association
         associations = []
 
@@ -97,7 +100,7 @@ class ClientRepository:
         db.session.commit()
         db.session.flush()
 
-        return get_clients_by_seller_id_paginated(seller_id)
+        return get_clients_paginated_association(page, per_page,sort_by,sort_order)
 
     @staticmethod
     def get_client_by_id(client_id: str) -> Client:
@@ -106,7 +109,7 @@ class ClientRepository:
     @staticmethod
     def get_clients_by_ids(client_ids: List[str]) -> (List[Client], List[str]):
         if not client_ids:
-            return [], []
+            return [], 0
 
             # Query all clients that match the provided IDs
         found_clients = Client.query.filter(Client.id.in_(client_ids)).all()
@@ -231,3 +234,35 @@ def get_client_with_seller(client_id):
             'seller_id': client_seller.seller_id
         }
     return None
+
+def get_clients_paginated_association(
+        page: int = 1,
+        per_page: int = 10,
+        sort_by: Optional[ClientSortField] = ClientSortField.NAME,
+        sort_order: str = "asc") -> dict[str, int | list[Any] | Any]:
+    """Get all clients """
+    # Validate sort order
+    sort_fn = asc if sort_order.lower() == "asc" else desc
+
+    # Map enum to actual model field
+    sort_column = {
+        ClientSortField.NAME: Client.name,
+        ClientSortField.ZONE: Client.zone,
+        ClientSortField.EMAIL: Client.email
+    }.get(sort_by, Client.name)
+
+    # Build and paginate query
+    pagination = (
+        Client.query
+        .options(joinedload(Client.seller_association))
+        .order_by(sort_fn(sort_column))
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+
+    return {
+        "data": [client.to_dict() for client in pagination.items],
+        "total": pagination.total,
+        "page": pagination.page,
+        "total_pages": pagination.pages,
+        "per_page": pagination.per_page
+    }

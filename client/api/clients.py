@@ -161,7 +161,21 @@ def associate_seller():
     if missing_clients > 0:
         return jsonify({'message': 'clients not found'}), 404
 
-    clients = client_repository.associate_seller(client_id, seller_id)
+    # Get query parameters with default values
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+    sort_by_str = request.args.get('sort_by', default='name', type=str).lower()
+    sort_order = request.args.get('sort_order', default='asc', type=str).lower()
+
+    if sort_by_str not in [field.value for field in ClientSortField]:
+        return jsonify({"message": f"Invalid sort_by field: {sort_by_str}"}), 400
+
+    sort_by = ClientSortField(sort_by_str)
+
+    clients = client_repository.associate_seller(client_id, seller_id, page=page,
+        per_page=per_page,
+        sort_by=sort_by,
+        sort_order=sort_order)
 
     if clients is None:
         return jsonify({'message': 'clients not found'}), 404

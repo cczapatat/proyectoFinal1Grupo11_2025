@@ -9,6 +9,7 @@ export interface Client {
   created_at: string;
   updated_at: string;
   client_type: string;
+  seller_id?: string;
 }
 
 export interface PaginatedClients {
@@ -17,4 +18,9 @@ export interface PaginatedClients {
     per_page: number;
     total: number;
     total_pages: number;
+  }
+
+export interface AssociateSeller {
+  client_id: string[];
+  seller_id: string;
   }
