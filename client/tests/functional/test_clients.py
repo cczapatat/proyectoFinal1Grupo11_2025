@@ -554,7 +554,7 @@ def test_associate_seller_missing_seller(client, headers):
     assert 'message' in data
 
 
-def test_get_all_clients_paginated_success(client, headers, faker):
+def test_get_all_clients_paginated_success(client, headers):
     # First create a seller
     client_data_one = {
         "user_id": str(uuid4()),
