@@ -43,27 +43,41 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (email, password) => {
-    cy.visit('/user-sessions/login');
-    cy.get('#email').type(email);
-    cy.get('#password').type(password);
-    cy.get('#doLogin').click();
-    cy.url().should('include', '/home');
-  });
-  
-  Cypress.Commands.add('navigateToProductCreate', () => {
-    cy.get('.menu-toggle').click();
-    cy.get('#nav_products').click();
-    cy.get('#nav_products_register').click();
-    cy.url().should('include', '/product/create');
-  });
+  cy.visit('/user-sessions/login');
+  cy.get('#email').type(email);
+  cy.get('#password').type(password);
+  cy.get('#doLogin').click();
+  cy.url().should('include', '/home');
+});
 
-  Cypress.Commands.add('navigateToProductEdit', () => {
-    cy.get('.menu-toggle').click();
-    cy.get('#nav_products').click();
-    cy.get('#nav_products_modify').click();
-    cy.url().should('include', '/product/list');
-    cy.get('#product_list_table tbody tr')
+Cypress.Commands.add('logout', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_btn_logout').click();
+  cy.url().should('include', '/user-sessions/login');
+});
+
+Cypress.Commands.add('navigateToProductCreate', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_products').click();
+  cy.get('#nav_products_register').click();
+  cy.url().should('include', '/product/create');
+});
+
+Cypress.Commands.add('navigateToProductEdit', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_products').click();
+  cy.get('#nav_products_modify').click();
+  cy.url().should('include', '/product/list');
+  cy.get('#product_list_table tbody tr')
     .first()
     .find('button')
     .click();
-  });
+});
+
+Cypress.Commands.add('navigateToCreateOrder', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_languages').click();
+  cy.get('#nav_es-CO').click();
+  cy.get('#nav_create_order').click();
+  cy.url().should('include', '/order/create');
+});

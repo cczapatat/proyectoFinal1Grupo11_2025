@@ -1,8 +1,10 @@
 import os
 import gc
 import uuid
+import requests
+
 from flask import Blueprint, jsonify, request, send_file
-from werkzeug.exceptions import NotFound, BadRequest, Unauthorized
+from werkzeug.exceptions import NotFound, BadRequest, Unauthorized, InternalServerError
 
 from ..utils import get_extension
 from ..dtos.document_dto import DocumentDTO
@@ -12,10 +14,27 @@ from ..infrastructure.cloud_storage_repository import CloudStorageRepository
 bp = Blueprint('document', __name__, url_prefix='/document-manager/document')
 
 internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
+user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
 
 document_repository = DocumentRepository()
 cloud_storage_repository = CloudStorageRepository(bucket_name=os.getenv('GCLOUD_BUCKET', default='massive_proyecto_final'))
 
+def __validate_auth_token() -> dict:
+    auth_token = request.headers.get('Authorization', None)
+
+    if auth_token is None:
+        raise Unauthorized(description='authorization required')
+
+    auth_response = requests.get(f'{user_session_manager_path}/user_sessions/auth', headers={
+        'Authorization': auth_token,
+    })
+
+    if auth_response.status_code == 401:
+        raise Unauthorized(description='authorization required')
+    elif auth_response.status_code != 200:
+        raise InternalServerError(description='internal server error on user_session_manager')
+
+    return auth_response.json()
 
 def there_is_token():
     token = request.headers.get('x-token', None)
@@ -31,7 +50,14 @@ def there_is_token():
 @bp.route('/create', methods=('POST',))
 def create_document():
     there_is_token()
-    user_id = request.headers.get('user-id', None)
+    user_auth = __validate_auth_token()
+
+    if user_auth['user_type'] == 'ADMIN':
+        user_id = user_auth['user_session_id']
+    elif user_auth['user_type'] == 'SELLER':
+        user_id =  user_auth['user_id']
+    else:
+        return jsonify({'message': 'Invalid user type'}), 403
 
     if user_id is None:
         return jsonify({'message': 'user-id is required'}), 400
