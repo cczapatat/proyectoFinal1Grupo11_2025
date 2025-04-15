@@ -64,19 +64,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of products; let i = index">
+        <tr *ngFor="let product of products; let i = index" id="order_created_product_selected_{{i}}">
           <td>{{ product.product.name }}</td>
           <td>{{ product.product.description }}</td>
           <td>{{ product.product.unit_price }} {{ product.product.currency_price}}</td>
           <td>{{ product.quantity_in_stock }}</td>
           <td>
             <div class="input-group quantity-control">
-              <button class="quantity-btn" [disabled]="selectedModalProducts[product.id] == product.quantitySelected"
+              <button id="create_order_btn_increase_quantity_{{i}}" class="quantity-btn" [disabled]="selectedModalProducts[product.id] >= product.quantity_in_stock"
                 (click)="incrementQuantity(product)">
                 <i class="bi bi-plus"></i>
               </button>
               <span class="quantity-value">{{ product?.quantitySelected || 0 }}</span>
-              <button class="quantity-btn" [disabled]="product?.quantitySelected <= 1"
+              <button id="create_order_btn_decrease_quantity_{{i}}" class="quantity-btn" [disabled]="product?.quantitySelected <= 1"
                 (click)="decrementQuantity(product)">
                 <i class="bi bi-dash"></i>
               </button>
@@ -139,8 +139,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of availableProducts">
-              <td><input class="pointer" type="checkbox" [checked]="hasSelectedProductStock(product.id)"
+            <tr *ngFor="let product of availableProducts; let i = index">
+              <td><input id="create_order_checkbox_{{i}}" class="pointer" type="checkbox" [checked]="hasSelectedProductStock(product.id)"
                   (click)="toggleSelectProduct(product)" /></td>
               <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.name }}</td>
               <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.description }}</td>
@@ -149,12 +149,12 @@
               <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.quantity_in_stock }}</td>
               <td>
                 <div class="input-group input-group-sm quantity-control">
-                  <button class="quantity-btn"
-                    [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] == product.quantity_in_stock"
+                  <button id="create_order_btn_increase_{{i}}" class="quantity-btn"
+                    [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] >= product.quantity_in_stock"
                     (click)="increaseModalQuantity(product.id, product.quantity_in_stock)"><i
                       class="bi bi-plus"></i></button>
                   <span class="quantity-value">{{ selectedModalProducts[product.id] || 0 }}</span>
-                  <button class="quantity-btn"
+                  <button id="create_order_btn_decrease_{{i}}" class="quantity-btn"
                     [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] <= 1"
                     (click)="decreaseModalQuantity(product.id)"><i class="bi bi-dash"></i></button>
                 </div>
@@ -164,7 +164,7 @@
         </table>
         <div class="pagination-group">
           <!-- Previous -->
-          <button class="pagination-button" [disabled]="infoProductStocksPaginate.page <= 1" (click)="setPage(-1)">
+          <button id="btn_create_order_previous_stock_page" class="pagination-button" [disabled]="infoProductStocksPaginate.page <= 1" (click)="setPage(-1)">
             <i class="bi bi-arrow-left"></i>{{'ORDER.PREVIOUS' | translate}}
           </button>
 
@@ -181,7 +181,7 @@
           </div>
 
           <!-- Next -->
-          <button class="pagination-button"
+          <button id="btn_create_order_next_stock_page" class="pagination-button"
             [disabled]="infoProductStocksPaginate.page >= infoProductStocksPaginate.total_page" (click)="setPage(1)">
             {{'ORDER.NEXT' | translate}}<i class="bi bi-arrow-right"></i>
           </button>

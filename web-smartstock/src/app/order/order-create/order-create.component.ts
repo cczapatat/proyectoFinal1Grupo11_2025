@@ -190,7 +190,7 @@ export class OrderCreateComponent implements OnInit {
   toggleSelectProduct(product: Product) {
     const selected = this.hasSelectedProductStock(product.id);
     if (!selected) {
-      this.selectedModalProducts[product.id] = product.quantity_in_stock;
+      this.selectedModalProducts[product.id] = 1;
     } else {
       delete this.selectedModalProducts[product.id];
       this.removeProduct(product);

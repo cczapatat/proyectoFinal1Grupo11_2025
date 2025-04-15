@@ -142,7 +142,7 @@ describe('OrderCreateComponent', () => {
     fixture.detectChanges();
 
     const totalAmountSpan = debug.query(By.css('#order_create_total_amount')).nativeElement;
-    expect(totalAmountSpan.textContent.trim()).toBe('100 COP');
+    expect(totalAmountSpan.textContent.trim()).toBe('10 COP');
 
     const firstPaymentMethod = debug.query(By.css('input#paymentMethod_CREDIT_CARD')).nativeElement;
     firstPaymentMethod.click();
