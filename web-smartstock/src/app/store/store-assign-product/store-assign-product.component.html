@@ -146,7 +146,7 @@
   <!-- Save Button with dynamic color -->
   <div class="row save-button-row">
     <div class="col-12 text-center">
-      <button class="register-btn"
+      <button id="saveBtt" class="register-btn"
               [ngStyle]="{'background-color': hasChanges ? '#984C0C' : '#6C757D'}"
               [disabled]="!hasChanges"
               (click)="saveAssignments()">

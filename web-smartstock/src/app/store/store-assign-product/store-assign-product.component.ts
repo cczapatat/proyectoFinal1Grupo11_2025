@@ -12,6 +12,7 @@ interface ProductExtended extends Product {
   selected?: boolean;
   quantity?: number;
   local_image?: string;
+  stock_id?: string;
 }
 
 interface ExtendedStore extends StoreDto {
@@ -29,7 +30,7 @@ export class StoreAssignProductComponent implements OnInit {
   products: ProductExtended[] = [];
 
   // Diccionario para persistir las selecciones de productos entre paginaciones.
-  productSelections: { [id: string]: { selected: boolean, quantity: number } } = {};
+  productSelections: { [id: string]: { selected: boolean, quantity: number, stock_id : string } } = {};
 
   // Tienda actualmente seleccionada.
   selectedStore: ExtendedStore | null = null;
@@ -155,11 +156,13 @@ export class StoreAssignProductComponent implements OnInit {
             if (assignment) {
               product.selected = true;
               product.quantity = assignment.assigned_stock;
-              this.productSelections[product.id] = { selected: true, quantity: assignment.assigned_stock };
+              
+              this.productSelections[product.id] = { selected: true, quantity: assignment.assigned_stock, stock_id: assignment.id };
+              console.log(this.productSelections);
             } else {
               product.selected = false;
               product.quantity = 0;
-              this.productSelections[product.id] = { selected: false, quantity: 0 };
+              this.productSelections[product.id] = { selected: false, quantity: 0, stock_id: ""  };
             }
           });
           this.hasChanges = false;
@@ -177,7 +180,7 @@ export class StoreAssignProductComponent implements OnInit {
     this.products.forEach(product => {
       product.selected = false;
       product.quantity = 0;
-      this.productSelections[product.id] = { selected: false, quantity: 0 };
+      this.productSelections[product.id] = { selected: false, quantity: 0, stock_id: "" };
     });
     this.hasChanges = false;
   }
@@ -190,7 +193,11 @@ export class StoreAssignProductComponent implements OnInit {
     if (!product.selected) {
       product.quantity = 0;
     }
-    this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0 };
+    this.productSelections[product.id] = { 
+      selected: product.selected || false, 
+      quantity: product.quantity || 0, 
+      stock_id: this.productSelections[product.id]?.stock_id || '' 
+    };
     this.hasChanges = true;
   }
 
@@ -201,7 +208,11 @@ export class StoreAssignProductComponent implements OnInit {
     if (product.quantity < 0) {
       product.quantity = 0;
     }
-    this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0 };
+    this.productSelections[product.id] = { 
+      selected: product.selected || false, 
+      quantity: product.quantity || 0, 
+      stock_id: this.productSelections[product.id]?.stock_id || '' 
+    };
     this.hasChanges = true;
   }
 
@@ -239,7 +250,7 @@ export class StoreAssignProductComponent implements OnInit {
   // Cambia la página de productos. Persiste las selecciones antes de cargar nuevos productos.
   changeProductPage(delta: number): void {
     this.products.forEach(product => {
-      this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0 };
+      this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0, stock_id: this.productSelections[product.id].stock_id };
     });
     const newPage = this.productPage + delta;
     if (newPage >= 1 && newPage <= this.totalProductPages) {
@@ -255,7 +266,7 @@ export class StoreAssignProductComponent implements OnInit {
 
   onProductPageClick(page: number): void {
     this.products.forEach(product => {
-      this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0 };
+      this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0, stock_id: this.productSelections[product.id].stock_id };
     });
     this.productPage = page;
     this.loadProducts(this.productPage);
@@ -277,10 +288,11 @@ export class StoreAssignProductComponent implements OnInit {
     const stocks = this.products
       .filter(product => product.selected)
       .map(product => ({
-        product_id: product.id,
-        assigned_stock: product.quantity,
-        id: '' // Vacío indica una nueva asignación.
+      product_id: product.id,
+      assigned_stock: product.quantity,
+      id: this.productSelections[product.id]?.stock_id || ''
       }));
+
     const dto: AssignedStockDto = {
       store_id: this.selectedStore.id as string,
       stocks: stocks
