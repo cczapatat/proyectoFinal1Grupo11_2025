@@ -26,10 +26,10 @@
         android:enabled="false"/>
 
     <item
-        android:id="@+id/Pedidos"
+        android:id="@+id/CreateOrderFragment"
         android:icon="@drawable/baseline_shopping_cart_24"
         android:title="@string/menu_pedidos"
-        android:enabled="false"/>
+        android:enabled="true"/>
 
     <item
         android:id="@+id/CargarVideo"

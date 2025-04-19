@@ -24,6 +24,7 @@
     <string name="asociate_fragment_label">Asociate Fragment</string>
     <string name="register_client_fragment_label">Register Client Fragment</string>
     <string name="asociate_select_fragment_label">Asociate Select Fragment</string>
+    <string name="create_order_fragment_label">Create order Fragment</string>
     <string name="list_fragment_label">List Fragment</string>
     <string name="record_fragment_label">Record Fragment</string>
     <string name="crear_nueva_cuenta">Create new account</string>
@@ -53,7 +54,7 @@
     <string name="menu_listar_clientes">Client list</string>
     <string name="menu_crear_cliente">Create client</string>
     <string name="menu_consulta_productos">Product search</string>
-    <string name="menu_pedidos">Orders</string>
+    <string name="menu_pedidos">Create Order</string>
     <string name="menu_cargar_video">Upload video</string>
     <string name="menu_cerrar_sesion">Signout</string>
     <string name="aceptar">Accept</string>
@@ -63,6 +64,30 @@
     <string name="success_add_client">El cliente se ha agregado de forma satisfactoria</string>
     <string name="error_add_client">Ocurrio un error al intentar guardar clientes</string>
     <string name="error_add_client_fields">All fields must be filled</string>
+
+
+    <!-- TODO: Smart Stock Orden -->
+    <string name="crear_pedido">Create Order</string>
+    <string name="seleccionar_cliente">Select Client</string>
+    <string name="seleccionar_fecha">Select date</string>
+    <string name="tipo_pago">Payment type</string>
+    <string name="tipo_pago_ondelivery">On delivery payment</string>
+    <string name="tipo_pago_creditcard">Credit card</string>
+    <string name="tipo_pago_debitcard">Debit</string>
+    <string name="add_product">Add product</string>
+    <string name="moneda">COP</string>
+    <string name="total">Total:</string>
+    <string name="cuadro_agregar_producto">Add products</string>
+    <string name="seleccionar_producto">Select Product</string>
+    <string name="cantidad">Quantity</string>
+    <string name="agregar">Add</string>
+    <string name="unidad">Unit</string>
+    <string name="pedido">Order</string>
+    <string name="error_orden">An error occurred while creating the order, please try again.</string>
+    <string name="success_orden">Your Order has been created successfully.</string>
+    <string name="favor_seleccionar_producto">Please select a product</string>
+    <string name="favor_ingresar_cantidad">Enter a valid quantity</string>
+    <string name="producto_seleccionado">Seleccted product:</string>
 
     <!--api client errors-->
     <string name="error_user_id_required">userID is required</string>

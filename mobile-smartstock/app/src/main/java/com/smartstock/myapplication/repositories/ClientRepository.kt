@@ -2,7 +2,6 @@ package com.smartstock.myapplication.repositories
 
 import android.app.Application
 import android.content.Context
-import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.database.dao.ClientDao
 import com.smartstock.myapplication.models.Client
 import com.smartstock.myapplication.network.NetworkServiceAdapter
@@ -24,8 +23,8 @@ class ClientRepository(
         return emptyList()
     }
 
-    suspend fun addClient(client: Client, context:Context): Client {
-        val newClient = NetworkServiceAdapter.getInstance(application).addClient(client, context)
+    suspend fun addClient(client: Client, context:Context, token: String?): Client {
+        val newClient = NetworkServiceAdapter.getInstance(application).addClient(client, context, token)
         this.clientDao.insert(newClient) // Store locally
         return newClient
     }

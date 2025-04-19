@@ -7,35 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.smartstock.myapplication.R
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.timepicker.MaterialTimePicker
-import com.google.android.material.timepicker.TimeFormat
 import com.smartstock.myapplication.database.AppDatabase
-import com.smartstock.myapplication.database.dao.ClientDao
 import com.smartstock.myapplication.databinding.FragmentRegisterClientBinding
 import com.smartstock.myapplication.models.Client
 import com.smartstock.myapplication.network.NetworkServiceAdapter
-import com.smartstock.myapplication.repositories.ClientRepository
 import com.smartstock.myapplication.repositories.UserSessionRepository
-import com.smartstock.myapplication.ui.client.ClientViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 import java.util.UUID
 
 /**
@@ -131,6 +115,9 @@ class RegisterClientFragment : Fragment() {
                 val userId = withContext(Dispatchers.IO) {
                     userSessionRepository.getSavedUserId()
                 }
+                val token = withContext(Dispatchers.IO) {
+                    userSessionRepository.getSavedToken()
+                }
                 val client = Client(
                     name = name,
                     phone = phone,
@@ -143,7 +130,7 @@ class RegisterClientFragment : Fragment() {
                 )
 
                 try {
-                    val createdClient = adapter.addClient(client, requireContext())
+                    val createdClient = adapter.addClient(client, requireContext(), token)
                     Toast.makeText(requireContext(), getString(R.string.success_add_client), Toast.LENGTH_LONG).show()
                     clearForm()
                     navigateToClients()

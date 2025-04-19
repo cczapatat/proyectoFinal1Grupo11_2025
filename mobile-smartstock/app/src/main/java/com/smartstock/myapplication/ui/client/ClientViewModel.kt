@@ -29,14 +29,14 @@ class ClientViewModel(application: Application) : AndroidViewModel(application) 
 
 
 
-    fun addNewClient(newClient: Client, onResult: (Boolean) -> Unit) {
+    fun addNewClient(newClient: Client,token:String, onResult: (Boolean) -> Unit) {
         if (_isSubmitting.value == true) return // 🚫 Prevent duplicate requests
 
         _isSubmitting.value = true
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _clientRepository.addClient(newClient, currentApp.applicationContext)
+                _clientRepository.addClient(newClient, currentApp.applicationContext, token)
 
                 onResult(true)  // Call the callback with success
             } catch (e: Exception) {
