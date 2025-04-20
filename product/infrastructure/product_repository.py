@@ -52,7 +52,7 @@ class ProductRepository:
 
     @staticmethod
     def get_product_by_id(product_id: str) -> Product:
-        product = Product.query.get(product_id)
+        product = db.session.get(Product, product_id)
         if not product:
             response = make_response(
                 jsonify({"error": "Product not found", "message": "Product not found"}), 404
@@ -63,7 +63,7 @@ class ProductRepository:
 
     @staticmethod
     def update_product(product_id: str, product_dto: ProductDTO) -> Product:
-        product = Product.query.get(product_id)
+        product = db.session.get(Product, product_id)
         if not product:
             response = make_response(
                 jsonify({"error": "Product not found", "message": "Product not found"}), 404
