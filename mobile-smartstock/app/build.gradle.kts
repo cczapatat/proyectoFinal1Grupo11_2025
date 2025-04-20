@@ -110,4 +110,6 @@ dependencies {
 
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation(kotlin("test"))
+
+    implementation ("androidx.paging:paging-runtime:3.2.1")
 }

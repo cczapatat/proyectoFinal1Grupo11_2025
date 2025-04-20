@@ -4,6 +4,10 @@
         <item name="android:textSize">@dimen/textAppearanceHeadlineLarge</item>
         <item name="android:textColor">#000000</item>
     </style>
+    <style name="total">
+        <item name="android:textSize">@dimen/textAppearanceTitleMedium</item>
+        <item name="android:textColor">#000000</item>
+    </style>
     <style name="duration_time">
         <item name="android:textSize">@dimen/textAppearanceBodyMedium</item>
         <item name="android:textColor">#000000</item>
@@ -41,12 +45,12 @@
     <style name="LoginTextInputLayoutStyle3" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="boxStrokeWidth">2.5dp</item>
-        <item name="boxBackgroundColor">@color/schemesPrimaryContainer</item>
+        <item name="boxBackgroundColor">@color/white</item>
 
         <!-- Customize hint text and input text color -->
         <item name="android:textColor">@color/black</item>
         <!-- Customize the popup (dropdown) background -->
-        <item name="colorPrimary">@color/schemesPrimaryContainer</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorOnSurface">@color/schemesOnSecondaryContainer</item>
 
     </style>
@@ -68,24 +72,24 @@
 
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="boxStrokeWidth">2.5dp</item>
-        <item name="boxBackgroundColor">@color/schemesPrimaryContainer</item>
+        <item name="boxBackgroundColor">@color/white</item>
 
         <!-- Customize hint text and input text color -->
         <item name="android:textColor">@color/black</item>
         <!-- Customize the popup (dropdown) background -->
-        <item name="colorPrimary">@color/schemesPrimaryContainer</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorOnSurface">@color/schemesOnSecondaryContainer</item>
     </style>
 
     <style name="MaterialCardItemStyle" parent="Widget.MaterialComponents.CardView">
         <item name="boxStrokeColor">@color/text_input_box_stroke</item>
         <item name="boxStrokeWidth">2.5dp</item>
-        <item name="boxBackgroundColor">@color/schemesPrimaryContainer</item>
+        <item name="boxBackgroundColor">@color/white</item>
 
         <!-- Customize hint text and input text color -->
         <item name="android:textColor">@color/black</item>
         <!-- Customize the popup (dropdown) background -->
-        <item name="colorPrimary">@color/schemesPrimaryContainer</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorOnSurface">@color/schemesOnSecondaryContainer</item>
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Card</item>
 
@@ -100,7 +104,7 @@
     <!--    AM/PM Button style-->
     <style name="AppTheme.Widget.TimePicker.Clock.AmPmButton" parent="Widget.MaterialComponents.TimePicker.Button">
         <item name="backgroundTint">@color/selector_bg_chip</item>
-        <item name="strokeColor">@color/schemesPrimaryContainer</item>
+        <item name="strokeColor">@color/white</item>
         <item name="android:textColor">@color/selector_text_chip</item>
     </style>
 

@@ -38,6 +38,7 @@
     <color name="schemesOnPrimary">#FFFFFF</color>
     <color name="schemesBlack">#000000</color>
     <color name="schemesPrimaryContainer">#CCE5FF</color>
+    <color name="schemesPrimaryContainerCoffe">#D8CBC1</color>
     <color name="schemesSurfaceContainerLow">#F2F7FA</color>
     <color name="schemesSurfaceContainerHighest">#E0E7E9</color>
     <color name="schemesOnSecondaryContainer">#1D192B</color>

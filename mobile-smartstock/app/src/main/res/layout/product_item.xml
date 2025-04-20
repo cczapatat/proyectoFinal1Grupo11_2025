@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="product"
+            type="com.smartstock.myapplication.models.Product" />
+        <variable
+            name="onDeleteClick"
+            type="kotlin.jvm.functions.Function1&lt;com.smartstock.myapplication.models.Product, kotlin.Unit&gt;" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/schemesPrimaryContainerCoffe"
+            android:backgroundTint="@color/schemesPrimaryContainerCoffe"
+            app:cardCornerRadius="3dp"
+            android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/schemesPrimaryContainer"
+            style="@style/MaterialCardItemStyle"
+            app:strokeWidth="1dp">
+
+            <RelativeLayout
+                android:id="@+id/fragment_reminder_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/productListName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="false"
+                    android:paddingStart="8dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceBodyMedium"
+                    android:text="@{product.name}"
+                    tools:text="Saltin Taco grande"/>
+
+                <TextView
+                    android:id="@+id/productListPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="false"
+                    android:paddingStart="8dp"
+                    android:paddingTop="16dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceBodyMedium"
+                    android:text='@{product.currency_price +" " + String.format("%,.0f", product.unit_price)}'
+                    tools:text="COP 50.000"/>
+
+
+                <!-- First Icon to the Right -->
+                <TextView
+                    android:id="@+id/productListUnits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="false"
+                    android:paddingStart="8dp"
+                    android:paddingTop="16dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="3dp"
+                    android:layout_toLeftOf="@id/deleteSelectedProductIcon"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceBodyMedium"
+                    android:text='@{String.valueOf(product.quantity) + " " + @string/unidad}'
+                    tools:text="20 UND"/>
+
+
+                <!-- Third Icon to the Right (before the first one) -->
+                <ImageView
+                    android:id="@+id/deleteSelectedProductIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/baseline_delete_48"
+                    android:contentDescription="Third Icon"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:onClick="@{() -> onDeleteClick.invoke(product)}"/>
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

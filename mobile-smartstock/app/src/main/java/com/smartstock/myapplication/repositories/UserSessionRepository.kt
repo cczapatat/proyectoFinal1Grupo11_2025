@@ -18,4 +18,8 @@ class UserSessionRepository(
 
     }
 
+    suspend fun deleteSavedToken() {
+        this.userTokenDao.clearToken()
+    }
+
 }

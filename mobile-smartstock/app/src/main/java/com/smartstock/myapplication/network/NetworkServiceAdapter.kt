@@ -1,26 +1,26 @@
 package com.smartstock.myapplication.network
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.widget.Toast
-import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.smartstock.myapplication.R
 import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.models.Client
+import com.smartstock.myapplication.models.CreatedOrder
+import com.smartstock.myapplication.models.Order
+import com.smartstock.myapplication.models.Product
 import com.smartstock.myapplication.models.User
 import com.smartstock.myapplication.models.UserToken
 import com.smartstock.myapplication.models.UserVerify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.UUID
 import kotlin.coroutines.resume
@@ -33,8 +33,14 @@ class NetworkServiceAdapter constructor(context: Context){
         const val INTERNAL_TOKEN = "internal_token"
         const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
         const val BASE_URL_CLIENTS = "http://130.211.32.9/"
+        const val BASE_URL_PRODUCTS = "https://32bd-186-154-38-102.ngrok-free.app/"
+        //const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
+        const val BASE_URL_ORDER = "https://32bd-186-154-38-102.ngrok-free.app/"
+        //const val BASE_URL_ORDER = "http://130.211.32.9/"
         const val LOGIN_PATH = "user_sessions/login"
         const val CREATE_CLIENT_PATH = "user_sessions/create"
+        const val GET_PRODUCT_PATH = "products/paginated_full"
+        const val CREATE_ORDER_PATH = "orders/create"
         const val VERIFY_PATH = "user_sessions/auth"
         const val UNKNOWN = "unknown"
         const val COVER_UNKNOWN =
@@ -45,7 +51,6 @@ class NetworkServiceAdapter constructor(context: Context){
                 instance = it
             }
         }
-
     }
 
     private val requestQueue: RequestQueue by lazy {
@@ -71,6 +76,7 @@ class NetworkServiceAdapter constructor(context: Context){
                 // Save token to database
                 CoroutineScope(Dispatchers.IO).launch {
                     val db = AppDatabase.getDatabase(context)
+                    db.userTokenDao().clearToken()
                     db.userTokenDao().insertToken(UserToken(userLoggedIn.user_id,
                         userLoggedIn.token, userLoggedIn.type))
                 }
@@ -82,7 +88,7 @@ class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
-    suspend fun addClient(client: Client, context: Context) = suspendCoroutine { cont ->
+    suspend fun addClient(client: Client, context: Context, token: String?) = suspendCoroutine { cont ->
 
         val jsonPayload = JSONObject()
         jsonPayload.put("name", client.name)
@@ -96,7 +102,7 @@ class NetworkServiceAdapter constructor(context: Context){
             .put("zone", client.zone)
 
         requestQueue.add(
-            postRequestWithToken(BASE_URL_CLIENTS,CREATE_CLIENT_PATH,jsonPayload,context, { response ->
+            postRequestWithToken(BASE_URL_CLIENTS,CREATE_CLIENT_PATH,jsonPayload,context,token, { response ->
                 try{
                     val clientCreated = Client(
                         id = UUID.fromString(response.optString("id")),
@@ -115,11 +121,89 @@ class NetworkServiceAdapter constructor(context: Context){
                     cont.resumeWithException(e)
                 }
 
-            },  {error ->
+            }) { error ->
                 val networkResponse = error.networkResponse
                 val errorMessage = extractVolleyErrorMessage(networkResponse, context)
                 showToast(errorMessage, context)
                 cont.resumeWithException(error)
+            }
+        )
+    }
+
+    suspend fun addOrder(order: Order, context: Context, token: String?) = suspendCoroutine { cont ->
+
+        val jsonPayload = JSONObject()
+        jsonPayload.put("client_id", order.client_id)
+            .put("delivery_date", order.delivery_date)
+            .put("payment_method", order.payment_method)
+            .put("products", JSONArray(order.products.map {
+                JSONObject().apply {
+                    put("product_id", it.product_id)
+                    put("units", it.units)
+                }
+            }))
+
+        requestQueue.add(
+            postRequestWithToken(BASE_URL_ORDER,CREATE_ORDER_PATH,jsonPayload,context, token, { response ->
+                try{
+                    val orderCreated = CreatedOrder(
+                        id = UUID.fromString(response.optString("id")),
+                        clientId = response.optString("client_id"),
+                        sellerId = response.optString("seller_id"),
+                    )
+                    cont.resume(orderCreated)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    cont.resumeWithException(e)
+                }
+            }) { error ->
+                val networkResponse = error.networkResponse
+                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                showToast(errorMessage, context)
+                cont.resumeWithException(error)
+            }
+        )
+    }
+
+    suspend fun fetchPaginatedProducts(page: Int, perPage: Int): List<Product> = suspendCoroutine { cont ->
+        //val url = "$BASE_URL_PRODUCTS$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
+        val url = "$BASE_URL_PRODUCTS"
+        val path = "$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
+
+        requestQueue.add(
+            getRequest(url, path, { response ->
+                try{
+                    //val jsonObject = JSONObject(response)
+                    //val jsonObject = JSONObject(response)
+                    val jsonArray = response.getJSONArray("data")
+                    val products = mutableListOf<Product>()
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        products.add(
+                            Product(
+                                id = item.optString("id"),
+                                manufacturer_id = item.optString("manufacturer_id"),
+                                name = item.optString("name"),
+                                description = item.optString("description"),
+                                category = item.optString("category"),
+                                unit_price = item.optDouble("unit_price"),
+                                currency_price = item.optString("currency_price"),
+                                is_promotion = item.optBoolean("is_promotion"),
+                                discount_price = item.optDouble("discount_price"),
+                                expired_at = item.optString("expired_at"),
+                                url_photo = item.optString("url_photo"),
+                                store_conditions = item.optString("store_conditions")
+                            )
+                        )
+                    }
+                    cont.resume(products)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    cont.resumeWithException(e)
+                }
+
+            }, {
+                cont.resumeWithException(it)
             })
         )
     }
@@ -127,7 +211,7 @@ class NetworkServiceAdapter constructor(context: Context){
     suspend fun verifyUser(token:String) = suspendCoroutine { cont ->
 
         requestQueue.add(
-            getRequest(BASE_URL_USER_SESSIONS, VERIFY_PATH, token, { response ->
+            getRequest(BASE_URL_USER_SESSIONS, VERIFY_PATH, { response ->
                 val verifiedUser = UserVerify(
                     user_session_id = response.optString("user_session_id"),
                     user_id = response.optString("user_id"),
@@ -140,18 +224,16 @@ class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
-
     private fun getRequest(
         base: String,
         path: String,
-        token: String,
         responseListener: Response.Listener<JSONObject>,
         errorListener: Response.ErrorListener
     ): JsonObjectRequest {
         return object : JsonObjectRequest(Method.GET, base + path,null, responseListener, errorListener) {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
-                headers["Authorization"] = "Bearer $token"
+                //headers["Authorization"] = "Bearer $token"
                 headers["content-type"] = "application/json"
                 headers["x-token"] = INTERNAL_TOKEN
                 return headers
@@ -191,19 +273,21 @@ class NetworkServiceAdapter constructor(context: Context){
         path: String,
         body: JSONObject,
         context: Context,
+        token: String?,
         responseListener: Response.Listener<JSONObject>,
         errorListener: Response.ErrorListener
     ): JsonObjectRequest {
         //
-        // val token = getSavedToken(context) ?: ""
+
 
         println("POST URL*******************: $base$path")
-        //println("POST Headers******************: Authorization=Bearer $token")
+        println("POST Headers******************: Authorization=Bearer $token")
         println("POST Body**********************: $body")
 
         return object : JsonObjectRequest(Method.POST, base + path, body, responseListener, errorListener) {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
                 headers["Content-Type"] = "application/json"
                 headers["x-token"] = INTERNAL_TOKEN
                 return headers
@@ -225,15 +309,9 @@ class NetworkServiceAdapter constructor(context: Context){
                 else {
                     super.parseNetworkResponse(response)
                 }
-
-
             }
-
         }
     }
-
-
-
 
     private fun showToast(message: String, context: Context) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
@@ -267,5 +345,4 @@ class NetworkServiceAdapter constructor(context: Context){
             context.getString(R.string.error_database_integrity)
         }
     }
-
 }

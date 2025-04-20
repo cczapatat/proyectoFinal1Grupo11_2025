@@ -25,4 +25,15 @@
     </fragment>
 
 
+    <fragment
+        android:id="@+id/CreateOrderFragment"
+        android:name="com.smartstock.myapplication.ui.CreateOrderFragment"
+        android:label="@string/register_client_fragment_label"
+        tools:layout="@layout/fragment_register_client">
+        <action
+            android:id="@+id/actionCreateOrderFragmentToClientFragment"
+            app:destination="@id/ClientFragment" />
+    </fragment>
+
+
 </navigation>
