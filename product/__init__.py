@@ -5,8 +5,6 @@ from flask_cors import CORS
 
 from .config.db import create_db, get_uri_db
 
-
-
 def create_app() -> Flask:
     _app = Flask(__name__, instance_relative_config=True)
     _app.config['TESTING'] = os.getenv('APP_ENV', 'prod') == 'testing'
@@ -32,5 +30,3 @@ def create_app() -> Flask:
         return jsonify({'status': 'up'})
 
     return _app
-
-application = create_app()

@@ -13,7 +13,7 @@ class AttemptError(Base):
     entity = Column(Enum(ENTITY), nullable=False)
     file_id = Column(String(255), nullable=False)
     process_id = Column(UUID(as_uuid=True), nullable=False, index=True)
-    user_email = Column(String(255), nullable=False)
+    user_id = Column(String(255), nullable=False)
     retry_quantity = Column(Integer(), default=0)
     created_at = Column(DateTime(), default=datetime.now)
     updated_at = Column(DateTime(), default=datetime.now)

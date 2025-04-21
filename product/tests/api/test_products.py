@@ -1,602 +1,681 @@
 import json
+import os
+import requests_mock
 
+from unittest.mock import MagicMock, Mock, patch
 from faker import Faker
-
-
-from product import application as app
 from product.models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT
 
+user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
+data_factory = Faker()
 
-class TestProduct:
-    def setup_method(self):
-        self.data_factory = Faker()
-        self.test_client = app.test_client()
+def _generate_product_data(**overrides):
+    product_data = {
+        "manufacturer_id": str(data_factory.uuid4()),
+        "name": data_factory.word(),
+        "description": data_factory.word(),
+        "category": "ELECTRONICS",
+        "unit_price": 100.0,
+        "currency_price": "USD",
+        "is_promotion": True,
+        "discount_price": 10.0,
+        "expired_at": (data_factory.future_datetime()).isoformat(),
+        "url_photo": data_factory.image_url(),
+        "store_conditions": data_factory.text(max_nb_chars=50)
+    }
+    product_data.update(overrides)
+    return product_data
 
-    def _generate_product_data(self, **overrides):
-        product_data = {
-            "manufacturer_id": str(self.data_factory.uuid4()),
-            "name": self.data_factory.word(),
-            "description": self.data_factory.word(),
-            "category": "ELECTRONICS",
-            "unit_price": 100.0,
-            "currency_price": "USD",
-            "is_promotion": True,
-            "discount_price": 10.0,
-            "expired_at": (self.data_factory.future_datetime()).isoformat(),
-            "url_photo": self.data_factory.image_url(),
-            "store_conditions": self.data_factory.text(max_nb_chars=50)
+def _post_product(client, product_data):
+    return client.post(
+        '/products/create',
+        data=json.dumps(product_data),
+        headers={
+            'x-token': 'internal_token',
+            'content-type': 'application/json'
         }
-        product_data.update(overrides)
-        return product_data
-
-    def _post_product(self, product_data):
-        return self.test_client.post(
-            '/products/create',
-            data=json.dumps(product_data),
-            headers={
-                'x-token': 'internal_token',
-                'content-type': 'application/json'
-            }
-        )
-
-    def _put_product(self, product_data, productId):
-        return self.test_client.put(
-            f'/products/update/{productId}',
-            data=json.dumps(product_data),
-            headers={
-                'x-token': 'internal_token',
-                'content-type': 'application/json'
-            }
-        )
-
-    def test_health_check(self):
-        response = self.test_client.get('/products/health')
-
-        assert response.status_code == 200
-
-        json_response = json.loads(response.data)
-        assert json_response['status'] == 'up'
-
-    def test_create_product_error_missing_token(self):
-        product_data = self._generate_product_data()
-
-        response = self.test_client.post(
-            '/products/create',
-            data=json.dumps(product_data),
-            headers={'content-type': 'application/json'}
-        )
-
-        assert response.status_code == 401
-
-    def test_create_product_error_invalid_token(self):
-        product_data = self._generate_product_data()
-
-        response = self.test_client.post(
-            '/products/create',
-            data=json.dumps(product_data),
-            headers={
-                'x-token': 'bad_token',
-                'content-type': 'application/json'
-            }
-        )
-
-        assert response.status_code == 401
-
-    def test_create_product_error_missing_field(self):
-        required_fields = [
-            "manufacturer_id", "name", "description", "category",
-            "unit_price", "currency_price", "is_promotion",
-            "discount_price", "url_photo", "store_conditions"
-        ]
-
-        for field in required_fields:
-            product_data = self._generate_product_data()
-            product_data.pop(field)
-
-            response = self._post_product(product_data)
-
-            assert response.status_code == 400
-
-            json_response = json.loads(response.data)
-            assert json_response['message'] == f'{field} is required'
-
-    def test_create_product_error_invalid_category(self):
-        product_data = self._generate_product_data(category="BAD_CATEGORY")
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 500
-
-    def test_create_product_error_invalid_unit_price(self):
-        product_data = self._generate_product_data(unit_price=-100.0)
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 400
-
-    def test_create_product_error_invalid_currency_price(self):
-        product_data = self._generate_product_data(currency_price="BAD_CURRENCY")
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 500
-
-    def test_create_product_error_invalid_format_expired_at(self):
-        product_data = self._generate_product_data(expired_at="BAD_DATE")
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 400
-
-    def test_crerate_product_error_expired_at_in_past(self):
-        product_data = self._generate_product_data(expired_at=(self.data_factory.past_datetime()).isoformat())
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 400
-
-    def test_create_product_error_invalid_url_photo(self):
-        product_data = self._generate_product_data(url_photo="BAD_URL")
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 400
-
-    def test_create_product_success(self):
-        product_data = self._generate_product_data()
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 201
-
-        json_response = json.loads(response.data)
-        assert json_response['id'] is not None
-
-    def test_create_product_without_expired_at_success(self):
-        product_data = self._generate_product_data()
-        product_data.pop('expired_at')
-
-        response = self._post_product(product_data)
-
-        assert response.status_code == 201
-
-        json_response = json.loads(response.data)
-        assert json_response['id'] is not None
-
-    def test_update_product_error_missing_field(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        productId = str(product_data['id'])
-        product = json.loads(product_response.data)
-
-        required_fields = [
-            "manufacturer_id", "name", "description", "category",
-            "unit_price", "currency_price", "is_promotion",
-            "discount_price", "url_photo", "store_conditions"
-        ]
-
-        for field in required_fields:
-            product_data = json.loads(product_response.data)
-            productId = str(product_data['id'])
-            product = json.loads(product_response.data)
-            print(f'product: {product}')
-            product.pop(field)
-
-            response = self._put_product(product, productId)
-
-            assert response.status_code == 400
-
-            json_response = json.loads(response.data)
-            assert json_response['message'] == f'{field} is required'
-
-    def test_update_product_success(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        productId = str(product_data['id'])
-        product = json.loads(product_response.data)
-
-        nameUpdated = self.data_factory.word()
-        product['name'] = nameUpdated
-
-        response = self._put_product(product, productId)
-
-        assert response.status_code == 200
-        json_response = json.loads(response.data)
-        assert json_response['id'] == productId
-        assert json_response['name'] == nameUpdated
-
-    def test_update_product_error_invalid_product_id(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-        productId = self.data_factory.uuid4()
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        product = json.loads(product_response.data)
-
-        nameUpdated = self.data_factory.word()
-        product['name'] = nameUpdated
-
-        response = self._put_product(product, productId)
-
-        assert response.status_code == 404
-
-    def test_update_product_error_past_expired_at(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        productId = str(product_data['id'])
-        product = json.loads(product_response.data)
-
-        expired_at = (self.data_factory.past_datetime()).isoformat()
-        product['expired_at'] = expired_at
-
-        response = self._put_product(product, productId)
-
-        assert response.status_code == 400
-
-    def test_update_product_error_invalid_format_expired_at(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        productId = str(product_data['id'])
-        product = json.loads(product_response.data)
-
-        expired_at = "BAD_DATE"
-        product['expired_at'] = expired_at
-
-        response = self._put_product(product, productId)
-
-        assert response.status_code == 400
-
-    def test_update_product_error_integrity_error(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        productId = str(product_data['id'])
-        product = json.loads(product_response.data)
-
-        product['unit_price'] = -100.0
-
-        response = self._put_product(product, productId)
-
-        assert response.status_code == 400
-
-    def test_update_product_error_internal_server_error(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        productId = str(product_data['id'])
-        product = json.loads(product_response.data)
-
-        product['currency_price'] = "BAD_CURRENCY"
-
-        response = self._put_product(product, productId)
-
-        assert response.status_code == 500
-
-    def test_update_massive_products_error_empty_list(self):
-        response = self.test_client.put(
-            '/products/massive/update',
-            data=json.dumps([]),
-            headers={
-                'x-token': 'internal_token',
-                'content-type': 'application/json'
-            }
-        )
-
-        assert response.status_code == 400
-
-        json_response = json.loads(response.data)
-        assert json_response['message'] == 'products is required and must be a non-empty array'
-    
-    def test_update_massive_products_error_missing_field(self):
-        required_fields = [
-            "id", "manufacturer_id", "name", "description", "category",
-            "unit_price", "currency_price", "is_promotion",
-            "discount_price", "url_photo", "store_conditions"
-        ]
-
-        for field in required_fields:
-            product_data = self._generate_product_data()
-            product_response = self._post_product(product_data)
-
-            assert product_response.status_code == 201
-
-            product = json.loads(product_response.data)
-            product.pop(field)
-
-            response = self.test_client.put(
-                '/products/massive/update',
-                data=json.dumps([product]),
-                headers={
-                    'x-token': 'internal_token',
-                    'content-type': 'application/json'
-                }
-            )
-
-            assert response.status_code == 400
-
-            json_response = json.loads(response.data)
-            assert json_response['message'] == f'products[0].{field} is required'
-        
-
-
-    def test_update_massive_products_success(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product = json.loads(product_response.data)
-
-        nameUpdated = self.data_factory.word()
-        product['name'] = nameUpdated
-
-        response = self.test_client.put(
-            '/products/massive/update',
-            data=json.dumps([product]),
-            headers={
-                'x-token': 'internal_token',
-                'content-type': 'application/json'
-            }
-        )
-
-        response_data = json.loads(response.data)
-
-        assert response.status_code == 202
-        assert response_data["message"] == 'The update operation is being processed in the background'
-    
-    def test_update_massive_products_error_past_expired_at(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product = json.loads(product_response.data)
-
-        expired_at = (self.data_factory.past_datetime()).isoformat()
-        product['expired_at'] = expired_at
-
-        response = self.test_client.put(
-            '/products/massive/update',
-            data=json.dumps([product]),
-            headers={
-                'x-token': 'internal_token',
-                'content-type': 'application/json'
-            }
-        )
-
-        assert response.status_code == 400
-        json_response = json.loads(response.data)
-        assert json_response['message'] == 'products[0].expired_at must be a future date'
-    
-    def test_update_massive_products_error_invalid_format_expired_at(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product = json.loads(product_response.data)
-
-        expired_at = "BAD_DATE"
-        product['expired_at'] = expired_at
-
-        response = self.test_client.put(
-            '/products/massive/update',
-            data=json.dumps([product]),
-            headers={
-                'x-token': 'internal_token',
-                'content-type': 'application/json'
-            }
-        )
-
-        assert response.status_code == 400
-        json_response = json.loads(response.data)
-        assert json_response['message'] == 'products[0].expired_at must be a valid date'
-
-    def test_get_product(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
-
-        assert product_response.status_code == 201
-
-        product_data = json.loads(product_response.data)
-        productId = str(product_data['id'])
-
-        response = self.test_client.get(f'/products/get/{productId}', headers={
+    )
+
+def _put_product(client, product_data, productId):
+    return client.put(
+        f'/products/update/{productId}',
+        data=json.dumps(product_data),
+        headers={
             'x-token': 'internal_token',
             'content-type': 'application/json'
-        })
+        }
+    )
 
-        assert response.status_code == 200
+def test_health_check(client):
+    response = client.get('/products/health')
+
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data)
+    assert json_response['status'] == 'up'
+
+def test_create_product_error_missing_token(client):
+    product_data = _generate_product_data()
+
+    response = client.post(
+        '/products/create',
+        data=json.dumps(product_data),
+        headers={'content-type': 'application/json'}
+    )
+
+    assert response.status_code == 401
+
+def test_create_product_error_invalid_token(client):
+    product_data = _generate_product_data()
+
+    response = client.post(
+        '/products/create',
+        data=json.dumps(product_data),
+        headers={
+            'x-token': 'bad_token',
+            'content-type': 'application/json'
+        }
+    )
+
+    assert response.status_code == 401
+
+def test_create_product_error_missing_field(client):
+    required_fields = [
+        "manufacturer_id", "name", "description", "category",
+        "unit_price", "currency_price", "is_promotion",
+        "discount_price", "url_photo", "store_conditions"
+    ]
+
+    for field in required_fields:
+        product_data = _generate_product_data()
+        product_data.pop(field)
+
+        response = _post_product(client, product_data)
+
+        assert response.status_code == 400
 
         json_response = json.loads(response.data)
-        assert json_response is not None
-        assert json_response['id'] == productId
+        assert json_response['message'] == f'{field} is required'
 
-    def test_get_product_error_invalid_product_id(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
+def test_create_product_error_invalid_category(client):
+    product_data = _generate_product_data(category="BAD_CATEGORY")
 
-        assert product_response.status_code == 201
+    response = _post_product(client, product_data)
 
+    assert response.status_code == 500
+
+def test_create_product_error_invalid_unit_price(client):
+    product_data = _generate_product_data(unit_price=-100.0)
+
+    response = _post_product(client, product_data)
+
+    print(f"Response: {response.data}")
+
+    assert response.status_code == 400
+
+def test_create_product_error_invalid_currency_price(client):
+    product_data = _generate_product_data(currency_price="BAD_CURRENCY")
+
+    response = _post_product(client, product_data)
+
+    assert response.status_code == 500
+
+def test_create_product_error_invalid_format_expired_at(client):
+    product_data = _generate_product_data(expired_at="BAD_DATE")
+
+    response = _post_product(client, product_data)
+
+    assert response.status_code == 400
+
+def test_crerate_product_error_expired_at_in_past(client):
+    product_data = _generate_product_data(expired_at=(data_factory.past_datetime()).isoformat())
+
+    response = _post_product(client, product_data)
+
+    assert response.status_code == 400
+
+def test_create_product_error_invalid_url_photo(client):
+    product_data = _generate_product_data(url_photo="BAD_URL")
+
+    response = _post_product(client, product_data)
+
+    assert response.status_code == 400
+
+def test_create_product_success(client):
+    product_data = _generate_product_data()
+
+    response = _post_product(client, product_data)
+
+    assert response.status_code == 201
+
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+
+def test_create_product_without_expired_at_success(client):
+    product_data = _generate_product_data()
+    product_data.pop('expired_at')
+
+    response = _post_product(client, product_data)
+
+    assert response.status_code == 201
+
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+
+def test_update_product_error_missing_field(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
+
+    assert product_response.status_code == 201
+
+    product_data = json.loads(product_response.data)
+    productId = str(product_data['id'])
+    product = json.loads(product_response.data)
+
+    required_fields = [
+        "manufacturer_id", "name", "description", "category",
+        "unit_price", "currency_price", "is_promotion",
+        "discount_price", "url_photo", "store_conditions"
+    ]
+
+    for field in required_fields:
         product_data = json.loads(product_response.data)
-        productId = self.data_factory.uuid4()
+        productId = str(product_data['id'])
+        product = json.loads(product_response.data)
+        product.pop(field)
 
-        response = self.test_client.get(f'/products/get/{productId}', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        })
+        response = _put_product(client, product, productId)
 
-        assert response.status_code == 404
+        assert response.status_code == 400
 
-    def test_get_all_products(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
+        json_response = json.loads(response.data)
+        assert json_response['message'] == f'{field} is required'
 
-        assert product_response.status_code == 201
+def test_update_product_success(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
 
-        product_data = json.loads(product_response.data)
+    assert product_response.status_code == 201
 
-        response = self.test_client.get('/products/list', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        })
+    product_data = json.loads(product_response.data)
+    productId = str(product_data['id'])
+    product = json.loads(product_response.data)
 
-        assert response.status_code == 200
-    
-    def test_get_products_paginated(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
+    nameUpdated = data_factory.word()
+    product['name'] = nameUpdated
 
-        assert product_response.status_code == 201
+    response = _put_product(client, product, productId)
 
-        product_data = json.loads(product_response.data)
+    assert response.status_code == 200
+    json_response = json.loads(response.data)
+    assert json_response['id'] == productId
+    assert json_response['name'] == nameUpdated
 
-        response = self.test_client.get('/products/list', headers={
-            'x-token': 'internal_token',
+def test_update_product_error_invalid_product_id(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
+    productId = data_factory.uuid4()
+
+    assert product_response.status_code == 201
+
+    product_data = json.loads(product_response.data)
+    product = json.loads(product_response.data)
+
+    nameUpdated = data_factory.word()
+    product['name'] = nameUpdated
+
+    response = _put_product(client, product, productId)
+
+    assert response.status_code == 404
+
+
+def test_update_product_error_past_expired_at(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
+
+    assert product_response.status_code == 201
+
+    product_data = json.loads(product_response.data)
+    productId = str(product_data['id'])
+    product = json.loads(product_response.data)
+
+    expired_at = (data_factory.past_datetime()).isoformat()
+    product['expired_at'] = expired_at
+
+    response = _put_product(client, product, productId)
+
+    assert response.status_code == 400
+
+def test_update_product_error_invalid_format_expired_at(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
+
+    assert product_response.status_code == 201
+
+    product_data = json.loads(product_response.data)
+    productId = str(product_data['id'])
+    product = json.loads(product_response.data)
+
+    expired_at = "BAD_DATE"
+    product['expired_at'] = expired_at
+
+    response = _put_product(client, product, productId)
+
+    assert response.status_code == 400
+
+def test_update_product_error_integrity_error(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
+
+    assert product_response.status_code == 201
+
+    product_data = json.loads(product_response.data)
+    productId = str(product_data['id'])
+    product = json.loads(product_response.data)
+
+    product['unit_price'] = -100.0
+
+    response = _put_product(client, product, productId)
+
+    assert response.status_code == 400
+
+def test_update_product_error_internal_server_error(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
+
+    assert product_response.status_code == 201
+
+    product_data = json.loads(product_response.data)
+    productId = str(product_data['id'])
+    product = json.loads(product_response.data)
+
+    product['currency_price'] = "BAD_CURRENCY"
+
+    response = _put_product(client, product, productId)
+
+    assert response.status_code == 500
+
+def test_create_massive_product_without_authorization(client):
+    fake_file_id = data_factory.uuid4()
+
+    response = client.post(
+        '/products/massive/create',
+        data=json.dumps({'file_id': fake_file_id}),
+        headers={
             'content-type': 'application/json',
-            'page': 1,
-            'per_page' : 2
+            'x-token': 'internal_token'
+        }
+    )
+
+    assert response.status_code == 401
+
+def test_create_massive_product_auth_response_unauthorized(client):
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', status_code=401)
+
+        response = client.post(
+            '/products/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+    assert response.status_code == 401
+
+def test_create_massive_product_auth_response_internal_error(client):
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', status_code=500)
+
+        response = client.post(
+            '/products/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+    assert response.status_code == 500
+
+
+def test_create_massive_products_missing_file_id(client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
         })
 
-        assert response.status_code == 200
+        response = client.post(
+            '/products/massive/create',
+            data=json.dumps({}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
 
-    def test_get_all_categories(self):
-        response = self.test_client.get('/products/categories', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
+    assert response.status_code == 400
+    json_response = json.loads(response.data)
+    assert json_response['message'] == 'file_id is required'
+
+@patch("product.api.products.PublisherService.publish_create_command")
+def test_create_massive_products_success_by_seller(mock_pubsub, client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    mock_pubsub.return_value = True
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
         })
 
-        assert response.status_code == 200
+        response = client.post(
+            '/products/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
 
+    assert response.status_code == 201
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+    mock_pubsub.assert_called_once()
+
+@patch("product.api.products.PublisherService.publish_create_command")
+def test_create_massive_products_success_by_admin(mock_pubsub, client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    mock_pubsub.return_value = True
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'ADMIN'
+        })
+
+        response = client.post(
+            '/products/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+    assert response.status_code == 201
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+    mock_pubsub.assert_called_once()
+
+
+def test_create_massive_products_forbidden_by_other_user_type(client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'OTHER_TYPE_USER'
+        })
+
+        response = client.post(
+            '/products/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+    assert response.status_code == 403
+    json_response = json.loads(response.data)
+    assert json_response['message'] == 'Invalid user type'
+
+@patch("product.api.products.PublisherService.publish_create_command")
+def test_create_massive_products_publish_error(mock_publish_create_command, client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    mock_publish_create_command.return_value = False
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
+        })
+
+        response = client.post(
+            '/products/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+        assert response.status_code == 500
         json_response = json.loads(response.data)
-        assert json_response is not None
-        assert len(json_response) == CATEGORY_PRODUCT.__len__()
+        assert json_response['status'] == 'FAILED'
 
-    def test_get_all_currencies(self):
-        response = self.test_client.get('/products/currencies', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        })
+def test_get_product(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
 
-        assert response.status_code == 200
+    assert product_response.status_code == 201
 
-        json_response = json.loads(response.data)
-        assert json_response is not None
-        assert len(json_response) == CURRENCY_PRODUCT.__len__()
+    product_data = json.loads(product_response.data)
+    productId = str(product_data['id'])
 
-    def test_get_products_by_ids_missing(self):
-        response = self.test_client.post('/products/by-ids', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        }, json={})
-        data = json.loads(response.data)
+    response = client.get(f'/products/get/{productId}', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    })
 
-        assert response.status_code == 400
-        assert data['message'] == 'ids is required'
+    assert response.status_code == 200
 
-    def test_get_products_by_ids_wrong(self):
-        response = self.test_client.post('/products/by-ids', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        }, json={'ids': {}})
-        data = json.loads(response.data)
+    json_response = json.loads(response.data)
+    assert json_response is not None
+    assert json_response['id'] == productId
 
-        assert response.status_code == 400
-        assert data['message'] == 'ids must be a list'
+def test_get_product_error_invalid_product_id(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
 
-    def test_get_products_by_ids_empty(self):
-        response = self.test_client.post('/products/by-ids', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        }, json={'ids': []})
-        data = json.loads(response.data)
+    assert product_response.status_code == 201
 
-        assert response.status_code == 400
-        assert data['message'] == 'ids cannot be empty'
+    product_data = json.loads(product_response.data)
+    productId = data_factory.uuid4()
 
-    def test_get_products_by_ids_invalid(self):
-        response = self.test_client.post('/products/by-ids', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        }, json={'ids': [
-            'invalid_id'
-        ]})
-        data = json.loads(response.data)
+    response = client.get(f'/products/get/{productId}', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    })
 
-        assert response.status_code == 400
-        assert data['message'] == 'invalids product ids'
+    assert response.status_code == 404
 
-    def test_get_products_by_ids_success(self):
-        product_data_one = self._generate_product_data()
-        product_response_one = self._post_product(product_data_one)
-        assert product_response_one.status_code == 201
-        product_data_one = json.loads(product_response_one.data)
-        product_id_one = str(product_data_one['id'])
+def test_get_all_products(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
 
-        product_data_two = self._generate_product_data()
-        product_response_two = self._post_product(product_data_two)
-        assert product_response_two.status_code == 201
-        product_data_two = json.loads(product_response_two.data)
-        product_id_two = str(product_data_two['id'])
+    assert product_response.status_code == 201
 
-        response = self.test_client.post('/products/by-ids', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        }, json={'ids': [product_id_one, product_id_two]})
-        data = json.loads(response.data)
+    product_data = json.loads(product_response.data)
 
-        assert response.status_code == 200
-        assert len(data) == 2
+    response = client.get('/products/list', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    })
 
-        response_cached = self.test_client.post('/products/by-ids', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json'
-        }, json={'ids': [product_id_one, product_id_two]})
-        data_cached = json.loads(response_cached.data)
+    assert response.status_code == 200
 
-        assert response_cached.status_code == 200
-        assert data == data_cached
-    
-    def test_get_products_paginated_full(self):
-        product_data = self._generate_product_data()
-        product_response = self._post_product(product_data)
+def test_get_products_paginated(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
 
-        assert product_response.status_code == 201
+    assert product_response.status_code == 201
 
-        product_data = json.loads(product_response.data)
+    product_data = json.loads(product_response.data)
 
-        response = self.test_client.get('/products/paginated_full', headers={
-            'x-token': 'internal_token',
-            'content-type': 'application/json',
-            'page': 1,
-            'per_page' : 2
-        })
+    response = client.get('/products/list', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json',
+        'page': 1,
+        'per_page' : 2
+    })
 
-        assert response.status_code == 200
-        json_response = json.loads(response.data)
-        assert json_response is not None
-        assert len(json_response) == 5
+    assert response.status_code == 200
+
+def test_get_all_categories(client):
+    response = client.get('/products/categories', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    })
+
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data)
+    assert json_response is not None
+    assert len(json_response) == CATEGORY_PRODUCT.__len__()
+
+def test_get_all_currencies(client):
+    response = client.get('/products/currencies', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    })
+
+    assert response.status_code == 200
+
+    json_response = json.loads(response.data)
+    assert json_response is not None
+    assert len(json_response) == CURRENCY_PRODUCT.__len__()
+
+def test_get_products_by_ids_missing(client):
+    response = client.post('/products/by-ids', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    }, json={})
+    data = json.loads(response.data)
+
+    assert response.status_code == 400
+    assert data['message'] == 'ids is required'
+
+def test_get_products_by_ids_wrong(client):
+    response = client.post('/products/by-ids', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    }, json={'ids': {}})
+    data = json.loads(response.data)
+
+    assert response.status_code == 400
+    assert data['message'] == 'ids must be a list'
+
+def test_get_products_by_ids_empty(client):
+    response = client.post('/products/by-ids', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    }, json={'ids': []})
+    data = json.loads(response.data)
+
+    assert response.status_code == 400
+    assert data['message'] == 'ids cannot be empty'
+
+def test_get_products_by_ids_invalid(client):
+    response = client.post('/products/by-ids', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    }, json={'ids': [
+        'invalid_id'
+    ]})
+    data = json.loads(response.data)
+
+    assert response.status_code == 400
+    assert data['message'] == 'invalids product ids'
+
+def test_get_products_by_ids_success(client):
+    product_data_one = _generate_product_data()
+    product_response_one = _post_product(client, product_data_one)
+    assert product_response_one.status_code == 201
+    product_data_one = json.loads(product_response_one.data)
+    product_id_one = str(product_data_one['id'])
+
+    product_data_two = _generate_product_data()
+    product_response_two = _post_product(client, product_data_two)
+    assert product_response_two.status_code == 201
+    product_data_two = json.loads(product_response_two.data)
+    product_id_two = str(product_data_two['id'])
+
+    response = client.post('/products/by-ids', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    }, json={'ids': [product_id_one, product_id_two]})
+    data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert len(data) == 2
+
+    response_cached = client.post('/products/by-ids', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    }, json={'ids': [product_id_one, product_id_two]})
+    data_cached = json.loads(response_cached.data)
+
+    assert response_cached.status_code == 200
+    assert data == data_cached
+
+def test_get_products_paginated_full(client):
+    product_data = _generate_product_data()
+    product_response = _post_product(client, product_data)
+
+    assert product_response.status_code == 201
+
+    product_data = json.loads(product_response.data)
+
+    response = client.get('/products/paginated_full', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json',
+        'page': 1,
+        'per_page' : 2
+    })
+
+    assert response.status_code == 200
+    json_response = json.loads(response.data)
+    assert json_response is not None
+    assert len(json_response) == 5
