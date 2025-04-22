@@ -3,7 +3,7 @@ import asyncio
 import signal
 from app.pubsub.consumer import consume_messages
 from app.core.db import create_tables
-from app.AI.configuration import OpenAIConfig
+from app.ai.configuration import OpenAIConfig
 
 # Configurar logging
 logging.basicConfig(

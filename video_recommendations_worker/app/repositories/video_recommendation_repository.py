@@ -5,7 +5,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from app.models.video_recommendation import VideoRecommendation
-from app.AI.recommendations_handler import RecommendationsHandler
+from app.ai.recommendations_handler import RecommendationsHandler
 
 class VideoRecommendationRepository:
     def __init__(self, session: Session):

@@ -21,8 +21,8 @@ class OpenAIConfig:
         - Usa los valores predeterminados o sobrescríbelos mediante variables de entorno según sea necesario.
         - Llama a `validate_config` para verificar la configuración antes de realizar solicitudes a la API.
     """
-    API_KEY = os.getenv("OPENAI_API_KEY", "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")
-    MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+    API_KEY = os.getenv("OPENAI_API_KEY")
+    MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
     
     # Model parameters
     TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0.7"))

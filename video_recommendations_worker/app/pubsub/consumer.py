@@ -53,6 +53,7 @@ async def process_message(message_data: Dict[str, Any]) -> None:
         try:
             # Procesar recomendación
             repo = VideoRecommendationRepository(session)
+            print(f"Se van a procesar los tags: {tags}")
             await repo.create_recommendation(video_id, document_id, tags)
             logging.info(f"Recomendación creada exitosamente para el video {video_id}")
         finally:

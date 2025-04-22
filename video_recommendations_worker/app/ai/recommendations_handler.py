@@ -45,7 +45,8 @@ class RecommendationsHandler:
         """
         try:
             # Formatea el prompt con la etiqueta
-            formatted_prompt = self.prompt_template.replace("{{$tag}}", tags)
+            formatted_prompt = self.prompt_template.format(tag=tags)
+            print(f"Prompt formateado: {formatted_prompt}")
             
             # Llama a OpenAI con la nueva API basada en cliente
             response = self.client.chat.completions.create(
