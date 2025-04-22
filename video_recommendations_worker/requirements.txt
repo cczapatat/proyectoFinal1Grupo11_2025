@@ -1,8 +1,14 @@
-fastapi==0.95.0
+# Core dependencies
+fastapi>=0.115.0
 uvicorn==0.22.0
 sqlalchemy==1.4.46
 psycopg2-binary==2.9.6
 google-cloud-pubsub==2.21.1
 python-dotenv==0.21.0
 python-multipart==0.0.20
+pydantic>=2.0.0
+
+# AI components
+semantic-kernel>=1.0.0
+openai>=1.6.0
 

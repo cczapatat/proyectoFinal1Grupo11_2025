@@ -10,13 +10,25 @@ from app.pubsub.publisher import dispatch_video_simulation_event, pubsub_publish
 
 class VideoSimulationRepository:
     def __init__(self, session: Session):
-        self.session = session
+        self.session : Session = session
 
     def create_video_simulation(self, video_simulation: VideoSimulationDTO) -> VideoSimulation:
-        video_simulation_instance = VideoSimulation(**video_simulation.dict())
+        """
+        Crea una nueva simulación de video y la guarda en la base de datos.
+        También envía un evento de simulación de video al sistema de pubsub.
+        
+        Args:
+            video_simulation: DTO con los datos del video
+            
+        Returns:
+            Instancia de VideoSimulation creada
+        """
+        video_data = {k: v for k, v in video_simulation.dict(exclude_unset=True).items() if v is not None}
+        video_simulation_instance = VideoSimulation(**video_data)
         self.session.add(video_simulation_instance)
         self.session.commit()
-        # Only dispatch an event to the pubsub system if it's available
+        self.session.refresh(video_simulation_instance)
+        # Solo enviar un evento al sistema pubsub si está disponible
         if pubsub_publisher_available:
             try:
                 dispatch_thread = Thread(
@@ -30,23 +42,50 @@ class VideoSimulationRepository:
                 )
                 dispatch_thread.start()
             except Exception as e:
-                logging.warning(f"Failed to dispatch video simulation event: {e}")
+                logging.warning(f"Error al enviar evento de simulación de video: {e}")
         else:
-            logging.info("Skipping Pub/Sub dispatch in development mode")
+            logging.info("Omitiendo envío a Pub/Sub en modo de desarrollo")
 
         return video_simulation_instance
 
 
     def update_video_simulation(self, video_simulation_id: str, video_simulation: VideoSimulationDTO) -> VideoSimulation:
+        """
+        Actualiza una simulación de video existente.
+        
+        Args:
+            video_simulation_id: ID de la simulación a actualizar
+            video_simulation: DTO con los datos actualizados
+            
+        Returns:
+            Instancia de VideoSimulation actualizada o None si no se encuentra
+        """
         video_simulation_instance = self.session.query(VideoSimulation).filter_by(id=uuid.UUID(video_simulation_id)).first()
         if not video_simulation_instance:
             return None
-        for key, value in video_simulation.dict().items():
-            setattr(video_simulation_instance, key, value)
+        # Filter out None values to not override with None
+        for key, value in video_simulation.dict(exclude_unset=True).items():
+            if value is not None:
+                setattr(video_simulation_instance, key, value)
         self.session.commit()
-        return video_simulation_instance
+        self.session.refresh(video_simulation_instance)
     def get_all_video_simulations(self) -> List[VideoSimulation]:
+        """
+        Obtiene todas las simulaciones de video.
+        
+        Returns:
+            Lista de instancias de VideoSimulation
+        """
         return self.session.query(VideoSimulation).all()
     
     def get_video_simulation_by_id(self, video_simulation_id: str) -> Optional[VideoSimulation]:
+        """
+        Obtiene una simulación de video por su ID.
+        
+        Args:
+            video_simulation_id: ID de la simulación a buscar
+            
+        Returns:
+            Instancia de VideoSimulation si se encuentra, None en caso contrario
+        """
         return self.session.query(VideoSimulation).filter_by(id=uuid.UUID(video_simulation_id)).first()

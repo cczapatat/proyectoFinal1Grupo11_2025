@@ -7,10 +7,11 @@ class UnitOfWork:
     def __enter__(self):
         self.session = SessionLocal()
         return self
-
     def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type:
-            self.session.rollback()
-        else:
-            self.session.commit()
-        self.session.close()
+        try:
+            if exc_type:
+                self.session.rollback()
+            else:
+                self.session.commit()
+        finally:
+            self.session.close()
