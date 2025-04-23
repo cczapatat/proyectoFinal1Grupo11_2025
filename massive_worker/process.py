@@ -12,8 +12,6 @@ from .models.declarative_base import session
 
 project_id = os.getenv('GCP_PROJECT_ID', 'proyectofinalmiso2025')
 attemps_subscription_id = os.getenv('GCP_MANUFACTURE_MASSIVE_SUB', 'commands_to_massive-sub')
-attemps_name_pub = os.getenv('GCP_MANUFACTURE_MASSIVE_TOPIC', 'commands_to_massive')
-massive_entity_name_pub = os.getenv('GCP_MANUFACTURE_TOPIC', 'commands_to_manufactures')
 
 publisher = Publisher()
 document_manager_service = DocumentManagerService()

@@ -1,9 +1,7 @@
 import datetime
-from typing import Union
 
 from ..models.attempt import Attempt
 from ..models.declarative_base import session
-
 
 class AttemptRepository:
     @staticmethod

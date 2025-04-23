@@ -1,11 +1,9 @@
 import uuid
 import enum
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Enum, Float, Boolean, CheckConstraint
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, Enum, Float, Boolean, CheckConstraint, UUID
 
-from ..config.db import db
-
+from .declarative_base import Base
 
 class CURRENCY_PRODUCT(enum.Enum):
     USD = 'USD'
@@ -28,7 +26,7 @@ class CATEGORY_PRODUCT(enum.Enum):
     
 
 
-class Product(db.Model):
+class Product(Base):
     __tablename__ = 'products'
     __table_args__ = (
         CheckConstraint(
@@ -59,21 +57,3 @@ class Product(db.Model):
     store_conditions = Column(String(255))
     created_at = Column(DateTime(), default=datetime.now)
     updated_at = Column(DateTime(), default=datetime.now)
-
-    def to_dict(self):
-        return {
-            'id': str(self.id),
-            'manufacturer_id': str(self.manufacturer_id),
-            'name': self.name,
-            'description': self.description,
-            'category': self.category.value,
-            'unit_price': self.unit_price,
-            'currency_price': self.currency_price.value,
-            'is_promotion': self.is_promotion,
-            'discount_price': self.discount_price,
-            'expired_at': self.expired_at.isoformat() if self.expired_at else None,
-            'url_photo': self.url_photo,
-            'store_conditions': self.store_conditions,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
-        }

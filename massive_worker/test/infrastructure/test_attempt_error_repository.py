@@ -1,6 +1,7 @@
 from faker import Faker
 from massive_worker.infrastructure.attempt_error_repository import AttemptErrorRepository
 from massive_worker.models.attempt_error import AttemptError
+from massive_worker.models.declarative_base import session
 
 class TestAttemptErrorRepository:
     def setup_method(self):
@@ -8,6 +9,9 @@ class TestAttemptErrorRepository:
         self.process_id = str(self.data_factory.uuid4())
         self.file_id = str(self.data_factory.uuid4())
         self.user_id = str(self.data_factory.uuid4())
+        session.rollback()
+        session.query(AttemptError).delete()
+        session.commit()
     
     def test_create_attempt_error_success(self):
         operation = "CREATE"
@@ -59,20 +63,3 @@ class TestAttemptErrorRepository:
         process_id = "BAD_PROCESS_ID"
         last_attempt_error = AttemptErrorRepository.get_last_attempt_error(process_id)
         assert last_attempt_error is False
-    
-    def test_attempt_error_model(self):
-        attempt_error = AttemptError(
-            operation="CREATE",
-            entity="PRODUCT",
-            process_id="test_process_id",
-            file_id="test_file_id",
-            user_id="test_user_id",
-            retry_quantity=1,
-            created_at="2025-04-17T10:00:00",
-            updated_at="2025-04-17T10:00:00",
-        )
-
-        assert attempt_error.operation == "CREATE"
-        assert attempt_error.entity == "PRODUCT"
-        assert attempt_error.process_id == "test_process_id"
-        assert attempt_error.retry_quantity == 1

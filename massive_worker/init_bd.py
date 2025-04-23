@@ -1,8 +1,9 @@
 from sqlalchemy import text
-from models.declarative_base import Base, engine
-from models.attempt import Attempt
-from models.attempt_error import AttemptError
-from models.entity_batch import EntityBatch
+
+from .models.declarative_base import Base, engine
+from .models.attempt import Attempt
+from .models.attempt_error import AttemptError
+from .models.entity_batch import EntityBatch
 
 print("[DB-Init] Running...")
 
