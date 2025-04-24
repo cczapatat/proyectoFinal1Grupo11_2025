@@ -68,7 +68,7 @@ OPENAI_TOP_P=0.95
 
 ## Configuración e Instalación
 
-1. Cree un entorno virtual:
+1. Cree un entorno virtual t:
    ```
    python -m venv venv
    source venv/bin/activate  # En Windows: venv\Scripts\activate
