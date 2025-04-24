@@ -8,12 +8,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database connection settings
-DB_USER = os.environ.get('DB_USER', 'user_final"')
+DB_HOST = os.environ.get('DB_HOST', 'localhost')
+DB_PORT = os.environ.get('DB_PORT', 5432)
+DB_USER = os.environ.get('DB_USER', 'user_final')
 DB_PASSWORD = os.environ.get('DB_PASSWORD', 'pass_final')
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_NAME = os.getenv("DB_NAME", "project_final")
-DB_TYPE = os.getenv("DB_TYPE", "postgresql")
+DB_NAME = os.environ.get('DB_NAME', 'project_final')
+DB_TYPE = os.environ.get('DB_TYPE', 'postgresql')
 
 # Create SQLAlchemy URL
 DATABASE_URL = f"{DB_TYPE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
