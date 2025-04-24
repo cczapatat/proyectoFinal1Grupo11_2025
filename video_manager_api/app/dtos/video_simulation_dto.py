@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 class VideoSimulationDTO(BaseModel):
     id: uuid.UUID | None = None
     document_id: uuid.UUID
+    store_id: uuid.UUID
     file_path: str
     tags: str | None = None
     enabled: bool

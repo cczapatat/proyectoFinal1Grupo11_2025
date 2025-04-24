@@ -1,0 +1,73 @@
+import json
+import uuid
+from datetime import datetime
+
+class TestVideoSimulationAPI:
+    def test_health_check(self, client):
+        """
+        Prueba el endpoint de verificación de salud.
+        """
+        response = client.get("/video/health")
+        assert response.status_code == 200
+        assert response.json() == {"estado": "ok"}
+
+    def test_create_video_simulation(self, client):
+        """
+        Prueba la creación de una simulación de video.
+        """
+        payload = {
+            "document_id": str(uuid.uuid4()),
+            "store_id": str(uuid.uuid4()),
+            "file_path": "/test/sample_video.mp4",
+            "tags": "trafico de clientes bajo durante la hora del almuerzo",
+            "enabled": True
+        }
+        response = client.post("/video/create", json=payload)
+        assert response.status_code == 200
+        response_data = response.json()
+        assert response_data["mensaje"] == "Información de video cargada correctamente"
+        assert "resultado" in response_data
+        assert response_data["resultado"]["document_id"] == payload["document_id"]
+        assert response_data["resultado"]["file_path"] == payload["file_path"]
+        assert response_data["resultado"]["tags"] == payload["tags"]
+        assert response_data["resultado"]["enabled"] == payload["enabled"]
+
+    def test_get_all_video_simulations(self, client):
+        """
+        Prueba la obtención de todas las simulaciones de video.
+        """
+        response = client.get("/video/get_all")
+        assert response.status_code == 200
+        response_data = response.json()
+        assert "mensaje" in response_data
+        assert "cantidad" in response_data
+        assert "videos" in response_data
+        assert isinstance(response_data["videos"], list)
+
+    def test_get_video_simulation_by_id(self, client):
+        """
+        Prueba la obtención de una simulación de video por su ID.
+        """
+        # Crear una simulación de video para probar
+        payload = {
+            "document_id": str(uuid.uuid4()),
+            "store_id": str(uuid.uuid4()),
+            "file_path": "/test/sample_video.mp4",
+            "tags": "test,sample",
+            "enabled": True
+        }
+        create_response = client.post("/video/create", json=payload)
+        assert create_response.status_code == 200
+        created_video = create_response.json()["resultado"]
+
+        # Obtener la simulación creada por ID
+        response = client.get(f"/video/get_by_id?video_simulation_id={created_video['id']}")
+        assert response.status_code == 200
+        response_data = response.json()
+        assert response_data["id"] == created_video["id"]
+        assert response_data["document_id"] == created_video["document_id"]
+        assert response_data["file_path"] == created_video["file_path"]
+        assert response_data["tags"] == created_video["tags"]
+        assert response_data["enabled"] == created_video["enabled"]
+
+ 

@@ -61,21 +61,3 @@ def get_video_simulation_by_id(video_simulation_id: str):
         raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
     finally:
         session.close()
-
-@router.put("/video/update", response_model=VideoSimulationCreateResponse)
-def update_video_simulation(video_simulation_id: str, request: VideoSimulationDTO):
-    session = SessionLocal()
-    try:
-        repo = VideoSimulationRepository(session)
-        video_simulation = repo.get_video_simulation_by_id(video_simulation_id)
-        if not video_simulation:
-            raise HTTPException(status_code=404, detail="Simulación de video no encontrada")
-        updated_video_simulation = repo.update_video_simulation(video_simulation_id, request)
-        # Convertir a modelo Pydantic antes de cerrar la sesión
-        response_data = VideoSimulationResponse.from_orm(updated_video_simulation)
-        return {"mensaje": "Video actualizado correctamente", "resultado": response_data}
-    except Exception as e:
-        session.rollback()
-        raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
-    finally:
-        session.close()

@@ -10,6 +10,7 @@ class VideoSimulation(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     document_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    store_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     file_path = Column(String(), nullable=False)
     tags = Column(String(), nullable=True)
     enabled = Column(Boolean(), default=True)
@@ -20,6 +21,7 @@ class VideoSimulation(Base):
         return {
             'id': str(self.id),
             'document_id': str(self.document_id),
+            'store_id': str(self.store_id),
             'file_path': self.file_path,
             'tags': self.tags,
             'enabled': self.enabled,

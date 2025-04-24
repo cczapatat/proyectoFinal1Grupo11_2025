@@ -48,27 +48,6 @@ class VideoSimulationRepository:
 
         return video_simulation_instance
 
-
-    def update_video_simulation(self, video_simulation_id: str, video_simulation: VideoSimulationDTO) -> VideoSimulation:
-        """
-        Actualiza una simulación de video existente.
-        
-        Args:
-            video_simulation_id: ID de la simulación a actualizar
-            video_simulation: DTO con los datos actualizados
-            
-        Returns:
-            Instancia de VideoSimulation actualizada o None si no se encuentra
-        """
-        video_simulation_instance = self.session.query(VideoSimulation).filter_by(id=uuid.UUID(video_simulation_id)).first()
-        if not video_simulation_instance:
-            return None
-        # Filter out None values to not override with None
-        for key, value in video_simulation.dict(exclude_unset=True).items():
-            if value is not None:
-                setattr(video_simulation_instance, key, value)
-        self.session.commit()
-        self.session.refresh(video_simulation_instance)
     def get_all_video_simulations(self) -> List[VideoSimulation]:
         """
         Obtiene todas las simulaciones de video.
