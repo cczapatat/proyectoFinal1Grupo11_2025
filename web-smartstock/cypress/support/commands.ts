@@ -81,3 +81,10 @@ Cypress.Commands.add('navigateToCreateOrder', () => {
   cy.get('#nav_create_order').click();
   cy.url().should('include', '/order/create');
 });
+
+Cypress.Commands.add('navigateToMassiveProductsCreate', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_massive').click();
+  cy.get('#nav_massive_products_create').click();
+  cy.url().should('include', '/massive/product/create');
+});
