@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment'
 import { Product } from '../product/product';
+import { BulkTask } from '../dtos/bulk-task';
 import { ProductCategory } from '../dtos/product-category';
 import { ProductCurrency } from '../dtos/product-currency';
 import { PaginatedProducts } from '../dtos/product';
@@ -26,6 +27,19 @@ export class ProductService {
     return this.http.post<Product>(`${this.apiProductUrl}/create`, product, { headers: headers })
   }
 
+  createMassiveProducts(fileId: string): Observable<BulkTask> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+      'x-token': environment.xToken
+    })
+    return this.http.post<BulkTask>(`${this.apiProductUrl}/massive/create`,
+      {
+        file_id: fileId
+      },
+      { headers: headers }
+    )
+  }
+
   getProductById(id: string): Observable<Product> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
@@ -47,7 +61,7 @@ export class ProductService {
       'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
       'x-token': environment.xToken
     })
-    return this.http.get<Product[]>(`${this.apiProductUrl}/list`, { headers: headers })
+    return this.http.get<Product[]>(`${this.apiProductUrl}/list?all=true`, { headers: headers })
   }
 
   getProductCategories(): Observable<ProductCategory[]> {

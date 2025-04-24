@@ -74,6 +74,7 @@
   "PRODUCT": {
     "TITLE_CREATE": "Create Product",
     "TITLE_EDIT": "Edit Product",
+    "ID": "ID",
     "NAME": "Name",
     "NAME_PLACEHOLDER": "Product Name",
     "NAME_REQUIRED": "The name is required.",
