@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/registerclienttest"
+    android:paddingTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="600dp"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/centered_background_one"
+    android:clipToOutline="true"
+    android:theme="@style/Theme.MyApplication"
+    tools:context="com.smartstock.myapplication.ui.RegisterClientFragment">
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/add_producto_section_1"
+        android:layout_width="411dp"
+        android:layout_height="50dp"
+        android:clipToOutline="true"
+        >
+        <TextView
+            android:id="@+id/crear_nueva"
+            android:layout_centerVertical="true"
+            android:layout_width="420dp"
+            android:layout_height="50dp"
+            android:text="@string/cuadro_agregar_producto"
+            android:textAppearance="@style/crear_nueva"
+            android:lineSpacingExtra="2sp"
+            android:gravity="center_horizontal|center_vertical"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/add_producto_section_2"
+        android:layout_width="411dp"
+        android:layout_height="300dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/add_producto_section_1"
+        >
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/add_producto_section_3"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/add_producto_section_2"
+        >
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/LoginTextInputLayoutStyle2"
+            android:id="@+id/textField6_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/cantidad"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:endIconMode="clear_text"
+            app:hintTextColor="@color/black"
+            app:endIconTint="@color/schemesSecondary">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/quantityInput"
+                android:layout_width="match_parent"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textAppearanceBodyLarge"
+                android:inputType="number"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
+
+
+
+

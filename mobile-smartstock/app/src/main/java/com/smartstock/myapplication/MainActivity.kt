@@ -8,13 +8,16 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.smartstock.myapplication.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.databinding.ActivityMainBinding
+import com.smartstock.myapplication.repositories.UserSessionRepository
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         val token = bundle?.getString("token", "")
         sharedPreferences.edit().putString(
             "token", token).apply()
+        val id = bundle?.getString("id", "")
+        sharedPreferences.edit().putString(
+            "id", id).apply()
+        val name = bundle?.getString("name", "")
+        sharedPreferences.edit().putString(
+            "name", name).apply()
 
         // Set up navigation with BottomNavigationView
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
@@ -87,14 +96,15 @@ class MainActivity : AppCompatActivity() {
                 popup.menu.findItem(R.id.RegistrarVisita).isVisible = true
                 popup.menu.findItem(R.id.ListarClientes).isVisible = true
                 popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
-                popup.menu.findItem(R.id.Pedidos).isVisible = true
+                popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
+                popup.menu.findItem(R.id.CreateOrderFragment).isEnabled = false
                 popup.menu.findItem(R.id.CargarVideo).isVisible = true
 
             }
 
             "CLIENT" -> {
                 popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
-                popup.menu.findItem(R.id.Pedidos).isVisible = true
+                popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
                 popup.menu.findItem(R.id.CargarVideo).isVisible = true
 
             }
@@ -108,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.RegistrarVisita -> navController.navigate(R.id.RegistrarVisita)
                 R.id.ListarClientes -> navController.navigate(R.id.ListarClientes)
                 R.id.ConsultaProductos -> navController.navigate(R.id.ConsultaProductos)
-                R.id.Pedidos -> navController.navigate(R.id.Pedidos)
+                R.id.CreateOrderFragment -> navController.navigate(R.id.CreateOrderFragment)
                 R.id.CargarVideo -> navController.navigate(R.id.CargarVideo)
                 R.id.CerrarSesion -> closeSesion()
             }
@@ -122,6 +132,7 @@ class MainActivity : AppCompatActivity() {
         sharedPreferences.edit().remove("type").apply()
         sharedPreferences.edit().remove("userId").apply()
         sharedPreferences.edit().remove("token").apply()
+
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)

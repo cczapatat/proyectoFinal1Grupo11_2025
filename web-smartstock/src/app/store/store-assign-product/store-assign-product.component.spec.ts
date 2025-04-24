@@ -176,9 +176,11 @@ describe('StoreAssignProductComponent', () => {
       url_photo: 'http://example.com/photo1.png',
       selected: false,
       quantity: 0,
-      local_image: 'chocolate_bar.png'
+      local_image: 'chocolate_bar.png',
+      
     };
     component.products = [ product ];
+    //component.productSelections[product.id].stock_id = 'stock1';
     component.onProductSelect(product);
     expect(product.selected).toBeTrue();
     expect(component.productSelections[product.id].selected).toBeTrue();
@@ -208,10 +210,13 @@ describe('StoreAssignProductComponent', () => {
       url_photo: 'http://example.com/photo1.png',
       selected: true,
       quantity: 0,
-      local_image: 'chocolate_bar.png'
+      local_image: 'chocolate_bar.png',
+      stock_id: 'stock1'
     };
     component.products = [ product ];
+    //component.productSelections[product.id].stock_id = 'stock1';
     product.quantity = 5;
+    product.stock_id = 'stock1';
     component.onProductQuantityChange(product);
     expect(product.quantity).toBe(5);
     expect(component.productSelections[product.id].quantity).toBe(5);
@@ -237,7 +242,8 @@ describe('StoreAssignProductComponent', () => {
         url_photo: 'http://example.com/photo1.png',
         selected: false,
         quantity: 0,
-        local_image: 'chocolate_bar.png'
+        local_image: 'chocolate_bar.png',
+        stock_id: 'stock1'
       },
       {
         id: 'prod2',
@@ -256,7 +262,8 @@ describe('StoreAssignProductComponent', () => {
         url_photo: 'http://example.com/photo2.png',
         selected: false,
         quantity: 0,
-        local_image: 'modern_sofa.png'
+        local_image: 'modern_sofa.png',
+        stock_id: 'stock1'
       }
     ];
     stocksServiceSpy.getStocksByStore.and.returnValue(of(dummyAssignedStocksResponse));
@@ -304,7 +311,8 @@ describe('StoreAssignProductComponent', () => {
         url_photo: 'http://example.com/photo1.png',
         selected: true,
         quantity: 5,
-        local_image: 'chocolate_bar.png'
+        local_image: 'chocolate_bar.png',
+        stock_id: 'stock1'
       },
       {
         id: 'prod2',
@@ -323,7 +331,8 @@ describe('StoreAssignProductComponent', () => {
         url_photo: 'http://example.com/photo2.png',
         selected: false,
         quantity: 0,
-        local_image: 'modern_sofa.png'
+        local_image: 'modern_sofa.png',
+        stock_id: 'stock1'
       }
     ];
     component.hasChanges = true;
@@ -335,7 +344,7 @@ describe('StoreAssignProductComponent', () => {
     expect(stocksServiceSpy.assignStockToStore).toHaveBeenCalled();
     expect(component.hasChanges).toBeFalse();
     expect(component.selectedStore).toBeNull();
-    expect(component.products.every(p => !p.selected && p.quantity === 0)).toBeTrue();
+    expect(component.products.every(p => !p.selected && p.quantity === 0 && p.stock_id === 'stock1')).toBeTrue();
     expect(toastrSpy.success).toHaveBeenCalledWith('STORE.ASSIGN_SUCCESS');
   }));
 });

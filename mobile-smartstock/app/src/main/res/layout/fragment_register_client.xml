@@ -251,6 +251,7 @@
             android:layout_toLeftOf="@+id/center_divider_action"
             android:layout_marginLeft="2dp"
             android:backgroundTint="@color/schemesOrange600"
+            android:background="@drawable/rounded_button"
             android:text="@string/cancelar"
             android:textColor="@color/colorBackground"
             android:textSize="@dimen/textAppearanceHeadlineSmall" />
@@ -265,6 +266,7 @@
             android:layout_marginRight="2dp"
             android:layout_toRightOf="@+id/center_divider_action"
             android:backgroundTint="@color/schemesOrange600"
+            android:background="@drawable/rounded_button"
             android:text="@string/crear"
             android:textColor="@color/colorBackground"
             android:textSize="@dimen/textAppearanceHeadlineSmall" />
