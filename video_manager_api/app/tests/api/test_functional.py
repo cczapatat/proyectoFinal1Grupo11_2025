@@ -32,6 +32,21 @@ class TestVideoSimulationAPI:
         assert response_data["resultado"]["tags"] == payload["tags"]
         assert response_data["resultado"]["enabled"] == payload["enabled"]
 
+    def test_create_video_simulation_invalid(self, client):
+        """
+        Prueba la creación de una simulación de video con datos inválidos.
+        """
+        payload = {
+            "document_id": '',
+            "store_id": str(uuid.uuid4()),
+            "file_path": "/test/sample_video.mp4",
+            "tags": "trafico de clientes bajo durante la hora del almuerzo",
+            "enabled": True
+        }
+        # Simular un error en la creación
+        response = client.post("/video/create", json=payload)
+        assert response.status_code == 422
+
     def test_get_all_video_simulations(self, client):
         """
         Prueba la obtención de todas las simulaciones de video.
@@ -69,5 +84,22 @@ class TestVideoSimulationAPI:
         assert response_data["file_path"] == created_video["file_path"]
         assert response_data["tags"] == created_video["tags"]
         assert response_data["enabled"] == created_video["enabled"]
+
+    def test_get_video_simulation_by_id_not_found(self, client):
+        """
+        Prueba la obtención de una simulación de video que no existe.
+        """
+        non_existent_id = str(uuid.uuid4())
+        response = client.get(f"/video/get_by_id?video_simulation_id={non_existent_id}")
+        assert response.status_code == 400
+        assert "Error" in response.json()["detail"]
+    
+    def test_get_video_simulation_by_id_invalid(self, client):
+        """
+        Prueba la obtención de una simulación de video con un ID inválido.
+        """
+        invalid_id = "invalid_id"
+        response = client.get(f"/video/get_by_id?video_simulation_id={invalid_id}")
+        assert response.status_code == 400
 
  
