@@ -15,4 +15,3 @@ pytest-env==0.6.2
 Faker==9.0.1
 semantic-kernel>=1.0.0
 openai>=1.6.0
-
