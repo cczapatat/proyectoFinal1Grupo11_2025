@@ -102,4 +102,50 @@ class TestVideoSimulationAPI:
         response = client.get(f"/video/get_by_id?video_simulation_id={invalid_id}")
         assert response.status_code == 400
 
- 
+    from unittest.mock import patch
+
+    @patch("app.repositories.video_simulation_repository.dispatch_video_simulation_event")
+    @patch("app.repositories.video_simulation_repository.pubsub_publisher_available", True)
+    def test_create_video_simulation_pubsub(self, mock_dispatch_event, client):
+        """
+        Prueba la creación de una simulación de video y verifica que se publique un evento en Pub/Sub.
+        """
+        payload = {
+            "document_id": str(uuid.uuid4()),
+            "store_id": str(uuid.uuid4()),
+            "file_path": "/test/sample_video.mp4",
+            "tags": "trafico de clientes bajo durante la hora del almuerzo",
+            "enabled": True
+        }
+
+        # Enviar la solicitud para crear la simulación de video
+        response = client.post("/video/create", json=payload)
+        assert response.status_code == 200
+
+        # Verificar que se haya llamado a la función de publicación en Pub/Sub
+        assert mock_dispatch_event.called
+        mock_dispatch_event.assert_called_once()
+
+        # Verificar los argumentos con los que se llamó a la función
+        called_args = mock_dispatch_event.call_args[0]
+        assert called_args[1] == payload["document_id"]  # document_id
+        assert called_args[2] == payload["file_path"]    # file_path
+        assert called_args[3] == payload["enabled"]      # enabled
+        assert called_args[4] == payload["tags"]         # tags
+
+    @patch("app.repositories.video_simulation_repository.pubsub_publisher_available", False)
+    def test_create_video_simulation_no_pubsub(self, client, caplog):
+        """
+        Prueba la creación de una simulación de video cuando Pub/Sub no está disponible.
+        """
+        payload = {
+            "document_id": str(uuid.uuid4()),
+            "store_id": str(uuid.uuid4()),
+            "file_path": "/test/sample_video.mp4",
+            "tags": "trafico de clientes bajo durante la hora del almuerzo",
+            "enabled": True
+        }
+
+        # Enviar la solicitud para crear la simulación de video
+        response = client.post("/video/create", json=payload)
+        assert response.status_code == 200
