@@ -31,8 +31,8 @@ class NetworkServiceAdapter constructor(context: Context){
 
     companion object {
         const val INTERNAL_TOKEN = "internal_token"
-        const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
-        const val BASE_URL_CLIENTS = "http://130.211.32.9/"
+        const val BASE_URL_USER_SESSIONS = "https://4a0d-186-154-38-102.ngrok-free.app/"
+        const val BASE_URL_CLIENTS = "https://4a0d-186-154-38-102.ngrok-free.app/"
         const val BASE_URL_PRODUCTS = "https://32bd-186-154-38-102.ngrok-free.app/"
         //const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
         const val BASE_URL_ORDER = "https://32bd-186-154-38-102.ngrok-free.app/"
@@ -42,6 +42,7 @@ class NetworkServiceAdapter constructor(context: Context){
         const val GET_PRODUCT_PATH = "products/paginated_full"
         const val CREATE_ORDER_PATH = "orders/create"
         const val VERIFY_PATH = "user_sessions/auth"
+        const val GET_CLIENTS_SELLER_PATH = "user_sessions/clients/seller/"
         const val UNKNOWN = "unknown"
         const val COVER_UNKNOWN =
             "https://www.alleganyco.gov/wp-content/uploads/unknown-person-icon-Image-from.png"
@@ -173,8 +174,6 @@ class NetworkServiceAdapter constructor(context: Context){
         requestQueue.add(
             getRequest(url, path, { response ->
                 try{
-                    //val jsonObject = JSONObject(response)
-                    //val jsonObject = JSONObject(response)
                     val jsonArray = response.getJSONArray("data")
                     val products = mutableListOf<Product>()
                     for (i in 0 until jsonArray.length()) {
@@ -197,6 +196,55 @@ class NetworkServiceAdapter constructor(context: Context){
                         )
                     }
                     cont.resume(products)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    cont.resumeWithException(e)
+                }
+
+            }, {
+                cont.resumeWithException(it)
+            })
+        )
+    }
+
+    suspend fun fetchPaginatedClientsBySellerId(
+        sellerId: String,
+        page: Int,
+        perPage: Int,
+        sortBy: String = "name",
+        sortOrder: String = "asc"
+    ): List<Client> = suspendCoroutine { cont ->
+
+        val url = "$BASE_URL_USER_SESSIONS"
+        val path = "$GET_CLIENTS_SELLER_PATH$sellerId?page=$page&per_page=$perPage&sort_by=$sortBy&sort_order=$sortOrder"
+
+        requestQueue.add(
+            getRequest(url, path, { response ->
+                try{
+                    val jsonArray = response.getJSONArray("data")
+                    val clients = mutableListOf<Client>()
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        val sellerId = if (item.has("seller_id") && !item.isNull("seller_id")) {
+                            UUID.fromString(item.getString("seller_id"))
+                        } else {
+                            null // or -1 or 0 if your Client class expects a non-null Int
+                        }
+                        clients.add(
+                            Client(
+                                id = UUID.fromString(item.getString("id")),
+                                name = item.getString("name"),
+                                phone = item.getString("phone"),
+                                email = item.getString("email"),
+                                userId = UUID.fromString(item.getString("user_id")),
+                                sellerId = sellerId,
+                                address = item.getString("address"),
+                                clientType = item.getString("client_type"),
+                                zone = item.getString("zone")
+                            )
+                        )
+                    }
+                    cont.resume(clients)
                 } catch (e: Exception) {
                     //showToast(context.getString(R.string.error_database_integrity), context)
                     cont.resumeWithException(e)

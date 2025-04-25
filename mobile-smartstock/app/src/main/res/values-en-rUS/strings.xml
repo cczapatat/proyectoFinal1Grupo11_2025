@@ -37,7 +37,7 @@
     <string name="repetir_contrasena">Password Confirmation</string>
     <string name="no_registrado">Not registered? Register by accessing this link </string>
     <string name="iniciar_sesion">Signin</string>
-    <string name="lista_de_clientes">Clients</string>
+    <string name="lista_de_clientes">My Clients</string>
     <string name="registrar_cliente">Register client</string>
     <string name="registrar_cliente_nombre">Name</string>
     <string name="registrar_cliente_direccion">Address</string>
@@ -50,6 +50,8 @@
     <string name="seleccionar_tono">Seleccionar tono</string>
     <string name="cancelar">Cancel</string>
     <string name="crear">Create</string>
+    <string name="nav_cliente">My Clients</string>
+    <string name="nav_menu">Menu</string>
     <string name="menu_registrar_visita">Visit registration</string>
     <string name="menu_listar_clientes">Client list</string>
     <string name="menu_crear_cliente">Create client</string>
@@ -64,7 +66,7 @@
     <string name="success_add_client">El cliente se ha agregado de forma satisfactoria</string>
     <string name="error_add_client">Ocurrio un error al intentar guardar clientes</string>
     <string name="error_add_client_fields">All fields must be filled</string>
-
+    <string name="seleccionado">You have selected</string>
 
     <!-- TODO: Smart Stock Orden -->
     <string name="crear_pedido">Create Order</string>

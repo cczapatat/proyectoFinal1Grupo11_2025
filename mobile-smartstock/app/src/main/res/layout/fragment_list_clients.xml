@@ -16,7 +16,7 @@
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/section_4"
+        android:id="@+id/section_20"
         android:layout_width="411dp"
         android:layout_height="100dp"
         android:clipToOutline="true"
@@ -31,6 +31,19 @@
             android:lineSpacingExtra="2sp"
             android:gravity="center_horizontal|center_vertical"
             />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/section_21"
+        android:layout_width="411dp"
+        android:layout_height="600dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_20"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/clientsRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/client_item" />
     </RelativeLayout>
 
 
