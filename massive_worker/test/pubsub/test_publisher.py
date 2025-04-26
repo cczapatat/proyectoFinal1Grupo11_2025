@@ -48,7 +48,7 @@ class TestPublisher:
         )
 
         # Assertions
-        assert mock_publish.call_count == 2  # Two batches of 100 rows each
+        assert mock_publish.call_count == 2
         mock_create_batch.assert_called()
         mock_get_last_batch.assert_called_once_with("test_process_id")
 

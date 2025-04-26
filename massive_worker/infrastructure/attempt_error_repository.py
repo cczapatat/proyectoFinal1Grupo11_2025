@@ -1,7 +1,6 @@
 import datetime
-from typing import Union
-from models.attempt_error import AttemptError
-from models.declarative_base import session
+from ..models.attempt_error import AttemptError
+from ..models.declarative_base import session
 
 
 class AttemptErrorRepository: 
@@ -21,6 +20,7 @@ class AttemptErrorRepository:
             session.add(attempt_error)
             session.commit()
             return attempt_error
+       
         except Exception as ex:
             session.rollback()
             print(f"[AttemptErrorRepository] Error creating attempt error: {ex}")

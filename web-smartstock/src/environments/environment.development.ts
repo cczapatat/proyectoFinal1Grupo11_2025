@@ -8,5 +8,6 @@ export const environment = {
     apiSellerUrl: 'http://127.0.0.1:3007/sellers',
     apiClientUrl: 'http://127.0.0.1:3009/clients',
     apiOrderUrl: 'http://127.0.0.1:3006/orders',
+    apiDocumentManagerUrl: 'http://127.0.0.1:3003/document-manager',
     xToken: 'internal_token',
 };

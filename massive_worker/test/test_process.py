@@ -1,5 +1,10 @@
 import json
+import os
+from massive_worker.models.attempt import Attempt
+from massive_worker.models.attempt_error import AttemptError
+from massive_worker.models.entity_batch import EntityBatch
 from massive_worker.process import log_error, process_attempts
+from massive_worker.models.declarative_base import session
 import pytest
 from faker import Faker
 from unittest.mock import MagicMock, patch
@@ -10,6 +15,11 @@ class TestProcess:
         self.process_id = str(self.data_factory.uuid4())
         self.file_id = str(self.data_factory.uuid4())
         self.user_id = str(self.data_factory.uuid4())
+        session.rollback()
+        session.query(AttemptError).delete()
+        session.query(EntityBatch).delete()
+        session.query(Attempt).delete()
+        session.commit()
 
 
     @pytest.fixture
@@ -26,13 +36,15 @@ class TestProcess:
         return message
 
     @patch("massive_worker.process.document_manager_service.get_json_from_document")
-    def test_process_attempts_success(self, mock_get_json, mock_message):
+    @patch("massive_worker.pubsub.publisher.Publisher.publish_massive_entity")
+    def test_process_attempts_success(self,mock_publish, mock_get_json, mock_message):
         mock_get_json.return_value = [{
             "key": "value"
         }]
         process_attempts(mock_message)
 
         mock_get_json.assert_called_once_with(self.file_id)
+        mock_publish.assert_called_once()
         mock_message.ack.assert_called_once()
 
     @patch("massive_worker.process.document_manager_service.get_json_from_document")

@@ -1,0 +1,14 @@
+Pillow==9.5.0
+ez_setup==0.9
+sqlalchemy==2.0.29
+psycopg2-binary==2.9.6
+google-api-core==2.18.0
+google-auth==2.29.0
+google-cloud-core==2.4.1
+google-cloud-pubsub==2.21.1
+
+pytest==7.0.1
+pytest-cov==3.0.0
+pytest-mock==3.6.1
+pytest-env==0.6.2
+Faker==9.0.1

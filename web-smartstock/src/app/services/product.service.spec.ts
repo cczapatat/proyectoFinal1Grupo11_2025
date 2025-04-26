@@ -6,6 +6,7 @@ import { ProductService } from './product.service';
 import { environment } from '../../environments/environment';
 import { Product } from '../product/product';
 import { ProductCategory } from '../dtos/product-category';
+import { BulkTask } from '../dtos/bulk-task';
 
 describe('Service: Product', () => {
   let service: ProductService;
@@ -142,7 +143,7 @@ describe('Service: Product', () => {
     service.getProducts().subscribe((response) => {
       expect(response).toEqual(mockProducts);
     });
-    const req = httpMock.expectOne(`${environment.apiProductUrl}/list`);
+    const req = httpMock.expectOne(`${environment.apiProductUrl}/list?all=true`);
     expect(req.request.method).toBe('GET');
     req.flush(mockProducts);
   });
@@ -175,5 +176,28 @@ describe('Service: Product', () => {
     const req = httpMock.expectOne(`${environment.apiProductUrl}/currencies`);
     expect(req.request.method).toBe('GET');
     req.flush(mockCurrencies);
+  });
+
+  it('should create massive products', () => {
+    const mockBulkTask = new BulkTask(
+      faker.date.past(),
+      faker.string.uuid().toString(),
+      faker.string.uuid().toString(),
+      'QUEUE',
+      faker.date.past()
+    )
+
+    const fileId = faker.string.uuid();
+
+    service.createMassiveProducts(fileId).subscribe((response) => {
+      expect(response).toEqual(mockBulkTask);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiProductUrl}/massive/create`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      file_id: fileId
+    });
+    req.flush(mockBulkTask);
   });
 });

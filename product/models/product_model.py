@@ -1,7 +1,7 @@
 import uuid
 import enum
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Enum, Float, Boolean, UniqueConstraint, CheckConstraint
+from sqlalchemy import Column, String, DateTime, Enum, Float, Boolean, CheckConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
 from ..config.db import db

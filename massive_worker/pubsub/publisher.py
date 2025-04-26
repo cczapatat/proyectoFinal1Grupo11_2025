@@ -1,18 +1,19 @@
 import json
 import os
-import random
 
 from google.cloud import pubsub_v1
 from ..infrastructure.entity_batch_repository import EntityBatchRepository
 
 attemps_name_pub = os.getenv('GCP_MANUFACTURE_MASSIVE_TOPIC', 'commands_to_massive')
-massive_entity_name_pub = os.getenv('GCP_MANUFACTURE_TOPIC', 'commands_to_entities')
+massive_manufacture_name_pub = os.getenv('GCP_MANUFACTURE_TOPIC', 'commands_to_manufactures')
+massive_product_name_pub = os.getenv('GCP_PRODUCT_TOPIC', 'commands_to_products')
 project_id = os.getenv('GCP_PROJECT_ID', 'proyectofinalmiso2025')
 
 publisher_retry_attempt = pubsub_v1.PublisherClient()
 publisher_massive_entity = pubsub_v1.PublisherClient()
 topic_path_attempt = publisher_retry_attempt.topic_path(project_id, attemps_name_pub)
-topic_path_massive_entity = publisher_massive_entity.topic_path(project_id, massive_entity_name_pub)
+topic_path_massive_manufacture = publisher_massive_entity.topic_path(project_id, massive_manufacture_name_pub)
+topic_path_massive_product = publisher_massive_entity.topic_path(project_id, massive_product_name_pub)
 
 entity_batch_repository = EntityBatchRepository()
 
@@ -44,6 +45,11 @@ class Publisher:
             print(f"[Publish Massive Entity] process_id: {process_id}, batch_number: {current_batch}")
 
             data_str = json.dumps(batch).encode("utf-8")
+            topic_path_massive_entity = topic_path_massive_manufacture
+
+            if entity_type == "PRODUCT":
+                topic_path_massive_entity = topic_path_massive_product
+            
             future = publisher_massive_entity.publish(topic_path_massive_entity, data_str)
             entity_batch_repository.create_entity_batch(entity_type, process_id, file_id, user_id, str(future.result()), current_batch, number_of_batches)
 

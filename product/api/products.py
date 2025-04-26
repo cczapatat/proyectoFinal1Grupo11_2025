@@ -12,7 +12,7 @@ from ..dtos.product_dto import ProductDTO
 from ..infrastructure.product_repository import ProductRepository
 from ..models.bulk_task_model import BulkTask
 from ..infrastructure.bulk_task_repository import BulkTaskRepository
-from ..models.Operations import Status
+from ..models.Operations import BULK_STATUS
 from ..models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT, Product
 from ..utilities.publisher_service import PublisherService
 
@@ -243,7 +243,7 @@ def create_massive_products():
         bulk_task_dto=BulkTaskDTO(
             user_id=user_id,
             file_id=file_id,
-            status=Status.BULK_QUEUED.value
+            status=BULK_STATUS.BULK_QUEUED,
         )
     )
 
@@ -257,7 +257,7 @@ def create_massive_products():
         )
 
         if not is_published:
-            bulk_task.status = Status.BUlK_FAILED.value
+            bulk_task.status = BULK_STATUS.BUlK_FAILED
             return jsonify(bulk_task.to_dict()), 500
         
         return jsonify(bulk_task.to_dict()), 201
