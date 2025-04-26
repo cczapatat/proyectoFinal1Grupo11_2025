@@ -108,7 +108,8 @@ class StockManager:
 
         # Clear the cache for the specific stock
         for stock in stocks:
-            cache_key = f'stock:{stock.id_product}'
-            cache_repository.delete(cache_key)
+            cache_key = f'stock:{stock.id}'
+            data = {"id": str(stock.id), "quantity_in_stock": int(stock.assigned_stock)}
+            cache_repository.set(cache_key, data)
 
         return {'message': 'Stocks assigned successfully'}
