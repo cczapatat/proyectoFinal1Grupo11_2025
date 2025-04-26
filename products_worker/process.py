@@ -4,7 +4,7 @@ import json
 
 from google.cloud import pubsub_v1
 
-from products_worker.models.Operations import BULK_STATUS
+from .models.Operations import BULK_STATUS
 
 from .infrastructure.bulk_task_repository import BulkTaskRepository
 from .infrastructure.product_repository import ProductRepository

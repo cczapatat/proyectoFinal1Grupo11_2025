@@ -15,7 +15,7 @@ logging.basicConfig(
 
 # Configuración
 GCP_PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "proyectofinalmiso2025")
-VIDEO_SIMULATION_SUB = os.environ.get("GCP_VIDEO_SIMULATION_SUB", "commands_to_video_recommendations_sub")
+VIDEO_SIMULATION_SUB = os.environ.get("GCP_VIDEO_SIMULATION_SUB", "commands_to_video_recommendations-sub")
 
 # Inicializar cliente con manejo de errores
 pubsub_available = False
