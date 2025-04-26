@@ -232,6 +232,11 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: SUBSCRIPTION_ID
+            - name: "USER_SESSION_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: USER_SESSION_MANAGER_PATH
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
@@ -1551,6 +1556,11 @@ spec:
   type: NodePort
   selector:
     app: products-worker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3090
+      nodePort: 31090
 ---
 
 ###################################
@@ -1777,4 +1787,9 @@ spec:
   type: NodePort
   selector:
     app: video-recommendations-worker
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3091
+      nodePort: 31091
 ---

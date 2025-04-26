@@ -27,6 +27,7 @@ jobs:
     name: Merge On Main After Approved PR.
     needs: starting_deploy
     uses: cczapatat/proyectoFinal1Grupo11_2025/.github/workflows/push_feature_fix_branch.yml@main
+    secrets: inherit
     with:
       command: 'run_on_deployment'
   deploy_to_production:
