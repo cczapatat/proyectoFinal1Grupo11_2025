@@ -101,7 +101,7 @@ class CreateOrderFragment: Fragment() {
             val datePickerDialog = DatePickerDialog(
                 binding.root.context,
                 { _, year, monthOfYear, dayOfMonth ->
-                    val dat = (dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year)
+                    val dat = String.format("%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year)
                     dateEdt.setText(dat)
                 },
                 year,
@@ -143,8 +143,9 @@ class CreateOrderFragment: Fragment() {
         binding.productsOrderRv.layoutManager = LinearLayoutManager(requireContext())
         // binding add product
         binding.buttonAddProduct.setOnClickListener {
-            val dialog = AddProductDialogFragment { product, quantity ->
+            val dialog = AddProductDialogFragment { product, quantity, idStock ->
                 // Handle added product and quantity
+                product.id = idStock
                 product.quantity = quantity
                 productsArray.add(product)
                 //productAdapterOrder.updateData(productsArray)

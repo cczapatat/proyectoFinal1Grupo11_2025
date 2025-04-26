@@ -90,7 +90,8 @@
     <string name="favor_seleccionar_producto">Please select a product</string>
     <string name="favor_ingresar_cantidad">Enter a valid quantity</string>
     <string name="producto_seleccionado">Seleccted product:</string>
-
+    <string name="no_stock_available">Unavailable Stock</string>
+    <string name="max_stock_available">Available Máx.:</string>
     <!--api client errors-->
     <string name="error_user_id_required">userID is required</string>
     <string name="error_seller_id_required">Seller ID is required</string>

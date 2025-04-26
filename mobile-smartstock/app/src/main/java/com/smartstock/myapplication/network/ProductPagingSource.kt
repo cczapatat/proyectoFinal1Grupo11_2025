@@ -4,12 +4,13 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.smartstock.myapplication.models.Product
+import com.smartstock.myapplication.models.Stock
 
 class ProductPagingSource (
     private val networkServiceAdapter: NetworkServiceAdapter
-) : PagingSource<Int, Product>() {
+) : PagingSource<Int, Stock>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Product> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Stock> {
         val page = params.key ?: 1
         val perPage = 10
         Log.d("Paging", "Loading page 0...")
@@ -26,7 +27,7 @@ class ProductPagingSource (
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Product>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Stock>): Int? {
         return state.anchorPosition?.let {
             state.closestPageToPosition(it)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(it)?.nextKey?.minus(1)

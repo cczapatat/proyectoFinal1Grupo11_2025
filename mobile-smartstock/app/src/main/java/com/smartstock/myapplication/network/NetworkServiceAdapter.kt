@@ -14,6 +14,7 @@ import com.smartstock.myapplication.models.Client
 import com.smartstock.myapplication.models.CreatedOrder
 import com.smartstock.myapplication.models.Order
 import com.smartstock.myapplication.models.Product
+import com.smartstock.myapplication.models.Stock
 import com.smartstock.myapplication.models.User
 import com.smartstock.myapplication.models.UserToken
 import com.smartstock.myapplication.models.UserVerify
@@ -31,15 +32,15 @@ class NetworkServiceAdapter constructor(context: Context){
 
     companion object {
         const val INTERNAL_TOKEN = "internal_token"
-        const val BASE_URL_USER_SESSIONS = "https://4a0d-186-154-38-102.ngrok-free.app/"
-        const val BASE_URL_CLIENTS = "https://4a0d-186-154-38-102.ngrok-free.app/"
-        const val BASE_URL_PRODUCTS = "https://32bd-186-154-38-102.ngrok-free.app/"
+        const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
+        const val BASE_URL_CLIENTS = "http://130.211.32.9/"
+        const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
         //const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
-        const val BASE_URL_ORDER = "https://32bd-186-154-38-102.ngrok-free.app/"
+        const val BASE_URL_ORDER = "http://130.211.32.9/"
         //const val BASE_URL_ORDER = "http://130.211.32.9/"
         const val LOGIN_PATH = "user_sessions/login"
         const val CREATE_CLIENT_PATH = "user_sessions/create"
-        const val GET_PRODUCT_PATH = "products/paginated_full"
+        const val GET_PRODUCT_PATH = "stocks-api/stocks/all"
         const val CREATE_ORDER_PATH = "orders/create"
         const val VERIFY_PATH = "user_sessions/auth"
         const val GET_CLIENTS_SELLER_PATH = "user_sessions/clients/seller/"
@@ -166,7 +167,7 @@ class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
-    suspend fun fetchPaginatedProducts(page: Int, perPage: Int): List<Product> = suspendCoroutine { cont ->
+    suspend fun fetchPaginatedProducts(page: Int, perPage: Int): List<Stock> = suspendCoroutine { cont ->
         //val url = "$BASE_URL_PRODUCTS$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
         val url = "$BASE_URL_PRODUCTS"
         val path = "$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
@@ -174,28 +175,35 @@ class NetworkServiceAdapter constructor(context: Context){
         requestQueue.add(
             getRequest(url, path, { response ->
                 try{
-                    val jsonArray = response.getJSONArray("data")
-                    val products = mutableListOf<Product>()
+                    val jsonArray = response.getJSONArray("stocks")
+                    val stocks = mutableListOf<Stock>()
                     for (i in 0 until jsonArray.length()) {
-                        val item = jsonArray.getJSONObject(i)
-                        products.add(
-                            Product(
-                                id = item.optString("id"),
-                                manufacturer_id = item.optString("manufacturer_id"),
-                                name = item.optString("name"),
-                                description = item.optString("description"),
-                                category = item.optString("category"),
-                                unit_price = item.optDouble("unit_price"),
-                                currency_price = item.optString("currency_price"),
-                                is_promotion = item.optBoolean("is_promotion"),
-                                discount_price = item.optDouble("discount_price"),
-                                expired_at = item.optString("expired_at"),
-                                url_photo = item.optString("url_photo"),
-                                store_conditions = item.optString("store_conditions")
-                            )
+                        val stockItem = jsonArray.getJSONObject(i)
+                        val productJson = stockItem.getJSONObject("product")
+                        val product = Product(
+                            id = productJson.optString("id"),
+                            manufacturer_id = productJson.optString("manufacturer_id"),
+                            name = productJson.optString("name"),
+                            description = productJson.optString("description"),
+                            category = productJson.optString("category"),
+                            unit_price = productJson.optDouble("unit_price"),
+                            currency_price = productJson.optString("currency_price"),
+                            is_promotion = productJson.optBoolean("is_promotion"),
+                            discount_price = productJson.optDouble("discount_price"),
+                            expired_at = productJson.optString("expired_at"),
+                            url_photo = productJson.optString("url_photo"),
+                            store_conditions = productJson.optString("store_conditions")
+                        )
+                        val stock = Stock(
+                            id = stockItem.optString("id"),
+                            quantity_in_stock = stockItem.optInt("quantity_in_stock"),
+                            product = product
+                        )
+                        stocks.add(
+                            stock
                         )
                     }
-                    cont.resume(products)
+                    cont.resume(stocks)
                 } catch (e: Exception) {
                     //showToast(context.getString(R.string.error_database_integrity), context)
                     cont.resumeWithException(e)
