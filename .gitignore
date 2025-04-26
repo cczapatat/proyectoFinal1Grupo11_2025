@@ -70,3 +70,4 @@ data_app/*
 **/reports
 
 **/**.bak
+**/**.json
