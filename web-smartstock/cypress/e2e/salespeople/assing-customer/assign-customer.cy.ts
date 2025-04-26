@@ -83,6 +83,7 @@ describe('Associale Seller to clients Test', () => {
     .should('be.checked'); 
 
 
+    
     cy.get('.menu-toggle').click()
     cy.get('.btn-logout').click()
     cy.url().should('include', '/user-sessions/login')
