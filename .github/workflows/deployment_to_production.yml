@@ -83,6 +83,7 @@ jobs:
           tag="${{ github.event.inputs.tag }}"
           cd deployment
           sed -i.bak "s/:latest/:$tag/g" k8s-base-layer-deployment.yaml
+          sed -i.bak "s/:fakeKeyOpenApi/:${{ secrets.OPENAI_API_KEY }}/g" secrets.yaml
           kubectl apply -f secrets.yaml
           kubectl apply -f k8s-base-layer-deployment.yaml
           kubectl apply -f k8s-ingress-deployment.yaml

@@ -1,4 +1,5 @@
 from faker import Faker
+import massive_worker.init_bd
 from massive_worker.infrastructure.entity_batch_repository import EntityBatchRepository
 from massive_worker.models.attempt_error import AttemptError
 

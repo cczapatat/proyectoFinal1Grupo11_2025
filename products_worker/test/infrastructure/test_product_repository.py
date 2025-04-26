@@ -3,7 +3,7 @@ from products_worker.dtos.product_dto import ProductDTO
 from products_worker.infrastructure.product_repository import ProductRepository
 from products_worker.models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT, Product
 from products_worker.models.declarative_base import session
-
+import products_worker.init_bd
 
 class TestProductRepository:
     def setup_method(self):

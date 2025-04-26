@@ -497,6 +497,16 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: SUBSCRIPTION_ID
+            - name: "GCP_PRODUCT_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PRODUCT_TOPIC
+            - name: "GCP_PRODUCT_MASSIVE_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PRODUCT_MASSIVE_SUB
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1
@@ -1447,4 +1457,324 @@ spec:
       port: 80
       targetPort: 5000
       nodePort: 31050
+---
+
+###################################
+# Products Worker
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: products-worker
+  labels:
+    app: products-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: products-worker
+  template:
+    metadata:
+      labels:
+        app: products-worker
+    spec:
+      containers:
+        - name: products-worker
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/products_worker:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "320m"
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_STORE_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_PRODUCT_MASSIVE_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PRODUCT_MASSIVE_SUB
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: products-worker-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: products-worker-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "products-worker-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: products-worker
+---
+
+###################################
+# Video Manager Api
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-manager-api
+  labels:
+    app: video-manager-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: video-manager-api
+  template:
+    metadata:
+      labels:
+        app: video-manager-api
+    spec:
+      containers:
+        - name: video-manager-api
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/video_manager_api:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "320m"
+          ports:
+            - containerPort: 3021
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_VIDEO_SIMULATION_TOPIC"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_VIDEO_SIMULATION_TOPIC
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: video-manager-api-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3021
+    type: HTTP
+    requestPath: /video/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: video-manager-api-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "video-manager-api-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: video-manager-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3021
+      nodePort: 31031
+---
+
+###################################
+# Video Recommendations Worker
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: video-recommendations-worker
+  labels:
+    app: video-recommendations-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: video-recommendations-worker
+  template:
+    metadata:
+      labels:
+        app: video-recommendations-worker
+    spec:
+      containers:
+        - name: video-recommendations-worker
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/video_recommendations_worker:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "320m"
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_STORE_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "GCP_PROJECT_ID"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_PROJECT_ID
+            - name: "GCP_VIDEO_SIMULATION_SUB"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: GCP_VIDEO_SIMULATION_SUB
+            - name: "OPENAI_API_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: OPENAI_API_KEY
+            - name: "OPENAI_MODEL"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: OPENAI_MODEL
+            - name: "OPENAI_TEMPERATURE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: OPENAI_TEMPERATURE
+            - name: "OPENAI_MAX_TOKENS"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: OPENAI_MAX_TOKENS
+            - name: "OPENAI_TOP_P"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: OPENAI_TOP_P
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: video-recommendations-worker-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: video-recommendations-worker-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "video-recommendations-worker-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: video-recommendations-worker
 ---

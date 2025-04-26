@@ -1,4 +1,5 @@
 from faker import Faker
+import massive_worker.init_bd
 from massive_worker.infrastructure.attempt_error_repository import AttemptErrorRepository
 from massive_worker.models.attempt_error import AttemptError
 from massive_worker.models.declarative_base import session

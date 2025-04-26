@@ -2,23 +2,23 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-db = None
+db = SQLAlchemy()
 
 
 def init_db(app: Flask) -> SQLAlchemy:
     global db
-    db = SQLAlchemy(app)
-
+    db.init_app(app)
     return db
 
 
 def create_db(app: Flask):
-    db_instance = init_db(app)
+    global db
+    init_db(app)
 
     with app.app_context():
         from ..models import document_model
 
-        db_instance.create_all()
+        db.create_all()
 
 
 def get_uri_db() -> str:

@@ -3,6 +3,7 @@ from products_worker.infrastructure.bulk_task_repository import BulkTaskReposito
 from products_worker.models.Operations import BULK_STATUS
 from products_worker.models.bulk_task_model import BulkTask
 from products_worker.models.declarative_base import session
+import products_worker.init_bd
 
 
 class TestBulkTaskRepository:

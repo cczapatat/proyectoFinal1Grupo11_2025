@@ -32,5 +32,3 @@ def create_app() -> Flask:
         return jsonify({'status': 'up'})
 
     return app
-
-application = create_app()

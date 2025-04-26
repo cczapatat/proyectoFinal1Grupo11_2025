@@ -40,6 +40,46 @@ jobs:
       - name: start continue validation coverage
         run: echo "Accepted conditions to continue validation coverage"
 
+  document_manager_coverage:
+    name: Document Manager Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: user_final
+          POSTGRES_PASSWORD: pass_final
+          POSTGRES_DB: project_final
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Python Env Configuration 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd document_manager
+          python --version
+          pip install --upgrade --no-cache-dir pip==23.2.1
+          pip --version
+          pip install --no-cache-dir -r requirements.txt
+      - name: Run tests
+        run: |
+          cd document_manager
+          coverage run -m pytest -vv
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Validate coverage
+        run: |
+          cd document_manager
+          coverage report -m --fail-under=90
+
   stores_coverage:
     name: Stores Coverage
     needs: start_continue_validation_coverage
@@ -123,6 +163,89 @@ jobs:
       - name: Validate coverage
         run: |
           cd product
+          coverage report -m --fail-under=90
+
+  products_worker_coverage:
+    name: Products Worker Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: user_final
+          POSTGRES_PASSWORD: pass_final
+          POSTGRES_DB: project_final
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Python Env Configuration 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd products_worker
+          python --version
+          pip install --upgrade --no-cache-dir pip==23.2.1
+          pip --version
+          pip install --no-cache-dir -r requirements.txt
+      - name: Run tests
+        run: |
+          cd products_worker
+          coverage run -m pytest -vv
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Validate coverage
+        run: |
+          cd products_worker
+          coverage report -m --fail-under=90        
+
+  massive_worker_coverage:
+    name: Massive Worker Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: user_final
+          POSTGRES_PASSWORD: pass_final
+          POSTGRES_DB: project_final
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Python Env Configuration 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd massive_worker
+          python --version
+          pip install --upgrade --no-cache-dir pip==23.2.1
+          pip --version
+          pip install --no-cache-dir -r requirements.txt
+      - name: Run tests
+        run: |
+          cd massive_worker
+          echo "Creating credentials.json"
+          echo ${{ secrets.GCP_CREDENTIALS }} > credentials.json
+          export GOOGLE_APPLICATION_CREDENTIALS="credentials.json"
+          coverage run -m pytest -vv
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Validate coverage
+        run: |
+          cd massive_worker
           coverage report -m --fail-under=90
 
   seller_coverage:
@@ -368,7 +491,47 @@ jobs:
       - name: Validate coverage
         run: |
           cd video_manager_api
-            coverage report -m --fail-under=90  
+            coverage report -m --fail-under=90
+            
+  video_recommendations_worker_coverage:
+    name: Video Recommendation Worker Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: user_final
+          POSTGRES_PASSWORD: pass_final
+          POSTGRES_DB: project_final
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Python Env Configuration 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd video_recommendations_worker
+          python --version
+          pip install --upgrade --no-cache-dir pip==23.2.1
+          pip --version
+          pip install --no-cache-dir -r requirements.txt
+      - name: Run tests
+        run: |
+          cd video_recommendations_worker
+          coverage run -m pytest -vv
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Validate coverage
+        run: |
+          cd video_recommendations_worker
+            coverage report -m --fail-under=90
 
   web_smartstock_coverage:
     name: Web SmartStock Coverage

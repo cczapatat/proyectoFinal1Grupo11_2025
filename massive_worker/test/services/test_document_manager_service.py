@@ -1,4 +1,5 @@
 from unittest.mock import patch, MagicMock
+import massive_worker.init_bd
 from massive_worker.services.document_manager_service import DocumentManagerService
 
 class TestDocumentManagerService:

@@ -17,5 +17,6 @@ COPY . .
 
 EXPOSE 3003/tcp
 ENV PYTHONUNBUFFERED=1
+ENV TESTING=False
 
 CMD [ "flask", "--app", ".", "run", "--host=0.0.0.0", "--port=3003" ]
