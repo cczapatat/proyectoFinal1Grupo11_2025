@@ -72,7 +72,7 @@ class CreateOrderFragment: Fragment() {
         val clientDropdown = binding.autoCompleteTextViewCreate1
         if (type == "CLIENT"){
             clientDropdown.setText(name, false)
-            clientDropdown.isEnabled = false
+            clientDropdown.isEnabled = true
             clientDropdown.isFocusable = false
             clientDropdown.isClickable = false
         } else {
@@ -81,6 +81,36 @@ class CreateOrderFragment: Fragment() {
             clientDropdown.isEnabled = false
             clientDropdown.isFocusable = false
             clientDropdown.isClickable = false
+            lifecycleScope.launch {
+                try {
+                    val clients = adapter.fetchPaginatedClientsBySellerId(
+                        sellerId = id!!, // `id` is the sellerId
+                        page = 1,
+                        perPage = 100 // Fetch enough clients for dropdown
+                    )
+                    val clientNames = clients.map { it.name }
+                    clientDropdown.isEnabled = true
+                    clientDropdown.isFocusable = true
+                    clientDropdown.isClickable = true
+                    // Bind names to dropdown
+                    val dropdownAdapter = ArrayAdapter(
+                        requireContext(),
+                        R.layout.list_item, // Use the same list_item layout
+                        clientNames
+                    )
+                    clientDropdown.setAdapter(dropdownAdapter)
+
+                    // Handle client selection
+                    clientDropdown.setOnItemClickListener { parent, _, position, _ ->
+                        val selectedClient = clients[position]
+                        selectedClientId = selectedClient.id.toString()
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    showMessage("Failed to load clients", requireContext())
+                }
+            }
         }
 
         selectedClientId = id
