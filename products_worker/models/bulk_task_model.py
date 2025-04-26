@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from products_worker.models.Operations import BULK_STATUS
+from ..models.Operations import BULK_STATUS
 from sqlalchemy import Column, DateTime, String, UUID, Enum
 
 from .declarative_base import Base

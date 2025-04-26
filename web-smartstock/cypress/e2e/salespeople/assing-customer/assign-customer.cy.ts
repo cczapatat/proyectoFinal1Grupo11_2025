@@ -49,8 +49,8 @@ describe('Associale Seller to clients Test', () => {
     cy.get('#associate-save').click();  //save
 
 
-    cy.contains('seller1@sta.com');
-    cy.contains('td', 'seller1@sta.com') // find the cell with the target email
+    cy.contains('seller@seller.com');
+    cy.contains('td', 'seller@seller.com') // find the cell with the target email
     .parent('tr')                         // go to the parent row
     .find('input[type="checkbox"]')      // find the checkbox in that row
     .check(); 

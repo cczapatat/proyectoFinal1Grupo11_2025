@@ -239,6 +239,7 @@ jobs:
           echo "Creating credentials.json"
           echo ${{ secrets.GCP_CREDENTIALS }} > credentials.json
           export GOOGLE_APPLICATION_CREDENTIALS="credentials.json"
+          echo $GOOGLE_APPLICATION_CREDENTIALS
           coverage run -m pytest -vv
       - name: Validate test
         if: ${{ failure() }}

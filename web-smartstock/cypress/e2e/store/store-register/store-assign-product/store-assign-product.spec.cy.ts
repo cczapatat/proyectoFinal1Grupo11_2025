@@ -4,7 +4,7 @@ describe('Assign Stock to Store', () => {
   it('Assign new stock to store', () => {
     cy.visit('/user-sessions/login');
     cy.get('#email').type('admin.admin@sta.com');
-    cy.get('#password').type('12345');
+    cy.get('#password').type('123456');
     cy.get('#doLogin').click();
     cy.url().should('include', '/home')
 
@@ -24,14 +24,17 @@ describe('Assign Stock to Store', () => {
 
     
     cy.contains('Chocoramo');
-    cy.contains('td', 'Chocoramo') // find the cell with the target email
-   
-    
-    cy.contains('td', 'Chocoramo') // find the cell with the target email
-    .parent('tr')                         // go to the parent row
+    cy.contains('td', 'Chocoramo')
+    .parent('tr')
+    .find('input[type="checkbox"]')
+    .check()
+    .click();
+
+    cy.contains('td', 'Chocoramo')
+    .parent('tr')
     .find('input[type="number"]')
     .clear()                              // clear the field
-    .type('100')                          // type 100
+    .type('100');
 
     cy.wait(2000);
     //scroll down at the end of the page

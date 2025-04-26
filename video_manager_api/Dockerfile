@@ -1,5 +1,11 @@
 FROM --platform=linux/amd64 python:3.10.16-slim
 
+# Set up Google Cloud credentials
+RUN mkdir .config_app
+COPY credentials.json /.config_app/credentials.json
+RUN export GOOGLE_APPLICATION_CREDENTIALS="/.config_app/credentials.json"
+ENV GOOGLE_APPLICATION_CREDENTIALS="/.config_app/credentials.json"
+
 # Set up working directory
 WORKDIR /app
 
@@ -10,11 +16,6 @@ RUN apt-get update \
     curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Set up Google Cloud credentials
-RUN mkdir /.config_app
-COPY credentials.json /.config_app/credentials.json
-ENV GOOGLE_APPLICATION_CREDENTIALS="/.config_app/credentials.json"
 
 # Copy requirements file
 COPY requirements.txt .
