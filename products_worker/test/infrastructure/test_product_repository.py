@@ -24,7 +24,7 @@ class TestProductRepository:
                 description=self.data_factory.word(),
                 category=self.data_factory.random_element(
                     [category.value for category in CATEGORY_PRODUCT]),
-                unit_price=self.data_factory.random_number(digits=2),
+                unit_price=100,
                 currency_price=self.data_factory.random_element(
                     [currency.value for currency in CURRENCY_PRODUCT]),
                 is_promotion=self.data_factory.boolean(),
@@ -51,7 +51,7 @@ class TestProductRepository:
             name=self.data_factory.name(),
             description=self.data_factory.word(),
             category= "bad_category",
-            unit_price=self.data_factory.random_number(digits=2),
+            unit_price=100,
             currency_price=self.data_factory.random_element(
                 [currency.value for currency in CURRENCY_PRODUCT]),
             is_promotion=self.data_factory.boolean(),
