@@ -1,4 +1,5 @@
 from faker import Faker
+import massive_worker.init_bd
 from massive_worker.infrastructure.attempt_repository import AttemptRepository
 from massive_worker.models.attempt import Attempt
 from massive_worker.models.declarative_base import session

@@ -88,3 +88,10 @@ spec:
                 name: user-session-manager-service
                 port:
                   number: 80
+          - path: /video
+            pathType: Prefix
+            backend:
+              service:
+                name: video-manager-api-service
+                port:
+                  number: 80

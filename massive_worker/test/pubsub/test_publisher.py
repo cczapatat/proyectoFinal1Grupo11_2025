@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
+import massive_worker.init_bd
 from massive_worker.pubsub.publisher import Publisher
 
 class TestPublisher:

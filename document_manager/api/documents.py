@@ -17,7 +17,8 @@ internal_token = os.getenv('INTERNAL_TOKEN', default='internal_token')
 user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
 
 document_repository = DocumentRepository()
-cloud_storage_repository = CloudStorageRepository(bucket_name=os.getenv('GCLOUD_BUCKET', default='massive_proyecto_final'))
+cloud_storage_repository = CloudStorageRepository()
+
 
 def __validate_auth_token() -> dict:
     auth_token = request.headers.get('Authorization', None)
@@ -35,6 +36,7 @@ def __validate_auth_token() -> dict:
         raise InternalServerError(description='internal server error on user_session_manager')
 
     return auth_response.json()
+
 
 def there_is_token():
     token = request.headers.get('x-token', None)
@@ -55,7 +57,7 @@ def create_document():
     if user_auth['user_type'] == 'ADMIN':
         user_id = user_auth['user_session_id']
     elif user_auth['user_type'] == 'SELLER':
-        user_id =  user_auth['user_id']
+        user_id = user_auth['user_id']
     else:
         return jsonify({'message': 'Invalid user type'}), 403
 

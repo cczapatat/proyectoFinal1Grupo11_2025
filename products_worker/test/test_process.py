@@ -8,6 +8,7 @@ from products_worker.models.bulk_task_model import BulkTask
 from products_worker.models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT, Product
 from products_worker.process import process_products, log_error
 from products_worker.models.declarative_base import session
+import products_worker.init_bd
 
 
 class TestProcess:

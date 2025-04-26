@@ -1,16 +1,30 @@
 import io
+import os
 import uuid
 
 from google.cloud import storage
 
 from ..utils import get_extension, get_base_path
 
+bucket_name = os.getenv('GCLOUD_BUCKET', default='massive_proyecto_final')
+testing = os.getenv('TESTING', 'False').lower() == 'true'
+client = storage.Client()
+
+
+def get_bucket():
+    if testing:
+        return bucket
+    else:
+        return client.bucket(bucket_name)
+
+
+bucket = client.bucket(bucket_name)
+
 
 class CloudStorageRepository:
-    def __init__(self, bucket_name):
+    def __init__(self):
         self.bucket_name = bucket_name
-        self.client = storage.Client()
-        self.bucket = self.client.bucket(bucket_name)
+        self.bucket = bucket
 
     @staticmethod
     def generate_path(full_file_name) -> tuple[str, str]:

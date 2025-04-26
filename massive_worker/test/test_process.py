@@ -1,5 +1,6 @@
 import json
 import os
+import massive_worker.init_bd
 from massive_worker.models.attempt import Attempt
 from massive_worker.models.attempt_error import AttemptError
 from massive_worker.models.entity_batch import EntityBatch

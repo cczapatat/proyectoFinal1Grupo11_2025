@@ -11,7 +11,7 @@ TAG=$1
 REGISTRY="us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1"
 
 # Lista de servicios a construir
-services="client document_manager manufacture_api manufacturers_worker massive_worker order product seller stocks_api stocks_worker stores user_session_manager web-smartstock"
+services="client document_manager manufacture_api manufacturers_worker massive_worker order product products_worker seller stocks_api stocks_worker stores user_session_manager video_manager_api video_recommendations_worker web-smartstock"
 
 # Función para construir y publicar imagen
 build_and_push() {
