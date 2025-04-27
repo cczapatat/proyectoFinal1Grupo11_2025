@@ -38,7 +38,7 @@
     <string name="repetir_contrasena">Repetir Contraseña</string>
     <string name="no_registrado">No estas registrado? Registrate accediendo a este enlace </string>
     <string name="iniciar_sesion">Iniciar Sesión</string>
-    <string name="lista_de_clientes">Lista de Clientes</string>
+    <string name="lista_de_clientes">Mis Clientes</string>
     <string name="registrar_cliente">Registrar Cliente</string>
     <string name="registrar_cliente_nombre">Nombre</string>
     <string name="registrar_cliente_direccion">Direccion</string>
@@ -51,6 +51,8 @@
     <string name="seleccionar_tono">Seleccionar tono</string>
     <string name="cancelar">Cancelar</string>
     <string name="crear">Crear</string>
+    <string name="nav_cliente">Mis Clientes</string>
+    <string name="nav_menu">Menu</string>
     <string name="menu_registrar_visita">Registrar visita</string>
     <string name="menu_listar_clientes">Listar Clientes</string>
     <string name="menu_crear_cliente">Crear Cliente</string>
@@ -65,7 +67,7 @@
     <string name="success_add_client">El cliente se ha agregado de forma satisfactoria</string>
     <string name="error_add_client">Ocurrio un error al intentar guardar clientes</string>
     <string name="error_add_client_fields">Todos los campos deben ser llenados</string>
-
+    <string name="seleccionado">Has Seleccionado</string>
     <!-- TODO: Smart Stock Orden -->
     <string name="crear_pedido">Crear Pedido</string>
     <string name="seleccionar_cliente">Seleccionar Cliente</string>
@@ -88,7 +90,8 @@
     <string name="favor_seleccionar_producto">Por favor seleccionar un producto</string>
     <string name="favor_ingresar_cantidad">Ingrese una cantidad válida</string>
     <string name="producto_seleccionado">Producto seleccionado:</string>
-
+    <string name="no_stock_available">No hay stock disponible</string>
+    <string name="max_stock_available">Máximo disponible:</string>
     <!--api client errors-->
     <string name="error_user_id_required">Se requiere el userID</string>
     <string name="error_seller_id_required">Se requiere el Seller ID</string>

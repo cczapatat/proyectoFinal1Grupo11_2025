@@ -72,7 +72,7 @@ class CreateOrderFragment: Fragment() {
         val clientDropdown = binding.autoCompleteTextViewCreate1
         if (type == "CLIENT"){
             clientDropdown.setText(name, false)
-            clientDropdown.isEnabled = false
+            clientDropdown.isEnabled = true
             clientDropdown.isFocusable = false
             clientDropdown.isClickable = false
         } else {
@@ -81,6 +81,36 @@ class CreateOrderFragment: Fragment() {
             clientDropdown.isEnabled = false
             clientDropdown.isFocusable = false
             clientDropdown.isClickable = false
+            lifecycleScope.launch {
+                try {
+                    val clients = adapter.fetchPaginatedClientsBySellerId(
+                        sellerId = id!!, // `id` is the sellerId
+                        page = 1,
+                        perPage = 100 // Fetch enough clients for dropdown
+                    )
+                    val clientNames = clients.map { it.name }
+                    clientDropdown.isEnabled = true
+                    clientDropdown.isFocusable = true
+                    clientDropdown.isClickable = true
+                    // Bind names to dropdown
+                    val dropdownAdapter = ArrayAdapter(
+                        requireContext(),
+                        R.layout.list_item, // Use the same list_item layout
+                        clientNames
+                    )
+                    clientDropdown.setAdapter(dropdownAdapter)
+
+                    // Handle client selection
+                    clientDropdown.setOnItemClickListener { parent, _, position, _ ->
+                        val selectedClient = clients[position]
+                        selectedClientId = selectedClient.id.toString()
+                    }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    showMessage("Failed to load clients", requireContext())
+                }
+            }
         }
 
         selectedClientId = id
@@ -101,7 +131,7 @@ class CreateOrderFragment: Fragment() {
             val datePickerDialog = DatePickerDialog(
                 binding.root.context,
                 { _, year, monthOfYear, dayOfMonth ->
-                    val dat = (dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year)
+                    val dat = String.format("%02d-%02d-%04d", dayOfMonth, monthOfYear + 1, year)
                     dateEdt.setText(dat)
                 },
                 year,
@@ -143,8 +173,9 @@ class CreateOrderFragment: Fragment() {
         binding.productsOrderRv.layoutManager = LinearLayoutManager(requireContext())
         // binding add product
         binding.buttonAddProduct.setOnClickListener {
-            val dialog = AddProductDialogFragment { product, quantity ->
+            val dialog = AddProductDialogFragment { product, quantity, idStock ->
                 // Handle added product and quantity
+                product.id = idStock
                 product.quantity = quantity
                 productsArray.add(product)
                 //productAdapterOrder.updateData(productsArray)

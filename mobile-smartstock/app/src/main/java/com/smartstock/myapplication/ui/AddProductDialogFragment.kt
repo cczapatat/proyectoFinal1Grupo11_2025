@@ -5,28 +5,29 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.widget.EditText
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.smartstock.myapplication.R
-import com.smartstock.myapplication.adapters.ProductAdapter
+import com.smartstock.myapplication.adapters.StockAdapter
 import com.smartstock.myapplication.models.Product
+import com.smartstock.myapplication.models.Stock
 import com.smartstock.myapplication.network.NetworkServiceAdapter
 import com.smartstock.myapplication.repositories.ProductRepository
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class AddProductDialogFragment(
-    private val onProductAdded: (Product, Int) -> Unit
+    private val onProductAdded: (Product, Int, String) -> Unit
 ) : DialogFragment() {
 
-    private var selectedProduct: Product? = null
-    private lateinit var productAdapter: ProductAdapter
-
+    private var selectedStock: Stock? = null
+    private lateinit var stockAdapter: StockAdapter
+    private var quantityTextWatcher: android.text.TextWatcher? = null
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_add_product, null)
 
@@ -35,13 +36,47 @@ class AddProductDialogFragment(
 
         val repository = ProductRepository(NetworkServiceAdapter.getInstance(requireContext()))
 
-        productAdapter = ProductAdapter { product ->
-            selectedProduct = product
-            Toast.makeText(context, "${getString(R.string.producto_seleccionado)} ${product.name}", Toast.LENGTH_SHORT).show()
+        stockAdapter = StockAdapter { stock ->
+            selectedStock = stock
+            quantityInput.setText("")
+            Toast.makeText(context, "${getString(R.string.producto_seleccionado)} ${stock.product.name}", Toast.LENGTH_SHORT).show()
+
+            quantityTextWatcher?.let { quantityInput.removeTextChangedListener(it) }
+            val maxQuantity = stock.quantity_in_stock
+            quantityTextWatcher = object : android.text.TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: android.text.Editable?) {
+                    val enteredText = s.toString()
+                    if (enteredText.isNotEmpty()) {
+                        val enteredValue = enteredText.toIntOrNull() ?: 0
+                        if (enteredValue > maxQuantity) {
+                            quantityInput.setText(maxQuantity.toString())
+                            quantityInput.setSelection(quantityInput.text?.length ?: 0)
+                            Toast.makeText(
+                                requireContext(),
+                                "${getString(R.string.max_stock_available)} $maxQuantity",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+            quantityInput.addTextChangedListener(quantityTextWatcher)
+
         }
 
+
         recyclerView.apply {
-            adapter = productAdapter
+            adapter = stockAdapter
             layoutManager = LinearLayoutManager(context)
         }
 
@@ -51,8 +86,8 @@ class AddProductDialogFragment(
                 val quantity = quantityInput.text.toString().toIntOrNull() ?: 0
                 Log.d("quantity", quantity.toString())
 
-                    selectedProduct?.let {
-                        onProductAdded(it, quantity)
+                    selectedStock?.let {
+                        onProductAdded(it.product, quantity, it.id)
                     } ?: Toast.makeText(context, getString(R.string.favor_seleccionar_producto), Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton(getString(R.string.cancelar), null)
@@ -66,7 +101,7 @@ class AddProductDialogFragment(
         lifecycleScope.launch {
             val repository = ProductRepository(NetworkServiceAdapter.getInstance(requireContext()))
             repository.getPaginatedProducts().collectLatest {
-                productAdapter.submitData(it)
+                stockAdapter.submitData(it)
             }
         }
     }

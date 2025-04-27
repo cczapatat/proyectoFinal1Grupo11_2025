@@ -8,7 +8,7 @@ object Utils {
         val locale = Resources.getSystem().configuration.locales.get(0)
         return when (key) {
             "Menu Create Client" -> if (locale.language == "es") "Crear Cliente" else "Create client"
-            "Menu List client" -> if (locale.language == "es") "Listar Clientes" else "Clients"
+            "Menu List client" -> if (locale.language == "es") "Mis Clientes" else "My Clients"
             "Create" -> if (locale.language == "es") "Crear" else "Create"
             "client_type_supermarket" -> if (locale.language == "es") "Supermercado" else "Supermarket"
             "zone_south" -> if (locale.language == "es") "Sur" else "South"

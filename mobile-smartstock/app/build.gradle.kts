@@ -4,6 +4,7 @@ plugins {
     id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp")
     id("androidx.room")
+    kotlin("kapt")
 }
 
 android {

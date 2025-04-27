@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                 popup.menu.findItem(R.id.ListarClientes).isVisible = true
                 popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
                 popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
-                popup.menu.findItem(R.id.CreateOrderFragment).isEnabled = false
+                //popup.menu.findItem(R.id.CreateOrderFragment).isEnabled = false
                 popup.menu.findItem(R.id.CargarVideo).isVisible = true
 
             }

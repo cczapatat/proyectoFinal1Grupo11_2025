@@ -13,7 +13,7 @@ data class Client(
     val phone: String,
     val email: String,
     val userId: UUID,
-    val sellerId: UUID,
+    val sellerId: UUID? = null,
     val address: String,
     val clientType: String,
     val zone: String

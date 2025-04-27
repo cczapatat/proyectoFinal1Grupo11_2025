@@ -3,7 +3,7 @@ package com.smartstock.myapplication.models
 
 
 data class Product(
-    val id: String,
+    var id: String,
     val manufacturer_id: String,
     val name: String,
     val description: String,
