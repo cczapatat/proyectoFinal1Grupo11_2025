@@ -36,4 +36,14 @@
     </fragment>
 
 
+    <fragment
+        android:id="@+id/UploadVideoFragment"
+        android:name="com.smartstock.myapplication.ui.UploadVideoFragment"
+        android:label="@string/upload_video_fragment_label"
+        tools:layout="@layout/fragment_upload_video">
+        <action
+            android:id="@+id/actionUploadVideoFragmentToClientFragment"
+            app:destination="@id/ClientFragment" />
+    </fragment>
+
 </navigation>

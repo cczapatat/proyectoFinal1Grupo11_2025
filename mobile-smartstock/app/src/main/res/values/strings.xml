@@ -26,6 +26,7 @@
     <string name="asociate_select_fragment_label">Asociate Select Fragment</string>
     <string name="create_order_fragment_label">Create order Fragment</string>
     <string name="list_fragment_label">List Fragment</string>
+    <string name="upload_video_fragment_label">Upload Video Fragment</string>
     <string name="record_fragment_label">Record Fragment</string>
     <string name="crear_nueva_cuenta">Crear nueva cuenta</string>
     <string name="ya_registrado">Ya te encuentras registrado? Si es asi, ingresa al siguiente
@@ -92,6 +93,21 @@
     <string name="producto_seleccionado">Producto seleccionado:</string>
     <string name="no_stock_available">No hay stock disponible</string>
     <string name="max_stock_available">Máximo disponible:</string>
+    <!--video tienda-->
+    <string name="cargar_video_titulo">Cargar Video Tienda</string>
+    <string name="cargar_video_subtitulo">Carga un video de la tienda del cliente para poder realizar recomendaciones de ubicación de productos potenciado por IA.</string>
+    <string name="cargar_video_seleccionar_cliente">Seleccionar Cliente</string>
+    <string name="cargar_video_seleccionar_fecha">Seleccionar Fecha</string>
+    <string name="cargar_video_seleccionar_cargar">Cargar</string>
+    <string name="cargar_video_analisis">Analisis de video</string>
+    <string name="cargar_video_procesando">En un momento se recibiran las recomendaciones para ubicar los productos en la tienda.</string>
+    <string name="cargar_video_error_tamano">Se ha superado el tamaño máximo del video 20MB.</string>
+    <string name="cargar_video_error_formato">El video no contiene el formado esperado (MP4).</string>
+    <string name="cargar_video_recomendaciones">Recomendaciones</string>
+    <string name="cargar_video_seleccionado">Video:</string>
+    <string name="cargar_video_seleccionado_ok">Cargado satisfactoriamente!</string>
+    <string name="cargar_video_seleccionado_bad">Fallo la carga. Intenta de nuevo</string>
+
     <!--api client errors-->
     <string name="error_user_id_required">Se requiere el userID</string>
     <string name="error_seller_id_required">Se requiere el Seller ID</string>

@@ -32,10 +32,10 @@
         android:enabled="true"/>
 
     <item
-        android:id="@+id/CargarVideo"
+        android:id="@+id/UploadVideoFragment"
         android:icon="@drawable/baseline_videocam_24"
         android:title="@string/menu_cargar_video"
-        android:enabled="false"/>
+        android:enabled="true"/>
 
     <item
         android:id="@+id/CerrarSesion"

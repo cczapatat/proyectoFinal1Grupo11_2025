@@ -1,6 +1,7 @@
 package com.smartstock.myapplication.network
 
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -12,8 +13,11 @@ import com.smartstock.myapplication.R
 import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.models.Client
 import com.smartstock.myapplication.models.CreatedOrder
+import com.smartstock.myapplication.models.CreatedRecommendation
+import com.smartstock.myapplication.models.CreatedUpload
 import com.smartstock.myapplication.models.Order
 import com.smartstock.myapplication.models.Product
+import com.smartstock.myapplication.models.Recommendation
 import com.smartstock.myapplication.models.Stock
 import com.smartstock.myapplication.models.User
 import com.smartstock.myapplication.models.UserToken
@@ -28,22 +32,24 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-class NetworkServiceAdapter constructor(context: Context){
+open class NetworkServiceAdapter constructor(context: Context){
 
     companion object {
         const val INTERNAL_TOKEN = "internal_token"
         const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
         const val BASE_URL_CLIENTS = "http://130.211.32.9/"
         const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
-        //const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
         const val BASE_URL_ORDER = "http://130.211.32.9/"
-        //const val BASE_URL_ORDER = "http://130.211.32.9/"
+        const val BASE_URL_VIDEO = "http://130.211.32.9/"
+        const val BASE_URL_DOCUMENT_MANAGER = "http://130.211.32.9/document-manager/"
         const val LOGIN_PATH = "user_sessions/login"
         const val CREATE_CLIENT_PATH = "user_sessions/create"
         const val GET_PRODUCT_PATH = "stocks-api/stocks/all"
         const val CREATE_ORDER_PATH = "orders/create"
         const val VERIFY_PATH = "user_sessions/auth"
         const val GET_CLIENTS_SELLER_PATH = "user_sessions/clients/seller/"
+        const val VIDEO_CREATE = "video/create"
+        const val DOCUMENT_UPLOAD = "document/create"
         const val UNKNOWN = "unknown"
         const val COVER_UNKNOWN =
             "https://www.alleganyco.gov/wp-content/uploads/unknown-person-icon-Image-from.png"
@@ -154,6 +160,48 @@ class NetworkServiceAdapter constructor(context: Context){
                         sellerId = response.optString("seller_id"),
                     )
                     cont.resume(orderCreated)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    cont.resumeWithException(e)
+                }
+            }) { error ->
+                val networkResponse = error.networkResponse
+                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                showToast(errorMessage, context)
+                cont.resumeWithException(error)
+            }
+        )
+    }
+
+    suspend fun addRecomendation(recomendation: Recommendation, context: Context, token: String?) = suspendCoroutine { cont ->
+
+        val jsonPayload = JSONObject()
+        jsonPayload.put("document_id", recomendation.document_id)
+            .put("file_path", recomendation.file_path)
+            .put("store_id", recomendation.store_id)
+            .put("tags", recomendation.tags)
+            .put("enabled", recomendation.enabled)
+            .put("update_date", recomendation.update_date)
+            .put("creation_date", recomendation.creation_date)
+
+        requestQueue.add(
+            postRequestWithToken(BASE_URL_VIDEO,
+                VIDEO_CREATE,jsonPayload,context, token, { response ->
+                try{
+                    val videoCreated = CreatedRecommendation(
+                        mensaje = response.optString("mensaje"),
+                        resultado = Recommendation(
+                            id = response.optString("id"),
+                            document_id = response.optString("document_id"),
+                            file_path = response.optString("file_path"),
+                            tags = response.optString("file_path"),
+                            store_id = null,
+                            enabled = response.optBoolean("enabled"),
+                            update_date = response.optString("update_date"),
+                            creation_date = response.optString("creation_date"),
+                        )
+                    )
+                    cont.resume(videoCreated)
                 } catch (e: Exception) {
                     //showToast(context.getString(R.string.error_database_integrity), context)
                     cont.resumeWithException(e)
@@ -322,6 +370,61 @@ class NetworkServiceAdapter constructor(context: Context){
                 }
             }
         }
+    }
+
+    suspend fun uploadVideoFile(
+        context: Context,
+        fileUri: Uri,
+        token: String?
+    ): CreatedUpload = suspendCoroutine { cont ->
+
+        val contentResolver = context.contentResolver
+        val inputStream = contentResolver.openInputStream(fileUri)
+        val fileBytes = inputStream?.readBytes()
+
+        if (fileBytes == null) {
+            cont.resumeWithException(Exception("Cannot read selected file"))
+            return@suspendCoroutine
+        }
+
+        val request = object : VolleyMultipartRequest(
+            Method.POST,
+            BASE_URL_DOCUMENT_MANAGER+ DOCUMENT_UPLOAD,
+            { response ->
+                try {
+                    val jsonResponse = JSONObject(String(response.data))
+                    val createdUpload = CreatedUpload(
+                        id = jsonResponse.getString("id"),
+                        file_name = jsonResponse.getString("file_name"),
+                        path_source = jsonResponse.getString("path_source"),
+                        user_id = jsonResponse.getString("user_id"),
+                        created_at = jsonResponse.getString("created_at"),
+                        updated_at = jsonResponse.getString("updated_at")
+                    )
+                    cont.resume(createdUpload)
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            },
+            { error ->
+                cont.resumeWithException(error)
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                headers["x-token"] = INTERNAL_TOKEN
+                return headers
+            }
+
+            override fun getByteData(): Map<String, DataPart> {
+                val params = HashMap<String, DataPart>()
+                params["file"] = DataPart("video.csv", fileBytes, "video/mp4")
+                return params
+            }
+        }
+
+        requestQueue.add(request)
     }
 
     private fun postRequestWithToken(

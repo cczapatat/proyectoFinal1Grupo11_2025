@@ -26,6 +26,7 @@
     <string name="asociate_select_fragment_label">Asociate Select Fragment</string>
     <string name="create_order_fragment_label">Create order Fragment</string>
     <string name="list_fragment_label">List Fragment</string>
+    <string name="upload_video_fragment_label">Upload Video Fragment</string>
     <string name="record_fragment_label">Record Fragment</string>
     <string name="crear_nueva_cuenta">Create new account</string>
     <string name="ya_registrado">Are you registered? If yes, signing by accessing to this link </string>
@@ -109,6 +110,20 @@
     <string name="error_email_format">EMail Format Error</string>
     <string name="error_phone_format">Phone Format Error</string>
     <string name="error_database_integrity">Server Error</string>
+    <!--video tienda-->
+    <string name="cargar_video_titulo">Load Store video</string>
+    <string name="cargar_video_subtitulo">Upload a video of the client’s store to make AI-powered product placement recommendations.</string>
+    <string name="cargar_video_seleccionar_cliente">Select client</string>
+    <string name="cargar_video_seleccionar_fecha">Select Date</string>
+    <string name="cargar_video_seleccionar_cargar">Load</string>
+    <string name="cargar_video_analisis">Video Analysis</string>
+    <string name="cargar_video_procesando">Recommendations for placing products in the store will be received shortly.</string>
+    <string name="cargar_video_error_tamano">Maximum video size 20MB has been exceeded.</string>
+    <string name="cargar_video_error_formato">Video contain a format different than supported MP4.</string>
+    <string name="cargar_video_recomendaciones">Recomendations</string>
+    <string name="cargar_video_seleccionado">Video:</string>
+    <string name="cargar_video_seleccionado_ok">Upload sucessful!</string>
+    <string name="cargar_video_seleccionado_bad">Upload failed. Please try again.</string>
 
     <!--Client Zones-->
     <string name="client_type_supermarket">Supermarket</string>
