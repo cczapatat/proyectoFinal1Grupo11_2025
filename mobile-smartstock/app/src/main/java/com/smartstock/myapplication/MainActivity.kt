@@ -97,16 +97,13 @@ class MainActivity : AppCompatActivity() {
                 popup.menu.findItem(R.id.ListarClientes).isVisible = true
                 popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
                 popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
-                //popup.menu.findItem(R.id.CreateOrderFragment).isEnabled = false
-                popup.menu.findItem(R.id.CargarVideo).isVisible = true
-
+                popup.menu.findItem(R.id.UploadVideoFragment).isVisible = true
             }
 
             "CLIENT" -> {
                 popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
                 popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
-                popup.menu.findItem(R.id.CargarVideo).isVisible = true
-
+                popup.menu.findItem(R.id.UploadVideoFragment).isVisible = true
             }
             // Filter menu based on user type
         }
@@ -119,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.ListarClientes -> navController.navigate(R.id.ListarClientes)
                 R.id.ConsultaProductos -> navController.navigate(R.id.ConsultaProductos)
                 R.id.CreateOrderFragment -> navController.navigate(R.id.CreateOrderFragment)
-                R.id.CargarVideo -> navController.navigate(R.id.CargarVideo)
+                R.id.UploadVideoFragment -> navController.navigate(R.id.UploadVideoFragment)
                 R.id.CerrarSesion -> closeSesion()
             }
             true
