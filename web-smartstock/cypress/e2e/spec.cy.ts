@@ -1,5 +1,5 @@
 describe('Test Base', () => {
-  it('visits Login', () => {
+  it('visit Login', () => {
     cy.visit('/user-sessions/login')
     cy.url().should('include', '/login')
   })
