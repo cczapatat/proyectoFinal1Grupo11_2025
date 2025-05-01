@@ -5,7 +5,7 @@ import { ProductService } from 'src/app/services/product.service';
 import { StocksService } from 'src/app/services/stocks.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 // Dummy responses based on DTO structures.
@@ -347,4 +347,120 @@ describe('StoreAssignProductComponent', () => {
     expect(component.products.every(p => !p.selected && p.quantity === 0 && p.stock_id === 'stock1')).toBeTrue();
     expect(toastrSpy.success).toHaveBeenCalledWith('STORE.ASSIGN_SUCCESS');
   }));
+
+   // Helpers to reach private methods
+   const transformStoreName = (comp: StoreAssignProductComponent, name: string) =>
+    (comp as any).transformStoreName(name);
+  const transformProductName = (comp: StoreAssignProductComponent, name: string) =>
+    (comp as any).transformProductName(name);
+
+  it('should lowercase, underscore and append .png in transformStoreName/transformProductName', () => {
+    expect(transformStoreName(component, 'My Cool Store')).toBe('my_cool_store.png');
+    expect(transformStoreName(component, 'Foo–Bar!')).toBe('foo–bar!.png');
+    expect(transformProductName(component, 'Choco Late')).toBe('choco_late.png');
+  });
+
+  it('should handle error path in loadStores and show toastr.error', fakeAsync(() => {
+    storeServiceSpy.getPaginatedStores.and.returnValue(throwError(() => new Error('fail')));
+    component.ngOnInit();
+    tick();
+    expect(toastrSpy.error).toHaveBeenCalledWith('STORE.LOAD_ERROR');
+  }));
+
+  it('should handle error path in loadProducts and show toastr.error', fakeAsync(() => {
+    productServiceSpy.getProductsPaginated.and.returnValue(throwError(() => new Error('oops')));
+    component.ngOnInit();
+    tick();
+    expect(toastrSpy.error).toHaveBeenCalledWith('PRODUCT.LOAD_ERROR');
+  }));
+
+  it('should toggle store sort order and reload', () => {
+    spyOn(component, 'loadStores');
+    component.storeSortOrder = 'asc';
+    component.toggleStoreSortOrder();
+    expect(component.storeSortOrder).toBe('desc');
+    expect(component.loadStores).toHaveBeenCalled();
+    component.toggleStoreSortOrder();
+    expect(component.storeSortOrder).toBe('asc');
+  });
+
+  it('should toggle product sort order and reload', () => {
+    spyOn(component, 'loadProducts');
+    component.productSortOrder = 'asc';
+    component.toggleProductSortOrder();
+    expect(component.productSortOrder).toBe('desc');
+    expect(component.loadProducts).toHaveBeenCalled();
+  });
+
+  it('should deselect store when same store clicked twice', fakeAsync(() => {
+    // first selection
+    stocksServiceSpy.getStocksByStore.and.returnValue(of(dummyAssignedStocksResponse));
+    component.onSelectStore(dummyStoresResponse.data[0] as any);
+    tick();
+    expect(component.selectedStore).not.toBeNull();
+
+    // second (same) selection -> should clear
+    component.onSelectStore(dummyStoresResponse.data[0] as any);
+    expect(component.selectedStore).toBeNull();
+    expect(component.products.every(p => p.selected === false)).toBeTrue();
+  }));
+
+  it('should change store page in range and call loadStores', () => {
+    spyOn(component, 'loadStores');
+    component.storePage = 2;
+    component.totalStorePages = 5;
+    component.changeStorePage(1);
+    expect(component.loadStores).toHaveBeenCalled();
+    component.changeStorePage(-1);
+    expect(component.loadStores).toHaveBeenCalledTimes(2);
+  });
+
+  it('should not change store page out of range', () => {
+    spyOn(component, 'loadStores');
+    component.storePage = 1;
+    component.totalStorePages = 3;
+    component.changeStorePage(-1);
+    expect(component.loadStores).not.toHaveBeenCalled();
+  });
+
+  it('should get correct pagination pages array', () => {
+    expect((component as any).getPaginationStorePages(2,4)).toEqual([1,2,3,4]);
+    expect((component as any).getPaginationProductPages(1,3)).toEqual([1,2,3]);
+  });
+
+  it('should warn and reset products when changeProductPage called without selectedStore', () => {
+    component.selectedStore = null;
+    spyOn(component, 'resetProductSelections');
+    component.changeProductPage(1);
+    expect(toastrSpy.warning).toHaveBeenCalledWith('STORE.PLEASE_SELECT_STORE');
+    expect(component.resetProductSelections).toHaveBeenCalled();
+  });
+
+  it('should changeProductPage in range with selectedStore', fakeAsync(() => {
+    component.selectedStore = dummyStoresResponse.data[0] as any;
+    component.productPage = 1;
+    component.totalProductPages = 2;
+    stocksServiceSpy.getStocksByStore.and.returnValue(of(dummyAssignedStocksResponse));
+    productServiceSpy.getProductsPaginated.and.returnValue(of(dummyProductsResponse));
+    spyOn(component, 'loadAssignedStocks').and.callThrough();
+
+    component.changeProductPage(1);
+    tick();
+    expect(productServiceSpy.getProductsPaginated).toHaveBeenCalled();
+    expect(component.loadAssignedStocks).toHaveBeenCalled();
+  }));
+
+
+  it('should handle saveAssignments error path', fakeAsync(() => {
+    component.selectedStore = dummyStoresResponse.data[0] as any;
+    component.products = [
+      { ...dummyProductsResponse.data[0], selected: true, quantity: 2, stock_id: 's1', local_image: '' } as any
+    ];
+    component.hasChanges = true;
+    stocksServiceSpy.assignStockToStore.and.returnValue(throwError(() => new Error('err')));
+    component.saveAssignments();
+    tick();
+    expect(toastrSpy.error).toHaveBeenCalledWith('STORE.ASSIGN_ERROR');
+  }));
 });
+

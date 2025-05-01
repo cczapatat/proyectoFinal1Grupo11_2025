@@ -22,7 +22,7 @@ interface ExtendedStore extends StoreDto {
 @Component({
   selector: 'app-store-assign-product',
   templateUrl: './store-assign-product.component.html',
-  styleUrls: ['./store-assign-product.component.css']
+  styleUrls: ['./store-assign-product.component.css'],
 })
 export class StoreAssignProductComponent implements OnInit {
   // Tiendas extendidas y productos cargados a través de llamadas a servicios.
@@ -30,7 +30,9 @@ export class StoreAssignProductComponent implements OnInit {
   products: ProductExtended[] = [];
 
   // Diccionario para persistir las selecciones de productos entre paginaciones.
-  productSelections: { [id: string]: { selected: boolean, quantity: number, stock_id : string } } = {};
+  productSelections: {
+    [id: string]: { selected: boolean; quantity: number; stock_id: string };
+  } = {};
 
   // Tienda actualmente seleccionada.
   selectedStore: ExtendedStore | null = null;
@@ -86,18 +88,22 @@ export class StoreAssignProductComponent implements OnInit {
    * Cada tienda se extiende con una propiedad "image".
    */
   loadStores(page: number): void {
-    this.storeService.getPaginatedStores(page, 10, this.storeSortOrder)
-      .subscribe((response) => {
-        this.stores = response.data.map(store => ({
-          ...store,
-          image: this.transformStoreName(store.name)
-        }));
-        this.storePage = response.page;
-        this.totalStorePages = response.total_pages;
-      }, error => {
-        console.error('Error al cargar tiendas:', error);
-        this.toastr.error(this.translate.instant('STORE.LOAD_ERROR'));
-      });
+    this.storeService
+      .getPaginatedStores(page, 10, this.storeSortOrder)
+      .subscribe(
+        (response) => {
+          this.stores = response.data.map((store) => ({
+            ...store,
+            image: this.transformStoreName(store.name),
+          }));
+          this.storePage = response.page;
+          this.totalStorePages = response.total_pages;
+        },
+        (error) => {
+          console.error('Error al cargar tiendas:', error);
+          this.toastr.error(this.translate.instant('STORE.LOAD_ERROR'));
+        }
+      );
   }
 
   /**
@@ -105,24 +111,31 @@ export class StoreAssignProductComponent implements OnInit {
    * Cada producto se extiende con una propiedad "local_image" y se fusiona con selecciones persistidas.
    */
   loadProducts(page: number): void {
-    this.productService.getProductsPaginated(page, 10, this.productSortOrder)
-      .subscribe((response) => {
-        const newProducts: ProductExtended[] = response.data.map(p => {
-          const selection = this.productSelections[p.id] || { selected: false, quantity: 0 };
-          return {
-            ...p,
-            selected: selection.selected,
-            quantity: selection.quantity,
-            local_image: this.transformProductName(p.name)
-          };
-        });
-        this.products = newProducts;
-        this.productPage = response.page;
-        this.totalProductPages = response.total_pages;
-      }, error => {
-        console.error('Error al cargar productos:', error);
-        this.toastr.error(this.translate.instant('PRODUCT.LOAD_ERROR'));
-      });
+    this.productService
+      .getProductsPaginated(page, 10, this.productSortOrder)
+      .subscribe(
+        (response) => {
+          const newProducts: ProductExtended[] = response.data.map((p) => {
+            const selection = this.productSelections[p.id] || {
+              selected: false,
+              quantity: 0,
+            };
+            return {
+              ...p,
+              selected: selection.selected,
+              quantity: selection.quantity,
+              local_image: this.transformProductName(p.name),
+            };
+          });
+          this.products = newProducts;
+          this.productPage = response.page;
+          this.totalProductPages = response.total_pages;
+        },
+        (error) => {
+          console.error('Error al cargar productos:', error);
+          this.toastr.error(this.translate.instant('PRODUCT.LOAD_ERROR'));
+        }
+      );
   }
 
   // Alterna el orden de clasificación de las tiendas.
@@ -148,40 +161,81 @@ export class StoreAssignProductComponent implements OnInit {
     } else {
       this.selectedStore = store;
       this.resetProductSelections();
-      this.stocksService.getStocksByStore(store.id)
-        .subscribe(response => {
-          const assignedStocks = response.stocks;
-          this.products.forEach(product => {
-            const assignment = assignedStocks.find((s: any) => s.product_id === product.id);
-            if (assignment) {
-              product.selected = true;
-              product.quantity = assignment.assigned_stock;
-              
-              this.productSelections[product.id] = { selected: true, quantity: assignment.assigned_stock, stock_id: assignment.id };
-              console.log(this.productSelections);
-            } else {
-              product.selected = false;
-              product.quantity = 0;
-              this.productSelections[product.id] = { selected: false, quantity: 0, stock_id: ""  };
-            }
-          });
-          this.hasChanges = false;
-        }, error => {
-          console.error('Error al recuperar stocks asignados:', error);
-          this.toastr.error(this.translate.instant('STORE.STOCKS_LOAD_ERROR'));
-        });
+      this.loadAssignedStocks(store);
     }
+
+    this.productPage = 1;
+    this.loadProducts(this.productPage);
+    
+  }
+
+  /**
+   * Carga los stocks asignados a una tienda seleccionada.
+   * Asigna los stocks a los productos correspondientes.
+   * Actualiza el estado de la UI solo después de completar la operación.
+   */
+  loadAssignedStocks(store: ExtendedStore): void {
+
+    this.stocksService.getStocksByStore(store.id).subscribe(
+      (response) => {
+        const assignedStocks = response.stocks;
+        const updatedProducts = this.products.map((product) => {
+          const assignment = assignedStocks.find(
+            (s: any) => s.product_id === product.id
+          );
+          if (assignment) {
+            return {
+              ...product,
+              selected: true,
+              quantity: assignment.assigned_stock,
+              local_image: product.local_image,
+              stock_id: assignment.id,
+            };
+          } else {
+            return {
+              ...product,
+              selected: false,
+              quantity: 0,
+              local_image: product.local_image,
+              stock_id: '',
+            };
+          }
+        });
+
+        this.products = updatedProducts;
+        this.productSelections = updatedProducts.reduce((acc, product) => {
+          acc[product.id] = {
+            selected: product.selected || false,
+            quantity: product.quantity || 0,
+            stock_id: product.stock_id || '',
+          };
+          return acc;
+        }, {} as { [id: string]: { selected: boolean; quantity: number; stock_id: string } });
+
+        this.hasChanges = false;
+      },
+      (error) => {
+        console.error('Error al recuperar stocks asignados:', error);
+        this.toastr.error(this.translate.instant('STORE.STOCKS_LOAD_ERROR'));
+      }
+    );
   }
 
   /**
    * Restablece las selecciones de productos y limpia el diccionario persistente.
    */
   resetProductSelections(): void {
-    this.products.forEach(product => {
+
+    this.products.forEach((product) => {
       product.selected = false;
       product.quantity = 0;
-      this.productSelections[product.id] = { selected: false, quantity: 0, stock_id: "" };
     });
+
+    for (const key in this.productSelections) {
+      this.productSelections[key].selected = false;
+      this.productSelections[key].quantity = 0;
+      this.productSelections[key].stock_id = '';
+    } 
     this.hasChanges = false;
   }
 
@@ -193,10 +247,10 @@ export class StoreAssignProductComponent implements OnInit {
     if (!product.selected) {
       product.quantity = 0;
     }
-    this.productSelections[product.id] = { 
-      selected: product.selected || false, 
-      quantity: product.quantity || 0, 
-      stock_id: this.productSelections[product.id]?.stock_id || '' 
+    this.productSelections[product.id] = {
+      selected: product.selected || false,
+      quantity: product.quantity || 0,
+      stock_id: this.productSelections[product.id]?.stock_id || '',
     };
     this.hasChanges = true;
   }
@@ -208,10 +262,10 @@ export class StoreAssignProductComponent implements OnInit {
     if (product.quantity < 0) {
       product.quantity = 0;
     }
-    this.productSelections[product.id] = { 
-      selected: product.selected || false, 
-      quantity: product.quantity || 0, 
-      stock_id: this.productSelections[product.id]?.stock_id || '' 
+    this.productSelections[product.id] = {
+      selected: product.selected || false,
+      quantity: product.quantity || 0,
+      stock_id: this.productSelections[product.id]?.stock_id || '',
     };
     this.hasChanges = true;
   }
@@ -249,13 +303,54 @@ export class StoreAssignProductComponent implements OnInit {
 
   // Cambia la página de productos. Persiste las selecciones antes de cargar nuevos productos.
   changeProductPage(delta: number): void {
-    this.products.forEach(product => {
-      this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0, stock_id: this.productSelections[product.id].stock_id };
+    if (!this.selectedStore) {
+      this.resetProductSelections();
+      this.productPage = 1;
+      this.loadProducts(this.productPage);
+      this.toastr.warning(this.translate.instant('STORE.PLEASE_SELECT_STORE'));
+      return;
+    }
+
+    this.products.forEach((product) => {
+      this.productSelections[product.id] = {
+        selected: product.selected || false,
+        quantity: product.quantity || 0,
+        stock_id: this.productSelections[product.id]?.stock_id || '',
+      };
     });
+
     const newPage = this.productPage + delta;
     if (newPage >= 1 && newPage <= this.totalProductPages) {
       this.productPage = newPage;
-      this.loadProducts(this.productPage);
+
+      this.productService
+        .getProductsPaginated(this.productPage, 10, this.productSortOrder)
+        .subscribe(
+          (response) => {
+            const newProducts: ProductExtended[] = response.data.map((p) => {
+              const selection = this.productSelections[p.id] || {
+                selected: false,
+                quantity: 0,
+              };
+              return {
+                ...p,
+                selected: selection.selected,
+                quantity: selection.quantity,
+                local_image: this.transformProductName(p.name),
+              };
+            });
+            this.products = newProducts;
+            this.productPage = response.page;
+            this.totalProductPages = response.total_pages;
+
+            // Load assigned stocks only after products are loaded
+            this.loadAssignedStocks(this.selectedStore!);
+          },
+          (error) => {
+            console.error('#Error al cargar productos:', error);
+            this.toastr.error(this.translate.instant('PRODUCT.LOAD_ERROR'));
+          }
+        );
     }
   }
 
@@ -265,11 +360,52 @@ export class StoreAssignProductComponent implements OnInit {
   }
 
   onProductPageClick(page: number): void {
-    this.products.forEach(product => {
-      this.productSelections[product.id] = { selected: product.selected || false, quantity: product.quantity || 0, stock_id: this.productSelections[product.id].stock_id };
+    if (!this.selectedStore) {
+      this.resetProductSelections();
+      this.productPage = 1;
+      this.loadProducts(this.productPage);
+      this.toastr.warning(this.translate.instant('STORE.PLEASE_SELECT_STORE'));
+      return;
+    }
+
+    this.products.forEach((product) => {
+      this.productSelections[product.id] = {
+        selected: product.selected || false,
+        quantity: product.quantity || 0,
+        stock_id: this.productSelections[product.id]?.stock_id || '',
+      };
     });
+
     this.productPage = page;
-    this.loadProducts(this.productPage);
+
+    this.productService
+      .getProductsPaginated(this.productPage, 10, this.productSortOrder)
+      .subscribe(
+        (response) => {
+          const newProducts: ProductExtended[] = response.data.map((p) => {
+            const selection = this.productSelections[p.id] || {
+              selected: false,
+              quantity: 0,
+            };
+            return {
+              ...p,
+              selected: selection.selected,
+              quantity: selection.quantity,
+              local_image: this.transformProductName(p.name),
+            };
+          });
+          this.products = newProducts;
+          this.productPage = response.page;
+          this.totalProductPages = response.total_pages;
+
+          // Load assigned stocks only after products are loaded
+          this.loadAssignedStocks(this.selectedStore!);
+        },
+        (error) => {
+          console.error('Error al cargar productos:', error);
+          this.toastr.error(this.translate.instant('PRODUCT.LOAD_ERROR'));
+        }
+      );
   }
 
   /**
@@ -286,27 +422,29 @@ export class StoreAssignProductComponent implements OnInit {
       return;
     }
     const stocks = this.products
-      .filter(product => product.selected)
-      .map(product => ({
-      product_id: product.id,
-      assigned_stock: product.quantity,
-      id: this.productSelections[product.id]?.stock_id || ''
+      .filter((product) => product.selected)
+      .map((product) => ({
+        product_id: product.id,
+        assigned_stock: product.quantity,
+        id: this.productSelections[product.id]?.stock_id || '',
       }));
 
     const dto: AssignedStockDto = {
       store_id: this.selectedStore.id as string,
-      stocks: stocks
+      stocks: stocks,
     };
-    this.stocksService.assignStockToStore(dto)
-      .subscribe(response => {
+    this.stocksService.assignStockToStore(dto).subscribe(
+      (response) => {
         this.hasChanges = false;
         this.toastr.success(this.translate.instant('STORE.ASSIGN_SUCCESS'));
         // Deselecciona todos los elementos.
         this.selectedStore = null;
         this.resetProductSelections();
-      }, error => {
+      },
+      (error) => {
         console.error('Error al guardar asignaciones:', error);
         this.toastr.error(this.translate.instant('STORE.ASSIGN_ERROR'));
-      });
+      }
+    );
   }
 }
