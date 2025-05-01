@@ -287,6 +287,10 @@
     "UPLOAD_FILE_ERROR_TITLE": "Se ha producido un error",
     "UPLOAD_FILE_ERROR_DESCRIPTION": "El archivo no puede ser cargado.",
     "CREATE_PRODUCTS_FILE_UPLOADED": "El archivo {{fileName}} ha sido cargado correctamente.",
-    "CREATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "¡Eso es todo! Te vamos a notificar cuando el archivo esté 100% procesado."
+    "CREATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "¡Eso es todo! Te vamos a notificar cuando el archivo esté 100% procesado.",
+    "CREATE_MANUFACTURERS_TITLE": "Registro Masivo de Fabricantes",
+    "CREATE_MANUFACTURERS_DESCRIPTION": "Selecciona el archivo que deseas subir desde tu computador.",
+    "CREATE_MANUFACTURERS_FILE_UPLOADED": "El archivo {{fileName}} ha sido cargado correctamente.",
+    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "¡Eso es todo! Te vamos a notificar cuando el archivo esté 100% procesado."
   }
 }

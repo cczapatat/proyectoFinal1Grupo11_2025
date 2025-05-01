@@ -1,86 +1,287 @@
 import random
+import os
+import json
+import requests_mock
+
 from faker import Faker
-from src.models.Models import MANUFACTURER_COUNTRY
-from src.main import app
+from manufacture_api.models.Models import MANUFACTURER_COUNTRY
+from unittest.mock import MagicMock, Mock, patch
 
+user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
+data_factory = Faker()
+token = 'internal_token'    
 
-class TestManufacturerBluePrint:
-    def setup_method(self):
-        self.data_factory = Faker()
-        self.token = 'internal_token'
+def _generate_manufacturer_payload(**overrides):
+    payload = {
+        "name": data_factory.name(),
+        "address": data_factory.address(),
+        "phone": '+5730054367' + str(data_factory.random_int(min=1000, max=9999)),
+        "email": data_factory.email(),
+        "country": data_factory.random_element(
+                [country.value for country in MANUFACTURER_COUNTRY]),
+        "tax_conditions": data_factory.word(),
+        "legal_conditions": data_factory.word(),
+        "rating_quality": data_factory.random_int(min=1, max=5),
+    }
+    payload.update(overrides)
+    return payload
 
-    def _generate_manufacturer_payload(self, **overrides):
-        payload = {
-            "name": self.data_factory.name(),
-            "address": self.data_factory.address(),
-            "phone": '+5730054367' + str(self.data_factory.random_int(min=1000, max=9999)),
-            "email": self.data_factory.email(),
-            "country": random.choice(list(MANUFACTURER_COUNTRY)).value,
-            "tax_conditions": self.data_factory.word(),
-            "legal_conditions": self.data_factory.word(),
-            "rating_quality": self.data_factory.random_int(min=1, max=5),
+def _post_create_manufacturer(client, payload, token_request=None):
+    return client.post(
+        '/manufacture-api/manufacturers/create',
+        headers={'x-token': token_request or token},
+        json=payload
+    )
+
+def test_create_manufacturer_fail_unauthorized(client):
+    payload = _generate_manufacturer_payload()
+    response = _post_create_manufacturer(client, payload, data_factory.word())
+
+    assert response.status_code == 401
+
+def test_create_manufacturer_fail_phone_number(client):
+    payload = _generate_manufacturer_payload(phone=data_factory.word())
+    response = _post_create_manufacturer(client, payload)
+
+    assert response.status_code == 500
+
+def test_create_manufacturer_fail_email(client):
+    payload = _generate_manufacturer_payload(email= data_factory.word())
+    response = _post_create_manufacturer(client, payload)
+
+    assert response.status_code == 500
+
+def test_create_manufacturer_fail_rating(client):
+    payload = _generate_manufacturer_payload(rating_quality=-20)
+    response = _post_create_manufacturer(client, payload)
+
+    assert response.status_code == 500
+
+def test_create_manufacturer_fail_country(client):
+    payload = _generate_manufacturer_payload(country=data_factory.word())
+    response = _post_create_manufacturer(client, payload)
+
+    assert response.status_code == 500
+
+def test_create_manufacturer_success(client):
+    payload = _generate_manufacturer_payload()
+    response = _post_create_manufacturer(client, payload)
+
+    assert response.status_code == 201
+    assert response.json['id'] is not None
+    assert response.json['name'] == payload['name']
+
+def test_get_all_manufacturer_success(client):
+
+    response = client.get(
+        '/manufacture-api/manufacturers/all',
+        headers={'x-token': token}
+    )
+    assert response.status_code == 200
+    assert isinstance(response.json, list)
+
+def test_create_massive_manufacturer_without_authorization(client):
+    fake_file_id = data_factory.uuid4()
+    response = client.post(
+        '/manufacture-api/manufacturers/massive/create',
+        data=json.dumps({'file_id': fake_file_id}),
+        headers={
+            'content-type': 'application/json',
+            'x-token': 'internal_token'
         }
-        payload.update(overrides)
-        return payload
+    )
 
-    def _post_create_manufacturer(self, payload, token=None):
-        with app.test_client() as test_client:
-            return test_client.post(
-                '/manufacture-api/manufacturers/create',
-                headers={'x-token': token or self.token},
-                json=payload
-            )
+    assert response.status_code == 401
 
-    def test_create_manufacturer_fail_unauthorized(self):
-        payload = self._generate_manufacturer_payload()
-        response = self._post_create_manufacturer(payload, token=self.data_factory.word())
+def test_create_massive_manufacturer_auth_response_unauthorized(client):
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
 
-        assert response.status_code == 401
+    with requests_mock.Mocker() as m:
+        m.get(
+            f'{user_session_manager_path}/user_sessions/auth',
+            status_code=401
+        )
+
+        response = client.post(
+            '/manufacture-api/manufacturers/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': token,
+                'Authorization': fake_authorization
+            }
+        )
+        
+    assert response.status_code == 401
+
+def test_create_massive_manufacturer_auth_response_internal_error(client):
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        m.get(
+            f'{user_session_manager_path}/user_sessions/auth',
+            status_code=500
+        )
+
+        response = client.post(
+            '/manufacture-api/manufacturers/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': token,
+                'Authorization': fake_authorization
+            }
+        )
+        
+    assert response.status_code == 500
+
+
+def test_create_massive_manufacturer_missing_file_id(client):
+    fake_user_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        m.get(
+            f'{user_session_manager_path}/user_sessions/auth',
+            json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
+            },
+            status_code=200
+        )
+
+        response = client.post(
+            '/manufacture-api/manufacturers/massive/create',
+            data=json.dumps({}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': token,
+                'Authorization': fake_authorization
+            }
+        )
+        
+    assert response.status_code == 400
+    json_response = json.loads(response.data)
+    assert json_response['message'] == 'file_id is required'
+
+@patch('manufacture_api.commands.create_massive_manufacturer.PublisherService.publish_create_command')
+def test_create_massive_manufacturer_suscces_by_seller(mock_pubsub, client):
+    fake_user_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    mock_pubsub.return_value = True
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
+        })
+
+        response = client.post(
+            '/manufacture-api/manufacturers/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': token,
+                'Authorization': fake_authorization
+            }
+        )
     
-    def test_create_manufacturer_fail_bad_token(self):
-        self.token = None
-        payload = self._generate_manufacturer_payload(token=self.token)
-        response = self._post_create_manufacturer(payload)
+    assert response.status_code == 201
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+    mock_pubsub.assert_called_once()
 
-        assert response.status_code == 401
+@patch('manufacture_api.commands.create_massive_manufacturer.PublisherService.publish_create_command')
+def test_create_massive_manufacturer_suscces_by_admin(mock_pubsub, client):
+    fake_user_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
 
-    def test_create_manufacturer_fail_phone_number(self):
-        payload = self._generate_manufacturer_payload(phone=self.data_factory.word())
-        response = self._post_create_manufacturer(payload)
+    mock_pubsub.return_value = True
 
-        assert response.status_code == 500
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'ADMIN'
+        })
 
-    def test_create_manufacturer_fail_email(self):
-        payload = self._generate_manufacturer_payload(email=self.data_factory.word())
-        response = self._post_create_manufacturer(payload)
-
-        assert response.status_code == 500
-
-    def test_create_manufacturer_fail_rating(self):
-        payload = self._generate_manufacturer_payload(rating_quality=-20)
-        response = self._post_create_manufacturer(payload)
-
-        assert response.status_code == 500
-
-    def test_create_manufacturer_fail_country(self):
-        payload = self._generate_manufacturer_payload(country=self.data_factory.word())
-        response = self._post_create_manufacturer(payload)
-
-        assert response.status_code == 500
-
-    def test_create_manufacturer_success(self):
-        payload = self._generate_manufacturer_payload()
-        response = self._post_create_manufacturer(payload)
-
-        assert response.status_code == 201
-        assert response.json['id'] is not None
-        assert response.json['name'] == payload['name']
+        response = client.post(
+            '/manufacture-api/manufacturers/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': token,
+                'Authorization': fake_authorization
+            }
+        )
     
-    def test_get_all_manufacturer_success(self):
-        with app.test_client() as test_client:
-            response = test_client.get(
-                '/manufacture-api/manufacturers/all',
-                headers={'x-token': self.token}
-            )
-            assert response.status_code == 200
-            assert isinstance(response.json, list)
+    assert response.status_code == 201
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+    mock_pubsub.assert_called_once()
+
+def test_create_massive_manufacturer_forbidden_by_other_user_type(client):
+    fake_user_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'OTHER_TYPE_USER'
+        })
+
+        response = client.post(
+            '/manufacture-api/manufacturers/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': token,
+                'Authorization': fake_authorization
+            }
+        )
+    
+    assert response.status_code == 403
+    json_response = json.loads(response.data)
+    assert json_response['message'] == 'Invalid user type'
+
+@patch('manufacture_api.commands.create_massive_manufacturer.PublisherService.publish_create_command')
+def test_create_massive_manufacturer_publish_error(mock_pubsub, client):
+    fake_user_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    mock_pubsub.return_value = False
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
+        })
+
+        response = client.post(
+            '/manufacture-api/manufacturers/massive/create',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': token,
+                'Authorization': fake_authorization
+            }
+        )
+    
+    assert response.status_code == 500
+    json_response = json.loads(response.data)
+    assert json_response['status'] == 'FAILED'

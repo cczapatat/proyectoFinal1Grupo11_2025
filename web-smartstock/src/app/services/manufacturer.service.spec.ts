@@ -5,6 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ManufacturerService } from './manufacturer.service';
 import { Manufacturer } from '../dtos/manufacturer';
 import { environment } from 'src/environments/environment';
+import { BulkTask } from '../dtos/bulk-task';
 
 
 describe('Service: Manufacturer', () => {
@@ -58,5 +59,25 @@ describe('Service: Manufacturer', () => {
     const req = httpMock.expectOne(`${environment.apiManufacturerUrl}/manufacturers/all`);
     expect(req.request.method).toBe('GET');
     req.flush(mockManufacturers); // Simulate a successful response
+  });
+
+  it('should create massive manufacturers', () => {
+    const fileId = faker.string.uuid();
+    const mockBulkTask = new BulkTask(
+          faker.date.past(),
+          faker.string.uuid().toString(),
+          faker.string.uuid().toString(),
+          'QUEUE',
+          faker.date.past()
+    )
+
+    service.createMassiveManufacturers(fileId).subscribe((response) => {
+      expect(response).toEqual(mockBulkTask);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiManufacturerUrl}/manufacturers/massive/create`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ file_id: fileId });
+    req.flush(mockBulkTask);
   });
 });

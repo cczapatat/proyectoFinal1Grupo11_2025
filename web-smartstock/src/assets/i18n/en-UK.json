@@ -276,5 +276,20 @@
     "CREATE_SUCCESS_MESSAGE": "The order has been successfully created",
     "CREATE_ERROR_TITLE": "Error",
     "CREATE_ERROR_MESSAGE": "An error has occurred: the order cannot be created"
+  },
+  "MASSIVES": {
+    "CREATE_PRODUCTS_TITLE": "Mass Product Upload",
+    "CREATE_PRODUCTS_DESCRIPTION": "Choose the file you want to upload from your computer.",
+    "MAX_FILE_SIZE": "Up to 300 MB for CSV files.",
+    "UPLOAD_FILE_SUCCESS_TITLE": "Upload Successful",
+    "UPLOAD_FILE_SUCCESS_DESCRIPTION": "The file has been uploaded successfully.",
+    "UPLOAD_FILE_ERROR_TITLE": "An error has occurred.",
+    "UPLOAD_FILE_ERROR_DESCRIPTION": "The file cannot be uploaded.",
+    "CREATE_PRODUCTS_FILE_UPLOADED": "The file {{fileName}} has been uploaded successfully.",
+    "CREATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "All done! You will be notified once the file has been fully processed.",
+    "CREATE_MANUFACTURERS_TITLE": "Carga Masiva de Fabricantes",
+    "CREATE_MANUFACTURERS_DESCRIPTION": "Choose the file you want to upload from your computer.",
+    "CREATE_MANUFACTURERS_FILE_UPLOADED": "The file {{fileName}} has been uploaded successfully.",
+    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "All done! You will be notified once the file has been fully processed."
   }
 }
