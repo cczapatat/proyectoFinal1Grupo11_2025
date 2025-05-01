@@ -347,7 +347,7 @@ export class StoreAssignProductComponent implements OnInit {
             this.loadAssignedStocks(this.selectedStore!);
           },
           (error) => {
-            console.error('Error al cargar productos:', error);
+            console.error('#Error al cargar productos:', error);
             this.toastr.error(this.translate.instant('PRODUCT.LOAD_ERROR'));
           }
         );
