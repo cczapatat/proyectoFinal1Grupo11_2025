@@ -1798,3 +1798,192 @@ spec:
       targetPort: 3091
       nodePort: 31091
 ---
+
+###################################
+# visit
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visit
+  labels:
+    app: visit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visit
+  template:
+    metadata:
+      labels:
+        app: visit
+    spec:
+      containers:
+        - name: visit
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/visit:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 3020
+          env:
+            - name: "DB_NAME"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_NAME
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_HOST
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PORT
+            - name: "DB_USER"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_USER
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_PASSWORD
+            - name: "DB_TYPE"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: DB_TYPE
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "USER_SESSION_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: USER_SESSION_MANAGER_PATH
+            - name: "SELLERS_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: SELLERS_PATH
+            - name: "CLIENTS_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: CLIENTS_PATH
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: visit-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3020
+    type: HTTP
+    requestPath: /visits/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: visit-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "visit-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: visit
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3020
+      nodePort: 31032
+---
+
+###################################
+# route
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: route
+  labels:
+    app: route
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: route
+  template:
+    metadata:
+      labels:
+        app: route
+    spec:
+      containers:
+        - name: route
+          image: us-central1-docker.pkg.dev/proyectofinalmiso2025/repositorio-proyecto-final1/route:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "150m"
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          ports:
+            - containerPort: 3022
+          env:
+            - name: "INTERNAL_TOKEN"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: INTERNAL_TOKEN
+            - name: "USER_SESSION_MANAGER_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: USER_SESSION_MANAGER_PATH
+            - name: "VISITS_PATH"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: VISITS_PATH
+          imagePullPolicy: Always
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: route-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3022
+    type: HTTP
+    requestPath: /routes/health
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: route-service
+  annotations:
+    cloud.google.com/backend-config: '{"default": "route-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: route
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3022
+      nodePort: 31034
+---

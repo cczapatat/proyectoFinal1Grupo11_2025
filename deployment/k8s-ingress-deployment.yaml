@@ -95,3 +95,10 @@ spec:
                 name: video-manager-api-service
                 port:
                   number: 80
+          - path: /routes
+            pathType: Prefix
+            backend:
+              service:
+                name: route-service
+                port:
+                  number: 80
