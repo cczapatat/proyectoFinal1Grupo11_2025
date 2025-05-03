@@ -350,7 +350,6 @@ def test_create_massive_product_auth_response_internal_error(client):
 
 def test_create_massive_products_missing_file_id(client):
     fake_user_id = data_factory.uuid4()
-    fake_file_id = data_factory.uuid4()
     fake_authorization = data_factory.uuid4()
 
     with requests_mock.Mocker() as m:

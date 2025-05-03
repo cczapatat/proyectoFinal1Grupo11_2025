@@ -51,6 +51,7 @@ class Publisher:
                 topic_path_massive_entity = topic_path_massive_product
             
             future = publisher_massive_entity.publish(topic_path_massive_entity, data_str)
+            print(f"[Massive Entity] Published: {future.result()} to topic {topic_path_massive_entity}")
             entity_batch_repository.create_entity_batch(entity_type, process_id, file_id, user_id, str(future.result()), current_batch, number_of_batches)
 
             current_batch += 1
