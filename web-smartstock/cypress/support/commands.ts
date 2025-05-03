@@ -88,3 +88,10 @@ Cypress.Commands.add('navigateToMassiveProductsCreate', () => {
   cy.get('#nav_massive_products_create').click();
   cy.url().should('include', '/massive/product/create');
 });
+
+Cypress.Commands.add('navigateToMassiveManufacturersCreate', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_massive').click();
+  cy.get('#nav_massive_manufactures').click();
+  cy.url().should('include', '/massive/manufacture');
+});

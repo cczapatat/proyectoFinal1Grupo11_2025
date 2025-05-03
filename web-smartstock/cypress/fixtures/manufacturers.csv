@@ -1,0 +1,4 @@
+﻿name,address,phone,email,country,tax_conditions,legal_conditions,rating_quality
+Manufacturer 1 Hugo,USNS Thomas FPO AE 59058,+57300543674540,hugo@example.org,CHILE,actually,Democrat,2
+Manufacturer 2 Paco,USNS Thomas FPO AE 59058,+57300543674541,paco@example.org,ARGENTINA,actually,Democrat,2
+Manufacturer 3 Luis,USNS Thomas FPO AE 59058,+57300543674542,luis@example.org,COLOMBIA,actually,Democrat,2
