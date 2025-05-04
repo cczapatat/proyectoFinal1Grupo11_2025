@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         when (userType) {
             "SELLER" -> {
                 popup.menu.findItem(R.id.RegisterClientFragment).isVisible = true
-                popup.menu.findItem(R.id.RegistrarVisita).isVisible = true
+                popup.menu.findItem(R.id.RoutesCreateVisitFragment).isVisible = true
                 popup.menu.findItem(R.id.ListarClientes).isVisible = true
                 popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
                 popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.RegisterClientFragment -> navController.navigate(R.id.RegisterClientFragment)
-                R.id.RegistrarVisita -> navController.navigate(R.id.RegistrarVisita)
+                R.id.RoutesCreateVisitFragment -> navController.navigate(R.id.RoutesCreateVisitFragment)
                 R.id.ListarClientes -> navController.navigate(R.id.ListarClientes)
                 R.id.ConsultaProductos -> navController.navigate(R.id.ConsultaProductos)
                 R.id.CreateOrderFragment -> navController.navigate(R.id.CreateOrderFragment)

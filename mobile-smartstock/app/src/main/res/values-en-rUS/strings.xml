@@ -15,7 +15,11 @@
     <string name="cerrar_sesion">Logout</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!-- Route Visit -->
+    <string name="registrar_visita">Register Visit</string>
+    <string name="registrar_visita_descripcion">Describe your visit here</string>
+    <string name="registrar_visita_existoso">Visit was successfully registered</string>
+    <string name="registrar_visita_error">An error ocurred while registering the visit</string>
     <!-- TODO: Smart Stock Resources -->
     <string name="sign_up_fragment_label">SignUp Fragment</string>
     <string name="create_fragment_label">Create Fragment</string>

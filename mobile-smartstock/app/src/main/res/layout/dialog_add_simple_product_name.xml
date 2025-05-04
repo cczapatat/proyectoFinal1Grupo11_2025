@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/add_simple_product_name"
+    android:paddingTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="600dp"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/centered_background_one"
+    android:clipToOutline="true"
+    android:theme="@style/Theme.MyApplication"
+    tools:context="com.smartstock.myapplication.ui.RoutesCreateVisitFragment">
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/add_producto_section_1"
+        android:layout_width="411dp"
+        android:layout_height="50dp"
+        android:clipToOutline="true"
+        >
+        <TextView
+            android:id="@+id/add_product_label"
+            android:layout_centerVertical="true"
+            android:layout_width="420dp"
+            android:layout_height="50dp"
+            android:text="@string/cuadro_agregar_producto"
+            android:textAppearance="@style/crear_nueva"
+            android:lineSpacingExtra="2sp"
+            android:gravity="center_horizontal|center_vertical"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/add_producto_section_2"
+        android:layout_width="411dp"
+        android:layout_height="300dp"
+        android:clipToOutline="true"
+        android:paddingTop="20dp"
+        android:layout_below="@id/add_producto_section_1"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/simpleProductRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </RelativeLayout>
+
+</RelativeLayout>
+
+
+
+

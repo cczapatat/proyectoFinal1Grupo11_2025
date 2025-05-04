@@ -14,10 +14,14 @@ import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.models.Client
 import com.smartstock.myapplication.models.CreatedOrder
 import com.smartstock.myapplication.models.CreatedRecommendation
+import com.smartstock.myapplication.models.CreatedRouteVisit
 import com.smartstock.myapplication.models.CreatedUpload
 import com.smartstock.myapplication.models.Order
 import com.smartstock.myapplication.models.Product
+import com.smartstock.myapplication.models.ProductVisit
 import com.smartstock.myapplication.models.Recommendation
+import com.smartstock.myapplication.models.RouteVisit
+import com.smartstock.myapplication.models.SimpleProductName
 import com.smartstock.myapplication.models.Stock
 import com.smartstock.myapplication.models.User
 import com.smartstock.myapplication.models.UserToken
@@ -38,18 +42,22 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val INTERNAL_TOKEN = "internal_token"
         const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
         const val BASE_URL_CLIENTS = "http://130.211.32.9/"
+        const val BASE_URL_PRODUCTS_STOCK = "http://130.211.32.9/"
         const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
+        const val BASE_ROUTES = "http://130.211.32.9/"
         const val BASE_URL_ORDER = "http://130.211.32.9/"
         const val BASE_URL_VIDEO = "http://130.211.32.9/"
         const val BASE_URL_DOCUMENT_MANAGER = "http://130.211.32.9/document-manager/"
         const val LOGIN_PATH = "user_sessions/login"
         const val CREATE_CLIENT_PATH = "user_sessions/create"
-        const val GET_PRODUCT_PATH = "stocks-api/stocks/all"
+        const val GET_PRODUCT_STOCKS = "stocks-api/stocks/all"
+        const val GET_ALL_PRODUCTS = "/products/paginated_full"
         const val CREATE_ORDER_PATH = "orders/create"
         const val VERIFY_PATH = "user_sessions/auth"
         const val GET_CLIENTS_SELLER_PATH = "user_sessions/clients/seller/"
         const val VIDEO_CREATE = "video/create"
         const val DOCUMENT_UPLOAD = "document/create"
+        const val ROUTE_CREATE_VISIT = "routes/visits/create"
         const val UNKNOWN = "unknown"
         const val COVER_UNKNOWN =
             "https://www.alleganyco.gov/wp-content/uploads/unknown-person-icon-Image-from.png"
@@ -173,6 +181,60 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
+    suspend fun addRouteVisit(routeVisit: RouteVisit, context: Context, token: String?) = suspendCoroutine { cont ->
+
+        val jsonPayload = JSONObject()
+        jsonPayload.put("client_id", routeVisit.client_id)
+            .put("visit_date", routeVisit.visit_date)
+            .put("description", routeVisit.description)
+            .put("products", JSONArray(routeVisit.products.map {
+                JSONObject().apply {
+                    put("product_id", it.id)
+                }
+            }))
+
+        println("JSON Payload: $jsonPayload")
+
+        requestQueue.add(
+            postRequestWithToken(BASE_ROUTES,
+                ROUTE_CREATE_VISIT,jsonPayload,context, token, { response ->
+                try{
+
+                    val routeVisitCreated = CreatedRouteVisit(
+                        clientId = UUID.fromString(response.optString("client_id")),
+                        createdAt = response.optString("created_at"),
+                        description = response.optString("description"),
+                        id = UUID.fromString(response.optString("id")),
+                        products = response.getJSONArray("products").let { jsonArray ->
+                            List(jsonArray.length()) { index ->
+                                val productJson = jsonArray.getJSONObject(index)
+                                ProductVisit(
+                                    id = UUID.fromString(productJson.optString("id")),
+                                    productId = UUID.fromString(productJson.optString("product_id")),
+                                    visitId = UUID.fromString(productJson.optString("visit_id")),
+                                    createdAt = productJson.optString("created_at"),
+                                    updatedAt = productJson.optString("updated_at")
+                                )
+                            }
+                        },
+                        updatedAt = response.optString("updated_at"),
+                        userId = UUID.fromString(response.optString("user_id")),
+                        visitDate = response.optString("visit_date"),
+                        sellerId = response.optString("seller_id"),
+                    )
+                    cont.resume(routeVisitCreated)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    cont.resumeWithException(e)
+                }
+            }) { error ->
+                val networkResponse = error.networkResponse
+                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                showToast(errorMessage, context)
+                cont.resumeWithException(error)
+            }
+        )
+    }
     suspend fun addRecomendation(recomendation: Recommendation, context: Context, token: String?) = suspendCoroutine { cont ->
 
         val jsonPayload = JSONObject()
@@ -215,10 +277,10 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
-    suspend fun fetchPaginatedProducts(page: Int, perPage: Int): List<Stock> = suspendCoroutine { cont ->
+    suspend fun fetchPaginatedProductsStocks(page: Int, perPage: Int): List<Stock> = suspendCoroutine { cont ->
         //val url = "$BASE_URL_PRODUCTS$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
-        val url = "$BASE_URL_PRODUCTS"
-        val path = "$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
+        val url = "$BASE_URL_PRODUCTS_STOCK"
+        val path = "$GET_PRODUCT_STOCKS?page=$page&per_page=$perPage&sort_order=asc"
 
         requestQueue.add(
             getRequest(url, path, { response ->
@@ -263,6 +325,38 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
+
+    suspend fun fetchPaginatedSimpleProductName(page: Int, perPage: Int) : List<SimpleProductName> = suspendCoroutine { cont ->
+
+        val url = "$BASE_URL_PRODUCTS$GET_ALL_PRODUCTS"
+        val path = "?page=$page&per_page=$perPage&sort_order=asc"
+
+        requestQueue.add(
+            getRequest(url, path, { response ->
+                try{
+                    val jsonArray = response.getJSONArray("data")
+                    val products = mutableListOf<SimpleProductName>()
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        products.add(
+                            SimpleProductName(
+                                id = item.getString("id"),
+                                name = item.getString("name")
+                            )
+                        )
+                    }
+                    cont.resume(products)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    print(e.message)
+                    cont.resumeWithException(e)
+                }
+
+            }, {
+                cont.resumeWithException(it)
+            })
+        )
+    }
     suspend fun fetchPaginatedClientsBySellerId(
         sellerId: String,
         page: Int,

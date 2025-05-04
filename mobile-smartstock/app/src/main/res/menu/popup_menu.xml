@@ -8,10 +8,10 @@
         android:enabled="true"/>
 
     <item
-        android:id="@+id/RegistrarVisita"
+        android:id="@+id/RoutesCreateVisitFragment"
         android:icon="@drawable/baseline_edit_note_24"
         android:title="@string/menu_registrar_visita"
-        android:enabled="false"/>
+        android:enabled="true"/>
 
     <item
         android:id="@+id/ListarClientes"
