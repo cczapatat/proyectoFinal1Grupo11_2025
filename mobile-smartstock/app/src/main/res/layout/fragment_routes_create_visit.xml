@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/routes_create_visit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/centered_background_one"
+    android:clipToOutline="true"
+    android:paddingTop="10dp"
+    android:theme="@style/Theme.MyApplication"
+    tools:context="com.smartstock.myapplication.ui.RoutesCreateVisitFragment">
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/section_create_route_visit_1"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true">
+
+        <TextView
+            android:id="@+id/crear_nueva"
+            android:layout_width="420dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal|center_vertical"
+
+            android:lineSpacingExtra="2sp"
+            android:text="@string/registrar_visita"
+            android:textAppearance="@style/crear_nueva" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/section_create_route_visit_2"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/section_create_route_visit_1"
+        android:clipToOutline="true">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField4_5"
+            style="@style/CustomExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/seleccionar_cliente"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:boxBackgroundColor="@color/white"
+            app:endIconTint="@color/schemesSecondary"
+            app:hintTextColor="@color/black">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextViewCreate1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:popupBackground="@drawable/custom_popup_background"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textAppearanceBodyLarge" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/section_create_route_visit_3"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/section_create_route_visit_2"
+        android:clipToOutline="true">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/descriptionLongTextFieldLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:hint="@string/registrar_visita_descripcion"
+            app:boxBackgroundColor="@color/white"
+            app:hintTextColor="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/longDescriptionField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:maxLines="8"
+                android:minLines="3"
+                android:textColor="@color/black"
+                android:textSize="@dimen/textAppearanceBodyLarge" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/section_create_route_visit_4"
+        android:layout_width="411dp"
+        android:layout_height="55dp"
+        android:layout_below="@+id/section_create_route_visit_3"
+        android:clipToOutline="true">
+
+        <Button
+            android:id="@+id/buttonAddProduct"
+            android:layout_width="203dp"
+            android:layout_height="42dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/rounded_button_small"
+            android:backgroundTint="@color/schemesOrange600"
+            android:text="@string/add_product"
+            android:textColor="@color/colorBackground"
+            android:textSize="@dimen/textAppearanceTitleSmall" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/section_create_route_visit_5"
+        android:layout_width="411dp"
+        android:layout_height="200dp"
+        android:layout_below="@+id/section_create_route_visit_4"
+        android:clipToOutline="true">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/simpleProductsRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/simple_product_name_item" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/section_create_route_visit_6"
+        android:layout_width="411dp"
+        android:layout_height="150dp"
+        android:layout_below="@+id/section_create_route_visit_5"
+        android:clipToOutline="true">
+
+        <Button
+            android:id="@+id/buttonCancelCreate"
+            android:layout_width="203dp"
+            android:layout_height="62dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_toLeftOf="@+id/center_divider_action"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/schemesOrange600"
+            android:text="@string/cancelar"
+            android:textColor="@color/colorBackground"
+            android:textSize="@dimen/textAppearanceHeadlineSmall" />
+
+        <Button
+            android:id="@+id/buttonAcceptCreate"
+            android:layout_width="203dp"
+            android:layout_height="62dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="2dp"
+            android:layout_toRightOf="@+id/center_divider_action"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/schemesOrange600"
+            android:text="@string/crear"
+            android:textColor="@color/colorBackground"
+            android:textSize="@dimen/textAppearanceHeadlineSmall" />
+
+        <View
+            android:id="@+id/center_divider_action"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</RelativeLayout>
+

@@ -194,7 +194,6 @@
             android:gravity="left|center_vertical"
             />
     </RelativeLayout>
-
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
         android:id="@+id/section_create_order_8"

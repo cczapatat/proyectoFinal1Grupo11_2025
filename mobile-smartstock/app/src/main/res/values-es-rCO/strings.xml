@@ -15,7 +15,11 @@
     <string name="cerrar_sesion">Cerrar sesion</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!-- Route Visit -->
+    <string name="registrar_visita">Registrar Visita</string>
+    <string name="registrar_visita_descripcion">Describa su visita</string>
+    <string name="registrar_visita_existoso">Visita registrada con exito</string>
+    <string name="registrar_visita_error">Error al registrar visita</string>
     <!-- TODO: Smart Stock Resources -->
     <string name="sign_up_fragment_label">SignUp Fragment</string>
     <string name="create_fragment_label">Create Fragment</string>

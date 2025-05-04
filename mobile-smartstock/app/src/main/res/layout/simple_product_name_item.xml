@@ -5,21 +5,21 @@
 
     <data>
         <variable
-            name="client"
-            type="com.smartstock.myapplication.models.Client" />
+            name="product"
+            type="com.smartstock.myapplication.models.SimpleProductName" />
         <variable
-            name="onSelectClick"
-            type="kotlin.jvm.functions.Function1&lt;com.smartstock.myapplication.models.Client, kotlin.Unit&gt;" />
+            name="onDeleteClick"
+            type="kotlin.jvm.functions.Function1&lt;com.smartstock.myapplication.models.SimpleProductName, kotlin.Unit&gt;" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardViewClient"
+            android:id="@+id/cardViewArtist"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:background="@color/schemesPrimaryContainerCoffe"
             android:backgroundTint="@color/schemesPrimaryContainerCoffe"
             app:cardCornerRadius="3dp"
@@ -33,54 +33,25 @@
             app:strokeWidth="1dp">
 
             <RelativeLayout
-                android:id="@+id/fragment_client_item"
+                android:id="@+id/fragment_reminder_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/clientListName"
+                    android:id="@+id/productListName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="false"
                     android:paddingStart="8dp"
-                    android:paddingTop="13dp"
+                    android:paddingTop="12dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="3dp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/textAppearanceHeadlineSmall"
-                    android:text="@{client.name}"
-                    tools:text="Tienda de don Jaime"/>
-
-                <TextView
-                    android:id="@+id/clientListType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="false"
-                    android:paddingStart="8dp"
-                    android:paddingTop="41dp"
-                    android:paddingEnd="13dp"
-                    android:paddingBottom="3dp"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/textAppearanceLabelMedium"
-                    android:text="@{client.clientType}"
-                    tools:text="Tienda de barrio"/>
-
-                <TextView
-                    android:id="@+id/clientListAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="false"
-                    android:paddingStart="8dp"
-                    android:paddingTop="57dp"
-                    android:paddingEnd="8dp"
-                    android:paddingBottom="3dp"
-                    android:text='@{client.address}'
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/textAppearanceLabelMedium"
-                    tools:text="Av 123 #45 60" />
-
+                    android:textSize="@dimen/textAppearanceBodyLarge"
+                    android:text="@{product.name}"
+                    tools:text="Saltin Taco grande"/>
 
                 <!-- Third Icon to the Right (before the first one) -->
                 <ImageView
@@ -89,11 +60,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/baseline_arrow_forward_24"
+                    android:src="@drawable/baseline_delete_48"
                     android:contentDescription="Third Icon"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp"
-                    android:onClick="@{() -> onSelectClick.invoke(client)}"/>
+                    android:onClick="@{() -> onDeleteClick.invoke(product)}"/>
 
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>

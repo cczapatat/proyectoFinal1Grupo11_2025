@@ -93,7 +93,12 @@
     <string name="producto_seleccionado">Producto seleccionado:</string>
     <string name="no_stock_available">No hay stock disponible</string>
     <string name="max_stock_available">Máximo disponible:</string>
-    <!--video tienda-->
+    <!-- Route Visit -->
+    <string name="registrar_visita">Registrar Visita</string>
+    <string name="registrar_visita_descripcion">Descripcion de la visita</string>
+    <string name="registrar_visita_existoso">Visita registrada con exito</string>
+    <string name="registrar_visita_error">Error al registrar visita</string>
+    <!-- video tienda -->
     <string name="cargar_video_titulo">Cargar Video Tienda</string>
     <string name="cargar_video_subtitulo">Carga un video de la tienda del cliente para poder realizar recomendaciones de ubicación de productos potenciado por IA.</string>
     <string name="cargar_video_seleccionar_cliente">Seleccionar Cliente</string>
