@@ -40,6 +40,19 @@ export class ProductService {
     )
   }
 
+  updateMassiveProducts(fileId: string): Observable<BulkTask> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+      'x-token': environment.xToken
+    })
+    return this.http.put<BulkTask>(`${this.apiProductUrl}/massive/update`,
+      {
+        file_id: fileId
+      },
+      { headers: headers }
+    )
+  }
+
   getProductById(id: string): Observable<Product> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}`,

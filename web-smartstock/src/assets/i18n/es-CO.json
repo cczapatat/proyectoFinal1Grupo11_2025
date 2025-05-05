@@ -291,6 +291,10 @@
     "CREATE_MANUFACTURERS_TITLE": "Registro Masivo de Fabricantes",
     "CREATE_MANUFACTURERS_DESCRIPTION": "Selecciona el archivo que deseas subir desde tu computador.",
     "CREATE_MANUFACTURERS_FILE_UPLOADED": "El archivo {{fileName}} ha sido cargado correctamente.",
-    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "¡Eso es todo! Te vamos a notificar cuando el archivo esté 100% procesado."
+    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "¡Eso es todo! Te vamos a notificar cuando el archivo esté 100% procesado.",
+    "UPDATE_PRODUCTS_TITLE": "Edición Masiva de Productos",
+    "UPDATE_PRODUCTS_DESCRIPTION": "Selecciona el archivo que deseas subir desde tu computador.",
+    "UPDATE_PRODUCTS_FILE_UPLOADED": "El archivo {{fileName}} ha sido cargado correctamente.",
+    "UPDATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "¡Eso es todo! Te vamos a notificar cuando el archivo esté 100% procesado."
   }
 }

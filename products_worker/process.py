@@ -4,6 +4,7 @@ import json
 
 from google.cloud import pubsub_v1
 
+from .models.product_model import Product
 from .models.Operations import BULK_STATUS
 
 from .infrastructure.bulk_task_repository import BulkTaskRepository
@@ -58,6 +59,46 @@ def process_create_product( transaction_id: str, entities):
         del products_dto
         gc.collect()
 
+def process_update_product(transaction_id: str, entities):
+    try:
+        product_ids = [product_data.get("id") for product_data in entities if product_data.get("id")]
+        existing_product_ids = set(product_repository.get_existing_product_ids(product_ids))
+
+        valid_products = [
+            {
+                "id": product_data.get("id"),
+                "manufacturer_id": product_data.get("manufacturer_id"),
+                "name": product_data.get("name"),
+                "description": product_data.get("description"),
+                "category": product_data.get("category"),
+                "unit_price": product_data.get("unit_price"),
+                "currency_price": product_data.get("currency_price"),
+                "is_promotion": bool(product_data.get("is_promotion")),
+                "discount_price": product_data.get("discount_price"),
+                "expired_at": product_data.get("expired_at"),
+                "url_photo": product_data.get("url_photo"),
+                "store_conditions": product_data.get("store_conditions")
+            }
+            for product_data in entities
+            if product_data.get("id") in existing_product_ids
+        ]
+
+        print(f"[Process Update Product] Valid products count: {len(valid_products)}")
+
+        status = BULK_STATUS.BUlK_FAILED
+        updated_products = product_repository.update_massive_products(transaction_id, valid_products)
+        print(f"[Process Update Product] Products updated. quantity: {len(updated_products)}")
+
+        if len(updated_products) > 0:
+            status = BULK_STATUS.BULK_COMPLETED
+
+        bulk_task_repository.update_bulk_task_status(transaction_id, status)
+            
+    except Exception as ex:
+        log_error("Process Update Product", transaction_id, ex)
+        print(f"[Process Update Product] Error: {str(ex)}")
+    finally:
+        gc.collect()
 
 def process_products(message):
     print(f"[Process Products] Received: {message}")
@@ -74,6 +115,9 @@ def process_products(message):
 
             if operation == "CREATE":
                 process_create_product(transaction_id, entities)
+            
+            if operation == "UPDATE":
+                process_update_product(transaction_id, entities)
                 
         message.ack()
 

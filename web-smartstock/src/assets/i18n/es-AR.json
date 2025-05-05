@@ -291,6 +291,10 @@
     "CREATE_MANUFACTURERS_TITLE": "Carga Masiva de Fabricantes",
     "CREATE_MANUFACTURERS_DESCRIPTION": "Elegí el archivo que querés subir desde tu computadora.",
     "CREATE_MANUFACTURERS_FILE_UPLOADED": "El archivo {{fileName}} ha sido subido correctamente.",
-    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "¡Listo! Te vamos a notificar cuando el archivo esté 100% procesado."
+    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "¡Listo! Te vamos a notificar cuando el archivo esté 100% procesado.",
+    "UPDATE_PRODUCTS_TITLE": "Actualización Masiva de Productos",
+    "UPDATE_PRODUCTS_DESCRIPTION": "Elegí el archivo que querés subir desde tu computadora.",
+    "UPDATE_PRODUCTS_FILE_UPLOADED": "El archivo {{fileName}} ha sido subido correctamente.",
+    "UPDATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "¡Listo! Te vamos a notificar cuando el archivo esté 100% procesado."
   }
 }

@@ -3,7 +3,6 @@ import os
 from google.cloud import pubsub_v1
 from datetime import datetime
 from typing import Optional
-from ..models.Operations import Operation
 
 publisher_products = pubsub_v1.PublisherClient()
 
@@ -19,7 +18,7 @@ class PublisherService:
         else:
             self.publisher = pubsub_v1.PublisherClient()
 
-    def publish_create_command(self, process_id: str, user_email: str, file_id: str, creation_time: datetime) -> bool:
+    def publish_operation_command(self, process_id: str, user_email: str, file_id: str, creation_time: datetime, operation: str) -> bool:
      
         topic_path = self.publisher.topic_path(self.project_id, self.topic_id)
 
@@ -28,7 +27,7 @@ class PublisherService:
             "user_id": user_email,
             "file_id": file_id,
             "creation_time": creation_time.isoformat(),
-            "operation": Operation.CREATE.value,
+            "operation": operation,
             "entity" : "PRODUCT"
         }
 

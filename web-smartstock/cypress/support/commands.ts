@@ -95,3 +95,10 @@ Cypress.Commands.add('navigateToMassiveManufacturersCreate', () => {
   cy.get('#nav_massive_manufactures').click();
   cy.url().should('include', '/massive/manufacture');
 });
+
+Cypress.Commands.add('navigateToMassiveProductsEdit', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_massive').click();
+  cy.get('#nav_massive_products_modify').click();
+  cy.url().should('include', '/massive/product/edit');
+});
