@@ -1,11 +1,13 @@
-from datetime import datetime
 import traceback
 import uuid
+from datetime import datetime
 
 from sqlalchemy.exc import SQLAlchemyError
-from ..models.Models import Manufacturer, db
-from ..errors.errors import ApiError
+
 from .base_command import BaseCommand
+from ..errors.errors import ApiError
+from ..models.Models import Manufacturer, db
+
 
 class CreateManufacturer(BaseCommand):
     def __init__(self, name, address, phone, email, country, tax_conditions, legal_conditions, rating_quality):
@@ -20,8 +22,6 @@ class CreateManufacturer(BaseCommand):
         self.legal_conditions = legal_conditions
         self.createdAt = datetime.now()
         self.updatedAt = datetime.now()
-
-
 
     def execute(self):
         try:
@@ -42,7 +42,7 @@ class CreateManufacturer(BaseCommand):
             db.session.commit()
 
             return new_manufacturer.to_dict()
-        
+
         except SQLAlchemyError as e:
             db.session.rollback()
             traceback.print_exc()

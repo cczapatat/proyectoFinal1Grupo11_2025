@@ -1,13 +1,16 @@
 import json
 import os
-import requests_mock
+import uuid
+from unittest.mock import patch
 
-from unittest.mock import MagicMock, Mock, patch
+import requests_mock
 from faker import Faker
+
 from product.models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT
 
 user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
 data_factory = Faker()
+
 
 def _generate_product_data(**overrides):
     product_data = {
@@ -26,6 +29,7 @@ def _generate_product_data(**overrides):
     product_data.update(overrides)
     return product_data
 
+
 def _post_product(client, product_data):
     return client.post(
         '/products/create',
@@ -35,6 +39,7 @@ def _post_product(client, product_data):
             'content-type': 'application/json'
         }
     )
+
 
 def _put_product(client, product_data, productId):
     return client.put(
@@ -46,6 +51,7 @@ def _put_product(client, product_data, productId):
         }
     )
 
+
 def test_health_check(client):
     response = client.get('/products/health')
 
@@ -53,6 +59,7 @@ def test_health_check(client):
 
     json_response = json.loads(response.data)
     assert json_response['status'] == 'up'
+
 
 def test_create_product_error_missing_token(client):
     product_data = _generate_product_data()
@@ -64,6 +71,7 @@ def test_create_product_error_missing_token(client):
     )
 
     assert response.status_code == 401
+
 
 def test_create_product_error_invalid_token(client):
     product_data = _generate_product_data()
@@ -78,6 +86,7 @@ def test_create_product_error_invalid_token(client):
     )
 
     assert response.status_code == 401
+
 
 def test_create_product_error_missing_field(client):
     required_fields = [
@@ -97,12 +106,14 @@ def test_create_product_error_missing_field(client):
         json_response = json.loads(response.data)
         assert json_response['message'] == f'{field} is required'
 
+
 def test_create_product_error_invalid_category(client):
     product_data = _generate_product_data(category="BAD_CATEGORY")
 
     response = _post_product(client, product_data)
 
     assert response.status_code == 500
+
 
 def test_create_product_error_invalid_unit_price(client):
     product_data = _generate_product_data(unit_price=-100.0)
@@ -113,12 +124,14 @@ def test_create_product_error_invalid_unit_price(client):
 
     assert response.status_code == 400
 
+
 def test_create_product_error_invalid_currency_price(client):
     product_data = _generate_product_data(currency_price="BAD_CURRENCY")
 
     response = _post_product(client, product_data)
 
     assert response.status_code == 500
+
 
 def test_create_product_error_invalid_format_expired_at(client):
     product_data = _generate_product_data(expired_at="BAD_DATE")
@@ -127,12 +140,14 @@ def test_create_product_error_invalid_format_expired_at(client):
 
     assert response.status_code == 400
 
-def test_crerate_product_error_expired_at_in_past(client):
+
+def test_create_product_error_expired_at_in_past(client):
     product_data = _generate_product_data(expired_at=(data_factory.past_datetime()).isoformat())
 
     response = _post_product(client, product_data)
 
     assert response.status_code == 400
+
 
 def test_create_product_error_invalid_url_photo(client):
     product_data = _generate_product_data(url_photo="BAD_URL")
@@ -140,6 +155,7 @@ def test_create_product_error_invalid_url_photo(client):
     response = _post_product(client, product_data)
 
     assert response.status_code == 400
+
 
 def test_create_product_success(client):
     product_data = _generate_product_data()
@@ -151,6 +167,7 @@ def test_create_product_success(client):
     json_response = json.loads(response.data)
     assert json_response['id'] is not None
 
+
 def test_create_product_without_expired_at_success(client):
     product_data = _generate_product_data()
     product_data.pop('expired_at')
@@ -161,6 +178,7 @@ def test_create_product_without_expired_at_success(client):
 
     json_response = json.loads(response.data)
     assert json_response['id'] is not None
+
 
 def test_update_product_error_missing_field(client):
     product_data = _generate_product_data()
@@ -191,6 +209,7 @@ def test_update_product_error_missing_field(client):
         json_response = json.loads(response.data)
         assert json_response['message'] == f'{field} is required'
 
+
 def test_update_product_success(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -210,6 +229,7 @@ def test_update_product_success(client):
     json_response = json.loads(response.data)
     assert json_response['id'] == productId
     assert json_response['name'] == nameUpdated
+
 
 def test_update_product_error_invalid_product_id(client):
     product_data = _generate_product_data()
@@ -246,6 +266,7 @@ def test_update_product_error_past_expired_at(client):
 
     assert response.status_code == 400
 
+
 def test_update_product_error_invalid_format_expired_at(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -263,6 +284,7 @@ def test_update_product_error_invalid_format_expired_at(client):
 
     assert response.status_code == 400
 
+
 def test_update_product_error_integrity_error(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -278,6 +300,7 @@ def test_update_product_error_integrity_error(client):
     response = _put_product(client, product, productId)
 
     assert response.status_code == 400
+
 
 def test_update_product_error_internal_server_error(client):
     product_data = _generate_product_data()
@@ -295,6 +318,7 @@ def test_update_product_error_internal_server_error(client):
 
     assert response.status_code == 500
 
+
 def test_create_massive_product_without_authorization(client):
     fake_file_id = data_factory.uuid4()
 
@@ -308,6 +332,7 @@ def test_create_massive_product_without_authorization(client):
     )
 
     assert response.status_code == 401
+
 
 def test_create_massive_product_auth_response_unauthorized(client):
     fake_authorization = data_factory.uuid4()
@@ -327,6 +352,7 @@ def test_create_massive_product_auth_response_unauthorized(client):
             }
         )
     assert response.status_code == 401
+
 
 def test_create_massive_product_auth_response_internal_error(client):
     fake_authorization = data_factory.uuid4()
@@ -374,6 +400,7 @@ def test_create_massive_products_missing_file_id(client):
     json_response = json.loads(response.data)
     assert json_response['message'] == 'file_id is required'
 
+
 @patch("product.api.products.PublisherService.publish_operation_command")
 def test_create_massive_products_success_by_seller(mock_pubsub, client):
     fake_user_id = data_factory.uuid4()
@@ -404,6 +431,7 @@ def test_create_massive_products_success_by_seller(mock_pubsub, client):
     json_response = json.loads(response.data)
     assert json_response['id'] is not None
     mock_pubsub.assert_called_once()
+
 
 @patch("product.api.products.PublisherService.publish_operation_command")
 def test_create_massive_products_success_by_admin(mock_pubsub, client):
@@ -462,6 +490,7 @@ def test_create_massive_products_forbidden_by_other_user_type(client):
 
     assert response.status_code == 403
 
+
 @patch("product.api.products.PublisherService.publish_operation_command")
 def test_update_massive_products_publish_error(mock_publish_operation_command, client):
     fake_user_id = data_factory.uuid4()
@@ -492,6 +521,7 @@ def test_update_massive_products_publish_error(mock_publish_operation_command, c
         json_response = json.loads(response.data)
         assert json_response['status'] == 'FAILED'
 
+
 def test_update_massive_product_without_authorization(client):
     fake_file_id = data_factory.uuid4()
 
@@ -505,6 +535,7 @@ def test_update_massive_product_without_authorization(client):
     )
 
     assert response.status_code == 401
+
 
 def test_update_massive_product_auth_response_unauthorized(client):
     fake_authorization = data_factory.uuid4()
@@ -524,6 +555,7 @@ def test_update_massive_product_auth_response_unauthorized(client):
             }
         )
     assert response.status_code == 401
+
 
 def test_update_massive_product_auth_response_internal_error(client):
     fake_authorization = data_factory.uuid4()
@@ -571,6 +603,7 @@ def test_update_massive_products_missing_file_id(client):
     json_response = json.loads(response.data)
     assert json_response['message'] == 'file_id is required'
 
+
 @patch("product.api.products.PublisherService.publish_operation_command")
 def test_update_massive_products_success_by_seller(mock_pubsub, client):
     fake_user_id = data_factory.uuid4()
@@ -601,6 +634,7 @@ def test_update_massive_products_success_by_seller(mock_pubsub, client):
     json_response = json.loads(response.data)
     assert json_response['id'] is not None
     mock_pubsub.assert_called_once()
+
 
 @patch("product.api.products.PublisherService.publish_operation_command")
 def test_update_massive_products_success_by_admin(mock_pubsub, client):
@@ -659,6 +693,7 @@ def test_update_massive_products_forbidden_by_other_user_type(client):
 
     assert response.status_code == 403
 
+
 @patch("product.api.products.PublisherService.publish_operation_command")
 def test_update_massive_products_publish_error(mock_publish_operation_command, client):
     fake_user_id = data_factory.uuid4()
@@ -689,6 +724,7 @@ def test_update_massive_products_publish_error(mock_publish_operation_command, c
         json_response = json.loads(response.data)
         assert json_response['status'] == 'FAILED'
 
+
 def test_get_product(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -709,6 +745,7 @@ def test_get_product(client):
     assert json_response is not None
     assert json_response['id'] == productId
 
+
 def test_get_product_error_invalid_product_id(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -725,6 +762,7 @@ def test_get_product_error_invalid_product_id(client):
 
     assert response.status_code == 404
 
+
 def test_get_all_products(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -740,6 +778,7 @@ def test_get_all_products(client):
 
     assert response.status_code == 200
 
+
 def test_get_products_paginated(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -752,10 +791,11 @@ def test_get_products_paginated(client):
         'x-token': 'internal_token',
         'content-type': 'application/json',
         'page': 1,
-        'per_page' : 2
+        'per_page': 2
     })
 
     assert response.status_code == 200
+
 
 def test_get_all_categories(client):
     response = client.get('/products/categories', headers={
@@ -769,6 +809,7 @@ def test_get_all_categories(client):
     assert json_response is not None
     assert len(json_response) == CATEGORY_PRODUCT.__len__()
 
+
 def test_get_all_currencies(client):
     response = client.get('/products/currencies', headers={
         'x-token': 'internal_token',
@@ -781,6 +822,7 @@ def test_get_all_currencies(client):
     assert json_response is not None
     assert len(json_response) == CURRENCY_PRODUCT.__len__()
 
+
 def test_get_products_by_ids_missing(client):
     response = client.post('/products/by-ids', headers={
         'x-token': 'internal_token',
@@ -790,6 +832,7 @@ def test_get_products_by_ids_missing(client):
 
     assert response.status_code == 400
     assert data['message'] == 'ids is required'
+
 
 def test_get_products_by_ids_wrong(client):
     response = client.post('/products/by-ids', headers={
@@ -801,6 +844,7 @@ def test_get_products_by_ids_wrong(client):
     assert response.status_code == 400
     assert data['message'] == 'ids must be a list'
 
+
 def test_get_products_by_ids_empty(client):
     response = client.post('/products/by-ids', headers={
         'x-token': 'internal_token',
@@ -810,6 +854,7 @@ def test_get_products_by_ids_empty(client):
 
     assert response.status_code == 400
     assert data['message'] == 'ids cannot be empty'
+
 
 def test_get_products_by_ids_invalid(client):
     response = client.post('/products/by-ids', headers={
@@ -822,6 +867,7 @@ def test_get_products_by_ids_invalid(client):
 
     assert response.status_code == 400
     assert data['message'] == 'invalids product ids'
+
 
 def test_get_products_by_ids_success(client):
     product_data_one = _generate_product_data()
@@ -854,6 +900,7 @@ def test_get_products_by_ids_success(client):
     assert response_cached.status_code == 200
     assert data == data_cached
 
+
 def test_get_products_paginated_full(client):
     product_data = _generate_product_data()
     product_response = _post_product(client, product_data)
@@ -866,10 +913,34 @@ def test_get_products_paginated_full(client):
         'x-token': 'internal_token',
         'content-type': 'application/json',
         'page': 1,
-        'per_page' : 2
+        'per_page': 2
     })
 
     assert response.status_code == 200
     json_response = json.loads(response.data)
     assert json_response is not None
     assert len(json_response) == 5
+
+
+def test_get_all_products_by_manufacture_id(client):
+    manufacture_id = str(uuid.uuid4())
+    product_data_one = _generate_product_data(manufacturer_id=manufacture_id)
+    product_response_one = _post_product(client, product_data_one)
+    assert product_response_one.status_code == 201
+
+    product_data_two = _generate_product_data(manufacturer_id=manufacture_id)
+    product_response_two = _post_product(client, product_data_two)
+    assert product_response_two.status_code == 201
+
+    response = client.get(f'/products/list?manufacture_id={manufacture_id}', headers={
+        'x-token': 'internal_token',
+        'content-type': 'application/json'
+    })
+    response_data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert len(response_data) == 2
+    assert response_data[0]['id'] == json.loads(product_response_one.data)['id']
+    assert response_data[0]['manufacturer_id'] == str(manufacture_id)
+    assert response_data[1]['id'] == json.loads(product_response_two.data)['id']
+    assert response_data[1]['manufacturer_id'] == str(manufacture_id)

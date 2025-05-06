@@ -1,12 +1,15 @@
 import enum
 import uuid
 from datetime import datetime
+
 from marshmallow import fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from sqlalchemy import DateTime, Enum
 from sqlalchemy.dialects.postgresql import UUID
-from ..models.Operations import BULK_STATUS
+
 from ..config.db import db
+from ..models.Operations import BULK_STATUS
+
 
 class BulkTask(db.Model):
     __tablename__ = "bulk_tasks"
@@ -27,13 +30,16 @@ class BulkTask(db.Model):
             'updated_at': self.updated_at
         }
 
+
 class BulkTaskSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = BulkTask
         load_instance = True
+
     id = fields.String()
 
-class MANUFACTURER_COUNTRY (enum.Enum):
+
+class MANUFACTURER_COUNTRY(enum.Enum):
     USA = 'USA'
     CANADA = 'CANADA'
     MEXICO = 'MEXICO'
@@ -43,7 +49,8 @@ class MANUFACTURER_COUNTRY (enum.Enum):
     COLOMBIA = 'COLOMBIA'
     PERU = 'PERU'
     VENEZUELA = 'VENEZUELA'
-    UNITED_KINGDOM = 'UNITED KINGDOM'
+    UNITED_KINGDOM = 'UNITED_KINGDOM'
+
 
 class Manufacturer(db.Model):
     __tablename__ = "manufacturers"

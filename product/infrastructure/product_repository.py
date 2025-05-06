@@ -106,13 +106,13 @@ class ProductRepository:
     def update_massive_products(products: list[Product]) -> list[Product]:
         product_ids = [product.id for product in products]
         existing_products = Product.query.filter(Product.id.in_(product_ids)).all()
-        
+
         if not existing_products:
             response = make_response(
                 jsonify({"error": "Products not found", "message": "Products not found"}), 404
             )
             return response
-        
+
         existing_products_dict = {str(product.id): product for product in existing_products}
 
         for product in products:
@@ -149,7 +149,6 @@ class ProductRepository:
 
         return products
 
-    
     @staticmethod
     def get_all_products() -> list[Product]:
         products = Product.query.all()
@@ -157,11 +156,14 @@ class ProductRepository:
         return products
 
     @staticmethod
-    def get_products_by_page(page: int, per_page: int) -> list[Product]:
+    def get_products_by_page(page: int, per_page: int, manufacture_id: uuid = None) -> list[Product]:
         offset = (page - 1) * per_page
-        products = Product.query.offset(offset).limit(per_page).all()
+        query_products = Product.query
 
-        return products
+        if manufacture_id is not None:
+            query_products = query_products.filter(Product.manufacturer_id == manufacture_id)
+
+        return query_products.offset(offset).limit(per_page).all()
 
     @staticmethod
     def get_products_by_ids(ids: list[uuid.uuid4]) -> list[Product]:
@@ -180,7 +182,7 @@ class ProductRepository:
             cache_repository.set(f"product:{product.id}", product.to_dict())
 
         return [product.to_dict() for product in products] + products_cached
-    
+
     @staticmethod
     def get_products_paginated_full(page: int = 1, per_page: int = 10, sort_order: str = 'asc') -> dict:
         """
@@ -201,7 +203,8 @@ class ProductRepository:
         sort_column = Product.name
 
         # Construir la consulta con orden y paginación. Se usa error_out=False para no lanzar excepción
-        pagination = Product.query.order_by(sort_fn(sort_column)).paginate(page=page, per_page=per_page, error_out=False)
+        pagination = Product.query.order_by(sort_fn(sort_column)).paginate(page=page, per_page=per_page,
+                                                                           error_out=False)
 
         return {
             "data": [product.to_dict() for product in pagination.items],

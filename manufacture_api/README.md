@@ -86,6 +86,12 @@ Este servicio permite realizar las siguientes acciones:
 - **Carga de batches para crear multiples fabricas**
 
 
+### Run Tests with Coverage
+
+```bash
+coverage run -m pytest -vv
+coverage report -m --fail-under=90
+```
 
 ## Autor
 

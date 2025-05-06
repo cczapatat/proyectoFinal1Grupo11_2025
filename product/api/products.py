@@ -4,7 +4,7 @@ import requests
 
 from datetime import datetime
 
-from flask import  Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request
 from werkzeug.exceptions import Unauthorized, BadRequest, InternalServerError, Forbidden
 
 from ..dtos.bulk_task_dto import BulkTaskDTO
@@ -27,6 +27,7 @@ product_repository = ProductRepository()
 bulk_task_repository = BulkTaskRepository()
 publisher_service = PublisherService(project_id, topic_id)
 
+
 def there_is_token():
     token = request.headers.get('x-token', None)
 
@@ -35,6 +36,7 @@ def there_is_token():
 
     if token != internal_token:
         raise Unauthorized(description='authorization required')
+
 
 def __validate_auth_token() -> dict:
     auth_token = request.headers.get('Authorization', None)
@@ -53,17 +55,21 @@ def __validate_auth_token() -> dict:
 
     return auth_response.json()
 
+
 def __valid_uuid(uuid_string: str) -> uuid.uuid4:
     try:
-        uuid.UUID(uuid_string)
+        _uuid = uuid.UUID(uuid_string)
+
+        return _uuid
     except ValueError:
         raise BadRequest(description='invalids product ids')
 
-def __valid_user_type(user_auth: dict) -> str: 
+
+def __valid_user_type(user_auth: dict) -> str:
     if user_auth['user_type'] == 'ADMIN':
         user_id = user_auth['user_session_id']
     elif user_auth['user_type'] == 'SELLER':
-        user_id =  user_auth['user_id']
+        user_id = user_auth['user_id']
     else:
         raise Forbidden(description='invalid user type')
     return user_id
@@ -230,6 +236,7 @@ def update_product(product_id):
 
     return update_product_response
 
+
 @bp.route('/massive/create', methods=('POST',))
 def create_massive_products():
     there_is_token()
@@ -262,9 +269,10 @@ def create_massive_products():
         if not is_published:
             bulk_task.status = BULK_STATUS.BUlK_FAILED
             return jsonify(bulk_task.to_dict()), 500
-        
+
         return jsonify(bulk_task.to_dict()), 201
     return bulk_task
+
 
 @bp.route('/massive/update', methods=('PUT',))
 def update_massive_products():
@@ -287,7 +295,7 @@ def update_massive_products():
     )
 
     if isinstance(bulk_task, BulkTask):
-        
+
         is_published = publisher_service.publish_operation_command(
             process_id=bulk_task.id,
             user_email=bulk_task.user_id,
@@ -299,10 +307,10 @@ def update_massive_products():
         if not is_published:
             bulk_task.status = BULK_STATUS.BUlK_FAILED
             return jsonify(bulk_task.to_dict()), 500
-        
+
         return jsonify(bulk_task.to_dict()), 201
     return bulk_task
-    
+
 
 @bp.route('/list', methods=('GET',))
 def list_products():
@@ -310,13 +318,19 @@ def list_products():
 
     page = max(1, request.args.get('page', default=1, type=int))
     per_page = min(max(1, request.args.get('per_page', default=10, type=int)), 50)
+    manufacture_id_temp = request.args.get('manufacture_id', default=None, type=str)
     all_products = request.args.get('all', default=False, type=bool)
 
     if all_products:
         products = product_repository.get_all_products()
         return jsonify([product.to_dict() for product in products]), 200
 
-    products = product_repository.get_products_by_page(page=page, per_page=per_page)
+    if manufacture_id_temp is not None:
+        manufacture_id = __valid_uuid(manufacture_id_temp)
+    else:
+        manufacture_id = None
+
+    products = product_repository.get_products_by_page(page=page, per_page=per_page, manufacture_id=manufacture_id)
 
     if isinstance(products, list):
         return jsonify([product.to_dict() for product in products]), 200
@@ -342,16 +356,16 @@ def get_all_currencies():
     ]
     return jsonify(currencies), 200
 
+
 @bp.route('/paginated_full', methods=['GET'])
 def get_products_paginated_full():
-    there_is_token()  
+    there_is_token()
 
-    
     page = request.args.get('page', default=1, type=int)
     per_page = request.args.get('per_page', default=10, type=int)
     # Por ahora el único campo de ordenación es 'name'
     sort_order = request.args.get('sort_order', default='asc', type=str).lower()
-   
+
     products_data = product_repository.get_products_paginated_full(page=page, per_page=per_page, sort_order=sort_order)
 
     return jsonify(products_data), 200
