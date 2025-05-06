@@ -81,7 +81,7 @@ describe('ProductEditComponent', () => {
   });
 
   it("Component has a title", () => {
-    let title = debug.query(By.css('h4')).nativeElement;
+    let title = debug.query(By.css('h1')).nativeElement;
     expect(title.innerHTML).toBeTruthy();
   });
 
@@ -119,7 +119,6 @@ describe('ProductEditComponent', () => {
   });
 
   it("Component has an input description", () => {
-    let title = debug.query(By.css('h4')).nativeElement;
     expect(debug.queryAll(By.css('#description'))).toHaveSize(1);
   });
 

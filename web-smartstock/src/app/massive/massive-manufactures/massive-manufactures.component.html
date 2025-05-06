@@ -1,38 +1,47 @@
-<div class="upload-wrapper">
-  <h2 class="text-center title"> {{ 'MASSIVES.CREATE_MANUFACTURERS_TITLE' | translate }} </h2>
+<main>
+  <div class="upload-wrapper">
+    <h1 class="text-center title"> {{ 'MASSIVES.CREATE_MANUFACTURERS_TITLE' | translate }} </h1>
 
-  <div class="upload-box">
-    <img *ngIf="!fileUploaded" src="assets/images/upload-icon.svg" alt="Upload Icon" class="upload-icon" id="upload-icon"
-      (click)="fileInput.click()" />
-    <img *ngIf="fileUploaded" src="assets/images/upload-success.svg" alt="Upload Icon" class="upload-icon" id="uploaded-icon"/>
-    <p *ngIf="!selectedFile && !fileUploaded" class="file-info" id="upload_description"><strong>{{ 'MASSIVES.CREATE_MANUFACTURERS_DESCRIPTION' |
-        translate }}</strong></p>
-    <p *ngIf="selectedFile && !fileUploaded" class="file-info"  id="file_info"><strong>
-        {{ selectedFile.name }} ({{ selectedFileSize }})
-      </strong></p>
-    <p *ngIf="fileUploaded" class="file-info"  id="uploaded_description"><strong>{{ 'MASSIVES.CREATE_MANUFACTURERS_FILE_UPLOADED' | translate:{ fileName: selectedFile.name }
-        }}</strong></p>
+    <div class="upload-box">
+      <img *ngIf="!fileUploaded" src="assets/images/upload-icon.svg" alt="Upload Icon" class="upload-icon"
+        id="upload-icon" (click)="fileInput.click()" />
+      <img *ngIf="fileUploaded" src="assets/images/upload-success.svg" alt="Upload Icon" class="upload-icon"
+        id="uploaded-icon" />
+      <p *ngIf="!selectedFile && !fileUploaded" class="file-info" id="upload_description"><strong>{{
+          'MASSIVES.CREATE_MANUFACTURERS_DESCRIPTION' |
+          translate }}</strong></p>
+      <p *ngIf="selectedFile && !fileUploaded" class="file-info" id="file_info"><strong>
+          {{ selectedFile.name }} ({{ selectedFileSize }})
+        </strong></p>
+      <p *ngIf="fileUploaded" class="file-info" id="uploaded_description"><strong>{{
+          'MASSIVES.CREATE_MANUFACTURERS_FILE_UPLOADED' | translate:{ fileName: selectedFile.name }
+          }}</strong></p>
 
 
-        <!-- Hidden file input -->
-        <input type="file" accept=".csv" #fileInput (change)="onFileSelected($event)" style="display: none" id="file_input"/>
+      <!-- Hidden file input -->
+      <input type="file" accept=".csv" #fileInput (change)="onFileSelected($event)" style="display: none"
+        id="file_input" />
 
-        <!-- Botón de + -->
-        <button *ngIf="!selectedFile && !fileUploaded" [disabled]="fileSizeError || !selectedFile"
-          class="upload-btn col-2" [ngClass]="{'upload-btn-active': !fileSizeError && selectedFile}" id="upload_btn">
-          +
-        </button>
+      <!-- Botón de + -->
+      <button *ngIf="!selectedFile && !fileUploaded" [disabled]="fileSizeError || !selectedFile"
+        class="upload-btn col-2" [ngClass]="{'upload-btn-active': !fileSizeError && selectedFile}" id="upload_btn">
+        +
+      </button>
 
-        <!-- Botón de envío -->
-        <button *ngIf="selectedFile && !fileUploaded" type="button" class="upload-btn-active col-2"
-          (click)="createMassiveManufacturer()" id="proccess_btn">
-          Procesar
-        </button>
-        <p *ngIf="!selectedFile !fileUploaded" class="limit-text" id="file_restrictions">{{ 'MASSIVES.MAX_FILE_SIZE' | translate }}</p>
-        <p *ngIf="fileUploaded" class="limit-text" id="file_uploaded_notification">{{ 'MASSIVES.CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION' | translate
-          }}</p>
+      <!-- Botón de envío -->
+      <button *ngIf="selectedFile && !fileUploaded" type="button" class="upload-btn-active col-2"
+        (click)="createMassiveManufacturer()" id="proccess_btn">
+        Procesar
+      </button>
+      <p *ngIf="!selectedFile !fileUploaded" class="limit-text" id="file_restrictions">{{ 'MASSIVES.MAX_FILE_SIZE' |
+        translate }}</p>
+      <p *ngIf="fileUploaded" class="limit-text" id="file_uploaded_notification">{{
+        'MASSIVES.CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION' | translate
+        }}</p>
 
-        <div *ngIf="fileSizeError" class="error-msg" id="file_size_error">
-          {{ fileSizeError }}
-        </div>
-</div>
+      <div *ngIf="fileSizeError" class="error-msg" id="file_size_error">
+        {{ fileSizeError }}
+      </div>
+    </div>
+  </div>
+</main>

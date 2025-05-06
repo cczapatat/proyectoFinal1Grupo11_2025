@@ -81,12 +81,11 @@ describe('ProductCreateComponent', () => {
   });
 
   it("Component has a title", () => {
-    let title = debug.query(By.css('h4')).nativeElement;
+    let title = debug.query(By.css('h1')).nativeElement;
     expect(title.innerHTML).toBeTruthy();
   });
 
   it("Component has an input product_name", () => {
-    let title = debug.query(By.css('h4')).nativeElement;
     expect(debug.queryAll(By.css('#product_name'))).toHaveSize(1);
   });
 
@@ -120,7 +119,6 @@ describe('ProductCreateComponent', () => {
   });
 
   it("Component has an input description", () => {
-    let title = debug.query(By.css('h4')).nativeElement;
     expect(debug.queryAll(By.css('#description'))).toHaveSize(1);
   });
 

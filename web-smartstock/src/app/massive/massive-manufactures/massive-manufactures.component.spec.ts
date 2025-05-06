@@ -100,7 +100,7 @@ describe('MassiveProductsCreateComponent', () => {
   });
 
   it("Component has a title", () => {
-    let title = debug.query(By.css('h2')).nativeElement;
+    let title = debug.query(By.css('h1')).nativeElement;
     expect(title.innerHTML).toBeTruthy();
   });
 
