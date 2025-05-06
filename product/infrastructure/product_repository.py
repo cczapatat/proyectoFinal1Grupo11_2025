@@ -156,14 +156,19 @@ class ProductRepository:
         return products
 
     @staticmethod
-    def get_products_by_page(page: int, per_page: int, manufacture_id: uuid = None) -> list[Product]:
+    def get_products_by_page(page: int, per_page: int, manufacture_id: uuid = None) -> [list[Product], int]:
         offset = (page - 1) * per_page
         query_products = Product.query
 
         if manufacture_id is not None:
             query_products = query_products.filter(Product.manufacturer_id == manufacture_id)
+            total_products = query_products.filter(Product.manufacturer_id == manufacture_id).count()
+        else:
+            total_products = query_products.count()
 
-        return query_products.offset(offset).limit(per_page).all()
+        products = query_products.offset(offset).limit(per_page).all()
+
+        return [products, total_products]
 
     @staticmethod
     def get_products_by_ids(ids: list[uuid.uuid4]) -> list[Product]:

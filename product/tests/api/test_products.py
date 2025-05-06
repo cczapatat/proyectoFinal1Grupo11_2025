@@ -942,5 +942,7 @@ def test_get_all_products_by_manufacture_id(client):
     assert len(response_data) == 2
     assert response_data[0]['id'] == json.loads(product_response_one.data)['id']
     assert response_data[0]['manufacturer_id'] == str(manufacture_id)
+    assert response_data[0]['total_items'] == 2
     assert response_data[1]['id'] == json.loads(product_response_two.data)['id']
     assert response_data[1]['manufacturer_id'] == str(manufacture_id)
+    assert response_data[1]['total_items'] == 2

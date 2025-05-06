@@ -662,10 +662,10 @@ jobs:
           FUNCTIONS=${{ steps.get-coverage.outputs.functions }}
           LINES=${{ steps.get-coverage.outputs.lines }}
 
-          MIN_STATEMENTS=72
-          MIN_BRANCHES=38
-          MIN_FUNCTIONS=67
-          MIN_LINES=72
+          MIN_STATEMENTS=73
+          MIN_BRANCHES=46
+          MIN_FUNCTIONS=70
+          MIN_LINES=73
 
           FAILED=0
 

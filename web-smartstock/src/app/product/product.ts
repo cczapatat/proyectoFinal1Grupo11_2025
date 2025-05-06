@@ -11,6 +11,7 @@ export class Product {
     expired_at: string | null;
     url_photo: string;
     store_conditions: string;
+    total_items?: number | null | undefined;
 
     public constructor(
         id: string,
@@ -24,7 +25,8 @@ export class Product {
         discount_price: number = 0,
         expired_at: string,
         url_photo: string,
-        store_conditions: string
+        store_conditions: string,
+        total_items: number | null | undefined = null
     ) {
         this.id = id;
         this.manufacturer_id = manufacturer_id;
@@ -38,5 +40,6 @@ export class Product {
         this.expired_at = expired_at ? new Date(expired_at).toISOString() : null;
         this.url_photo = url_photo;
         this.store_conditions = store_conditions;
+        this.total_items = total_items;
     }
 }

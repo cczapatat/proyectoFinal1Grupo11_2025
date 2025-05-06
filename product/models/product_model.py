@@ -61,7 +61,7 @@ class Product(db.Model):
     created_at = Column(DateTime(), default=datetime.now)
     updated_at = Column(DateTime(), default=datetime.now)
 
-    def to_dict(self):
+    def to_dict(self, total_items: int = 0) -> dict:
         return {
             'id': str(self.id),
             'manufacturer_id': str(self.manufacturer_id),
@@ -76,5 +76,6 @@ class Product(db.Model):
             'url_photo': self.url_photo,
             'store_conditions': self.store_conditions,
             'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            'updated_at': self.updated_at.isoformat(),
+            'total_items': total_items,
         }

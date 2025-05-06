@@ -330,10 +330,10 @@ def list_products():
     else:
         manufacture_id = None
 
-    products = product_repository.get_products_by_page(page=page, per_page=per_page, manufacture_id=manufacture_id)
+    [products, total] = product_repository.get_products_by_page(page=page, per_page=per_page, manufacture_id=manufacture_id)
 
     if isinstance(products, list):
-        return jsonify([product.to_dict() for product in products]), 200
+        return jsonify([product.to_dict(total) for product in products]), 200
 
     return products
 

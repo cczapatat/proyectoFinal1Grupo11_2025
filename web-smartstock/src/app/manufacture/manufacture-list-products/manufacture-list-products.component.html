@@ -1,3 +1,142 @@
-<div class="container">
-  <h2>Listar productos de un Fabricante</h2>
+<div class="container-fluid col-md-11">
+  <h2 class="text-center title" style="margin: 2rem 0;">{{ 'MANUFACTURER_LIST.TITLE' | translate }}</h2>
+  <div class="row">
+    <!-- Manufacturers Section (7 columns) -->
+    <div class="col-md-7">
+      <h2 class="title_second">{{ 'MANUFACTURER_LIST.MANUFACTURERS' | translate }}</h2>
+      <table id="manufacturersTable" class="table custom-bordered-table">
+        <thead>
+          <tr>
+            <th></th> <!-- Checkbox column -->
+            <th class="text-start">{{ 'MANUFACTURER_LIST.NAME' | translate }}</th>
+            <th class="text-start">{{ 'MANUFACTURER_LIST.COUNTRY' | translate }} <i class="bi bi-info-circle"></i></th>
+            <th class="text-start">{{ 'MANUFACTURER_LIST.EMAIL' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="manufacturerPaginated.manufacturers; else noManufacturers">
+            <!-- Render sellers -->
+            <tr *ngFor="let manufacturer of manufacturerPaginated.manufacturers" [class.table-active]="manufacturer.id === manufacturerId">
+              <td class="text-center align-middle">
+                <input type="checkbox" class="form-check-input" [checked]="manufacturer.id === manufacturerId"
+                  (click)="onSelectManufacturerCheckbox(manufacturer.id)" />
+              </td>
+              <td class="text-start fw-bold">{{ manufacturer.name }}</td>
+              <td class="text-start">{{ 'COUNTRIES.'+ manufacturer.country | translate }}</td>
+              <td class="text-start">{{ manufacturer.email }}</td>
+            </tr>
+
+            <!-- Empty filler rows to keep table height consistent -->
+            <tr *ngFor="let i of [].constructor(10 - manufacturerPaginated.manufacturers.length)" class="empty-row">
+              <td colspan="4">&nbsp;</td>
+            </tr>
+          </ng-container>
+
+          <!-- Message when no manufacturers -->
+          <ng-template #noManufacturers>
+            <tr *ngFor="let i of [].constructor(4)" class="empty-row">
+              <td colspan="4">&nbsp;</td>
+            </tr>
+            <tr class="empty-row">
+              <td colspan="4" class="no-data-message align-middle text-muted fw-bold">{{ 'MANUFACTURER_LIST.EMPTY_MANUFACTURES' | translate }}</td>
+            </tr>
+            <tr *ngFor="let i of [].constructor(5)" class="empty-row">
+              <td colspan="4">&nbsp;</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+
+      <div class="btn-group ">
+        <!-- Previous -->
+        <button class="pagination-button" [disabled]="manufacturerPaginated.page <= 1" (click)="changeManufacturerPage(-1)">
+          <i class="bi bi-arrow-left"></i>{{ 'MANUFACTURER_LIST.PREVIOUS' | translate }}
+        </button>
+
+        <!-- Page buttons -->
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationManufacturersPages(manufacturerPaginated.page, manufacturerTotalItems)" class="pagination-button"
+            [ngClass]="{
+              'active': page === manufacturerPaginated.page,
+              'ellipsis': page === '...'
+            }" (click)="onClickManufacturerPage(page)" [disabled]="page === '...'">
+            {{ page }}
+          </button>
+        </div>
+
+        <!-- Next -->
+        <button class="pagination-button" [disabled]="manufacturerPaginated.page >= manufacturerTotalItems" (click)="changeManufacturerPage(1)">
+          {{ 'MANUFACTURER_LIST.NEXT' | translate }}<i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Products Section (5 columns) -->
+    <div class="col-md-5">
+      <h2 class="title_second">{{ 'MANUFACTURER_LIST.PRODUCTS' | translate }}</h2>
+      <table id="productsTable" class="table custom-bordered-table">
+        <thead>
+          <tr>
+            <th></th> <!-- Checkbox column -->
+            <th class="text-start">{{ 'MANUFACTURER_LIST.NAME' | translate }}</th>
+            <th class="text-start">{{ 'MANUFACTURER_LIST.CATEGORY' | translate }} <i class="bi bi-info-circle"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Show products if available -->
+          <ng-container *ngIf="products.length > 0; else noProducts">
+            <tr *ngFor="let product of products">
+              <td class="text-center align-middle">
+                <input type="checkbox" class="form-check-input" [checked]="true" [disabled]="true"/>
+              </td>
+              <td class="text-start pt-0 pb-0 _pname">{{ product.name }}</td>
+              <td class="text-start pt-0 pb-0 align-middle">{{ 'CATEGORIES.' + product.category| translate }}</td>
+            </tr>
+
+            <!-- Fill remaining rows to keep table height consistent -->
+            <tr *ngFor="let i of [].constructor(10 - products.length)" class="empty-row">
+              <td colspan="3">&nbsp;</td>
+            </tr>
+          </ng-container>
+
+          <!-- Template to show when no products at all -->
+          <ng-template #noProducts>
+            <tr *ngFor="let i of [].constructor(4)" class="empty-row">
+              <td colspan="3">&nbsp;</td>
+            </tr>
+            <tr class="empty-row">
+              <td colspan="4" class="no-data-message align-middle text-muted fw-bold">{{ 'MANUFACTURER_LIST.EMPTY_PRODUCTS' | translate }}</td>
+            </tr>
+            <tr *ngFor="let i of [].constructor(5)" class="empty-row">
+              <td colspan="3">&nbsp;</td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </table>
+
+      <div id="products-btn-pages" class="btn-group" *ngIf="products.length > 0">
+        <!-- Previous -->
+        <button class="pagination-button" [disabled]="productPage <= 1" (click)="changeProductsPage(-1)">
+          <i class="bi bi-arrow-left"></i>{{ 'MANUFACTURER_LIST.PREVIOUS' | translate }}
+        </button>
+
+        <!-- Page buttons -->
+        <div class="inner-page-group">
+          <button *ngFor="let page of getPaginationProductsPages(productPage, productTotalItems)" class="pagination-button"
+            [ngClass]="{
+              'active': page === productPage,
+              'ellipsis': page === '...'
+            }" (click)="onClickProductPage(page)" [disabled]="page === '...'">
+            {{ page }}
+          </button>
+        </div>
+
+
+        <!-- Next -->
+        <button class="pagination-button" [disabled]="productPage >= productTotalItems" (click)="changeProductsPage(1)">
+          {{ 'MANUFACTURER_LIST.NEXT' | translate }}<i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

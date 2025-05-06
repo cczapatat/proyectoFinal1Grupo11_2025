@@ -69,7 +69,7 @@
     "NO_CHANGES": "No hay cambios para guardar.",
     "ASSIGN_SUCCESS": "Asignaciones guardadas exitosamente.",
     "ASSIGN_ERROR": "Error al guardar las asignaciones.",
-    "STORES" : "Bodegas"
+    "STORES": "Bodegas"
   },
   "PRODUCT": {
     "TITLE_CREATE": "Crear Producto",
@@ -134,7 +134,7 @@
     "FILTER_BY_NAME": "Filtrar por nombre",
     "NO_PRODUCTS_FOUND": "No se encontraron productos",
     "PREVIOUS": "Anterior",
-    "NEXT": "Siguiente",  
+    "NEXT": "Siguiente",
     "QUANTITY": "Cantidad",
     "TITLE_LIST": "Productos"
   },
@@ -220,7 +220,7 @@
     "ERROR_MESSAGE": "Ha ocurrido un error:",
     "ERROR_TITLE": "Error",
     "EMPTY_SALESPEOPLE": "No se encontraron vendedores",
-    "EMPTY_CUSTOMERS":"No se encontraron clientes",
+    "EMPTY_CUSTOMERS": "No se encontraron clientes",
     "LIST_ERROR_TITLE": "Error",
     "LIST_ERROR_SALESPEOPLE": "Un error ha ocurrido: la consulta de vendedores no pudo ser realizada",
     "LIST_ERROR_CUSTOMER": "Un error ha ocurrido: la consulta de clientes no pudo ser realizada",
@@ -229,17 +229,17 @@
     "ASSOCIATE_ERROR_TITLE": "Error",
     "ASSOCIATE_ERROR_MESSAGE": "Un error ha ocurrido: la asociación no pudo ser creada"
   },
-  "ZONES":{
+  "ZONES": {
     "NORTH": "Norte",
-    "SOUTH":"Sur",
-    "EAST":"Este",
-    "WEST":"Oeste",
-    "CENTER":"Centro",
-    "NOTRHEAST":"Norte-Este",
-    "NORTHEAST":"Norte-Este",
-    "NORTHWEST":"Norte-Oeste",
-    "SOUTHEAST":"Sur-Este",
-    "SOUTHWEST":"Sur-Oeste"
+    "SOUTH": "Sur",
+    "EAST": "Este",
+    "WEST": "Oeste",
+    "CENTER": "Centro",
+    "NOTRHEAST": "Norte-Este",
+    "NORTHEAST": "Norte-Este",
+    "NORTHWEST": "Norte-Oeste",
+    "SOUTHEAST": "Sur-Este",
+    "SOUTHWEST": "Sur-Oeste"
   },
   "ORDER": {
     "TITLE": "Crear Order",
@@ -296,5 +296,46 @@
     "UPDATE_PRODUCTS_DESCRIPTION": "Selecciona el archivo que deseas subir desde tu computador.",
     "UPDATE_PRODUCTS_FILE_UPLOADED": "El archivo {{fileName}} ha sido cargado correctamente.",
     "UPDATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "¡Eso es todo! Te vamos a notificar cuando el archivo esté 100% procesado."
+  },
+  "MANUFACTURER_LIST": {
+    "TITLE": "Lista productos de un Fabricante",
+    "MANUFACTURERS": "Fabricantes",
+    "NAME": "Nombre",
+    "COUNTRY": "País",
+    "EMAIL": "Correo Electrónico",
+    "EMPTY_MANUFACTURES": "No se encontraron fabricantes",
+    "PREVIOUS": "Anterior",
+    "NEXT": "Siguiente",
+    "PRODUCTS": "Productos",
+    "CATEGORY": "Categoría",
+    "EMPTY_PRODUCTS": "Seleccionar un Fabricante",
+    "ERROR_LIST_PRODUCTS": "Ha ocurrido un error: no se pudo cargar la lista de productos",
+    "ERROR_LIST_MANUFACTURERS": "Ha ocurrido un error: no se pudo cargar la lista de fabricantes",
+    "ERROR_TITLE_MANUFACTURERS": "Error",
+    "ERROR_TITLE_PRODUCTS": "Error"
+  },
+  "COUNTRIES": {
+    "USA": "USA",
+    "CANADA": "Canada",
+    "MEXICO": "Mexico",
+    "BRAZIL": "Brazil",
+    "ARGENTINA": "Argentina",
+    "CHILE": "Chile",
+    "COLOMBIA": "Colombia",
+    "PERU": "Peru",
+    "VENEZUELA": "Venezuela",
+    "UNITED_KINGDOM": "Reino Unido"
+  },
+  "CATEGORIES": {
+    "ELECTRONICS": "Electronicos",
+    "FURNITURE": "Muebles",
+    "CLOTHING": "Ropa",
+    "FOOD": "Comida",
+    "TOYS": "Juguetes",
+    "BOOKS": "Libros",
+    "BEAUTY": "Belleza",
+    "SPORTS": "Deportes",
+    "AUTOMOTIVE": "Automotriz",
+    "HEALTH": "Salud"
   }
 }
