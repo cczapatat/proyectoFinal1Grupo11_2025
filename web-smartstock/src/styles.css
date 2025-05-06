@@ -65,7 +65,7 @@ label {
 button {
     display: block;             /* Ensures we can center it horizontally */
     margin: 1rem auto;         /* Adds top/bottom space and centers the button */
-    background-color: #CA6510; /* Enabled color */
+    background-color: #A34700; /* Enabled color */
     color: #fff;
     border: none;
     border-radius: 4px;

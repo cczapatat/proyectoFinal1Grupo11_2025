@@ -88,7 +88,7 @@ describe('ProductEditComponent', () => {
   });
 
   it("Component has a title", () => {
-    let title = debug.query(By.css('h4')).nativeElement;
+    let title = debug.query(By.css('h1')).nativeElement;
     expect(title.innerHTML).toBeTruthy();
   });
 

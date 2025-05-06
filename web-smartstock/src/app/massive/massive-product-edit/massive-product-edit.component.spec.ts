@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { faker } from '@faker-js/faker';
 
-import { MassiveProductsCreateComponent } from './massive-products-create.component';
+import { MassiveProductEditComponent } from './massive-product-edit.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ToastrModule } from 'ngx-toastr';
@@ -13,13 +13,13 @@ import { ProductService } from '../../services/product.service';
 import { DocumentManagerService } from '../../services/document-manager.service';
 import { of } from 'rxjs';
 
-import { Document } from '../../massive/document';
+import { Document } from '../document';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { BulkTask } from 'src/app/dtos/bulk-task';
 
-describe('MassiveProductsCreateComponent', () => {
-  let component: MassiveProductsCreateComponent;
-  let fixture: ComponentFixture<MassiveProductsCreateComponent>;
+describe('MassiveProductsEditComponent', () => {
+  let component: MassiveProductEditComponent;
+  let fixture: ComponentFixture<MassiveProductEditComponent>;
   let debug: DebugElement;
 
   let documentManagerService: jasmine.SpyObj<DocumentManagerService>;
@@ -27,7 +27,7 @@ describe('MassiveProductsCreateComponent', () => {
 
   beforeEach(async(() => {
     const documentManagerServiceSpy = jasmine.createSpyObj('DocumentManagerService', ['uploadFile']);
-    const productServiceSpy = jasmine.createSpyObj('ProductService', ['createMassiveProducts']);
+    const productServiceSpy = jasmine.createSpyObj('ProductService', ['updateMassiveProducts']);
 
     TestBed.configureTestingModule({
       imports: [
@@ -43,11 +43,11 @@ describe('MassiveProductsCreateComponent', () => {
         FormBuilder,
         TranslateService
       ],
-      declarations: [ MassiveProductsCreateComponent ]
+      declarations: [ MassiveProductEditComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MassiveProductsCreateComponent);
+    fixture = TestBed.createComponent(MassiveProductEditComponent);
     component = fixture.componentInstance;
     debug = fixture.debugElement;
 
@@ -66,7 +66,7 @@ describe('MassiveProductsCreateComponent', () => {
         faker.date.past().toString()
       )
     ));
-    productService.createMassiveProducts.and.returnValue(of(
+    productService.updateMassiveProducts.and.returnValue(of(
       new BulkTask(
         faker.date.past(),
         faker.string.uuid().toString(),

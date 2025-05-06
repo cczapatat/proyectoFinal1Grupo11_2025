@@ -200,4 +200,27 @@ describe('Service: Product', () => {
     });
     req.flush(mockBulkTask);
   });
+
+  it('should update massive products', () => {
+    const mockBulkTask = new BulkTask(
+      faker.date.past(),
+      faker.string.uuid().toString(),
+      faker.string.uuid().toString(),
+      'QUEUE',
+      faker.date.past()
+    )
+
+    const fileId = faker.string.uuid();
+
+    service.updateMassiveProducts(fileId).subscribe((response) => {
+      expect(response).toEqual(mockBulkTask);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiProductUrl}/massive/update`);
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual({
+      file_id: fileId
+    });
+    req.flush(mockBulkTask);
+  });
 });

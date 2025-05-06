@@ -5,14 +5,14 @@ import requests
 from datetime import datetime
 
 from flask import  Blueprint, jsonify, request
-from werkzeug.exceptions import Unauthorized, BadRequest, InternalServerError
+from werkzeug.exceptions import Unauthorized, BadRequest, InternalServerError, Forbidden
 
 from ..dtos.bulk_task_dto import BulkTaskDTO
 from ..dtos.product_dto import ProductDTO
 from ..infrastructure.product_repository import ProductRepository
 from ..models.bulk_task_model import BulkTask
 from ..infrastructure.bulk_task_repository import BulkTaskRepository
-from ..models.Operations import BULK_STATUS
+from ..models.Operations import BULK_STATUS, Operation
 from ..models.product_model import CATEGORY_PRODUCT, CURRENCY_PRODUCT, Product
 from ..utilities.publisher_service import PublisherService
 
@@ -58,6 +58,15 @@ def __valid_uuid(uuid_string: str) -> uuid.uuid4:
         uuid.UUID(uuid_string)
     except ValueError:
         raise BadRequest(description='invalids product ids')
+
+def __valid_user_type(user_auth: dict) -> str: 
+    if user_auth['user_type'] == 'ADMIN':
+        user_id = user_auth['user_session_id']
+    elif user_auth['user_type'] == 'SELLER':
+        user_id =  user_auth['user_id']
+    else:
+        raise Forbidden(description='invalid user type')
+    return user_id
 
 
 @bp.route('/create', methods=('POST',))
@@ -225,13 +234,43 @@ def update_product(product_id):
 def create_massive_products():
     there_is_token()
     user_auth = __validate_auth_token()
+    user_id = __valid_user_type(user_auth)
 
-    if user_auth['user_type'] == 'ADMIN':
-        user_id = user_auth['user_session_id']
-    elif user_auth['user_type'] == 'SELLER':
-        user_id =  user_auth['user_id']
-    else:
-        return jsonify({'message': 'Invalid user type'}), 403
+    data = request.get_json()
+    file_id = data.get('file_id')
+
+    if file_id is None:
+        return jsonify({'message': 'file_id is required'}), 400
+
+    bulk_task = bulk_task_repository.create_bulk_task(
+        bulk_task_dto=BulkTaskDTO(
+            user_id=user_id,
+            file_id=file_id,
+            status=BULK_STATUS.BULK_QUEUED,
+        )
+    )
+
+    if isinstance(bulk_task, BulkTask):
+        is_published = publisher_service.publish_operation_command(
+            process_id=bulk_task.id,
+            user_email=bulk_task.user_id,
+            file_id=bulk_task.file_id,
+            creation_time=bulk_task.created_at,
+            operation=Operation.CREATE.value
+        )
+
+        if not is_published:
+            bulk_task.status = BULK_STATUS.BUlK_FAILED
+            return jsonify(bulk_task.to_dict()), 500
+        
+        return jsonify(bulk_task.to_dict()), 201
+    return bulk_task
+
+@bp.route('/massive/update', methods=('PUT',))
+def update_massive_products():
+    there_is_token()
+    user_auth = __validate_auth_token()
+    user_id = __valid_user_type(user_auth)
 
     data = request.get_json()
     file_id = data.get('file_id')
@@ -249,11 +288,12 @@ def create_massive_products():
 
     if isinstance(bulk_task, BulkTask):
         
-        is_published = publisher_service.publish_create_command(
+        is_published = publisher_service.publish_operation_command(
             process_id=bulk_task.id,
             user_email=bulk_task.user_id,
             file_id=bulk_task.file_id,
-            creation_time=bulk_task.created_at
+            creation_time=bulk_task.created_at,
+            operation=Operation.UPDATE.value
         )
 
         if not is_published:

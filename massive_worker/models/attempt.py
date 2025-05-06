@@ -6,7 +6,7 @@ from .declarative_base import Base
 
 class OPERATION(enum.Enum):
     CREATE = 'CREATE'
-    ##UPDATE = 'update'
+    UPDATE = 'UPDATE'
     ##DELETE = 'delete'
 
 class ENTITY(enum.Enum):

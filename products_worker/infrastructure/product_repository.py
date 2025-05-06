@@ -34,3 +34,23 @@ class ProductRepository:
             session.rollback()
             print(f"[Create Massive Products] process_id: {transaction_id}, error: {ex}")
             return []
+        
+    @staticmethod
+    def update_massive_products(transaction_id:str, products: dict) -> list[Product]:
+        try:
+            session.bulk_update_mappings(Product, products)
+            session.commit()
+            return products
+        except Exception as ex:
+            session.rollback()
+            print(f"[Update Massive Products] process_id: {transaction_id}, error: {ex}")
+            return []
+    
+    @staticmethod
+    def get_existing_product_ids(product_ids):
+        try:
+            existing_product_ids = session.query(Product.id).filter(Product.id.in_(product_ids)).all()
+            return [product_id[0] for product_id in existing_product_ids]
+        except Exception as ex:
+            print(f"[Get Existing Product IDs] error: {ex}")
+            return []

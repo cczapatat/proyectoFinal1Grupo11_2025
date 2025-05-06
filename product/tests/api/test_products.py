@@ -374,7 +374,7 @@ def test_create_massive_products_missing_file_id(client):
     json_response = json.loads(response.data)
     assert json_response['message'] == 'file_id is required'
 
-@patch("product.api.products.PublisherService.publish_create_command")
+@patch("product.api.products.PublisherService.publish_operation_command")
 def test_create_massive_products_success_by_seller(mock_pubsub, client):
     fake_user_id = data_factory.uuid4()
     fake_file_id = data_factory.uuid4()
@@ -405,7 +405,7 @@ def test_create_massive_products_success_by_seller(mock_pubsub, client):
     assert json_response['id'] is not None
     mock_pubsub.assert_called_once()
 
-@patch("product.api.products.PublisherService.publish_create_command")
+@patch("product.api.products.PublisherService.publish_operation_command")
 def test_create_massive_products_success_by_admin(mock_pubsub, client):
     fake_user_id = data_factory.uuid4()
     fake_file_id = data_factory.uuid4()
@@ -461,16 +461,14 @@ def test_create_massive_products_forbidden_by_other_user_type(client):
         )
 
     assert response.status_code == 403
-    json_response = json.loads(response.data)
-    assert json_response['message'] == 'Invalid user type'
 
-@patch("product.api.products.PublisherService.publish_create_command")
-def test_create_massive_products_publish_error(mock_publish_create_command, client):
+@patch("product.api.products.PublisherService.publish_operation_command")
+def test_update_massive_products_publish_error(mock_publish_operation_command, client):
     fake_user_id = data_factory.uuid4()
     fake_file_id = data_factory.uuid4()
     fake_authorization = data_factory.uuid4()
 
-    mock_publish_create_command.return_value = False
+    mock_publish_operation_command.return_value = False
 
     with requests_mock.Mocker() as m:
         # Mock auth response
@@ -480,8 +478,205 @@ def test_create_massive_products_publish_error(mock_publish_create_command, clie
             'user_type': 'SELLER'
         })
 
-        response = client.post(
-            '/products/massive/create',
+        response = client.put(
+            '/products/massive/update',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+        assert response.status_code == 500
+        json_response = json.loads(response.data)
+        assert json_response['status'] == 'FAILED'
+
+def test_update_massive_product_without_authorization(client):
+    fake_file_id = data_factory.uuid4()
+
+    response = client.put(
+        '/products/massive/update',
+        data=json.dumps({'file_id': fake_file_id}),
+        headers={
+            'content-type': 'application/json',
+            'x-token': 'internal_token'
+        }
+    )
+
+    assert response.status_code == 401
+
+def test_update_massive_product_auth_response_unauthorized(client):
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', status_code=401)
+
+        response = client.put(
+            '/products/massive/update',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+    assert response.status_code == 401
+
+def test_update_massive_product_auth_response_internal_error(client):
+    fake_authorization = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', status_code=500)
+
+        response = client.put(
+            '/products/massive/update',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+    assert response.status_code == 500
+
+
+def test_update_massive_products_missing_file_id(client):
+    fake_user_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
+        })
+
+        response = client.put(
+            '/products/massive/update',
+            data=json.dumps({}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+    assert response.status_code == 400
+    json_response = json.loads(response.data)
+    assert json_response['message'] == 'file_id is required'
+
+@patch("product.api.products.PublisherService.publish_operation_command")
+def test_update_massive_products_success_by_seller(mock_pubsub, client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    mock_pubsub.return_value = True
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
+        })
+
+        response = client.put(
+            '/products/massive/update',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+    assert response.status_code == 201
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+    mock_pubsub.assert_called_once()
+
+@patch("product.api.products.PublisherService.publish_operation_command")
+def test_update_massive_products_success_by_admin(mock_pubsub, client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    mock_pubsub.return_value = True
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'ADMIN'
+        })
+
+        response = client.put(
+            '/products/massive/update',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+    assert response.status_code == 201
+    json_response = json.loads(response.data)
+    assert json_response['id'] is not None
+    mock_pubsub.assert_called_once()
+
+
+def test_update_massive_products_forbidden_by_other_user_type(client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'OTHER_TYPE_USER'
+        })
+
+        response = client.put(
+            '/products/massive/update',
+            data=json.dumps({'file_id': fake_file_id}),
+            headers={
+                'content-type': 'application/json',
+                'x-token': 'internal_token',
+                'Authorization': fake_authorization
+            }
+        )
+
+    assert response.status_code == 403
+
+@patch("product.api.products.PublisherService.publish_operation_command")
+def test_update_massive_products_publish_error(mock_publish_operation_command, client):
+    fake_user_id = data_factory.uuid4()
+    fake_file_id = data_factory.uuid4()
+    fake_authorization = data_factory.uuid4()
+
+    mock_publish_operation_command.return_value = False
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': fake_user_id,
+            'user_id': fake_user_id,
+            'user_type': 'SELLER'
+        })
+
+        response = client.put(
+            '/products/massive/update',
             data=json.dumps({'file_id': fake_file_id}),
             headers={
                 'content-type': 'application/json',

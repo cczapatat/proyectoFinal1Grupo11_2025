@@ -7,6 +7,7 @@
 <div class="menu-overlay" [class.show]="isMenuVisible" (click)="hideMenu()"></div>
 
 <!-- Sidebar -->
+<header>
 <div class="sidebar" [class.show]="isMenuVisible">
   <div class="logo">
     <h2 id="nav_home" (click)="navigate('/')"><i class="bi bi-box"></i> {{ 'NAV.TITLE' | translate }}</h2>
@@ -147,3 +148,4 @@
     </button>
   </div>
 </div>
+</header>

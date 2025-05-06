@@ -290,6 +290,10 @@
     "CREATE_MANUFACTURERS_TITLE": "Carga Masiva de Fabricantes",
     "CREATE_MANUFACTURERS_DESCRIPTION": "Choose the file you want to upload from your computer.",
     "CREATE_MANUFACTURERS_FILE_UPLOADED": "The file {{fileName}} has been uploaded successfully.",
-    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "All done! You will be notified once the file has been fully processed."
+    "CREATE_MANUFACTURER_FILE_UPDLOADED_NOTIFICATION": "All done! You will be notified once the file has been fully processed.",
+    "UPDATE_PRODUCTS_TITLE": "Mass Product Update",
+    "UPDATE_PRODUCTS_DESCRIPTION": "Choose the file you want to upload from your computer.",
+    "UPDATE_PRODUCTS_FILE_UPLOADED": "The file {{fileName}} has been uploaded successfully.",
+    "UPDATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "All done! You will be notified once the file has been fully processed."
   }
 }
