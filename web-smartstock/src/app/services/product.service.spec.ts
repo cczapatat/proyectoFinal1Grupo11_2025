@@ -111,7 +111,7 @@ describe('Service: Product', () => {
 
   it('should get all products', () => {
     const mockProducts: Product[] = [
-      new Product( 
+      new Product(
         faker.string.uuid(),
         faker.string.uuid(),
         faker.lorem.word(),
@@ -125,7 +125,7 @@ describe('Service: Product', () => {
         faker.image.url(),
         faker.lorem.word()
       ),
-      new Product( 
+      new Product(
         faker.string.uuid(),
         faker.string.uuid(),
         faker.lorem.word(),
@@ -139,7 +139,7 @@ describe('Service: Product', () => {
         faker.image.url(),
         faker.lorem.word()
       )];
-      
+
     service.getProducts().subscribe((response) => {
       expect(response).toEqual(mockProducts);
     });
@@ -222,5 +222,48 @@ describe('Service: Product', () => {
       file_id: fileId
     });
     req.flush(mockBulkTask);
+  });
+
+  it('should get all products by manufactureId', () => {
+    const mockProducts: Product[] = [
+      new Product(
+        faker.string.uuid(),
+        faker.string.uuid(),
+        faker.lorem.word(),
+        faker.lorem.word(),
+        'ELECTRONIC',
+        faker.number.int({ min: 1, max: 10 }),
+        'EUR',
+        false,
+        0,
+        null,
+        faker.image.url(),
+        faker.lorem.word()
+      ),
+      new Product(
+        faker.string.uuid(),
+        faker.string.uuid(),
+        faker.lorem.word(),
+        faker.lorem.word(),
+        'ELECTRONIC',
+        faker.number.int({ min: 1, max: 10 }),
+        'EUR',
+        false,
+        0,
+        null,
+        faker.image.url(),
+        faker.lorem.word()
+      ),
+    ];
+    const manufactureId = faker.string.uuid();
+    const page = faker.number.int({ min: 1, max: 10 });
+    const perPage = faker.number.int({ min: 1, max: 10 });
+
+    service.getProductsByManufactureId(page, perPage, manufactureId).subscribe((response) => {
+      expect(response).toEqual(mockProducts);
+    });
+    const req = httpMock.expectOne(`${environment.apiProductUrl}/list?manufacture_id=${manufactureId}&page=${page}&per_page=${perPage}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockProducts);
   });
 });

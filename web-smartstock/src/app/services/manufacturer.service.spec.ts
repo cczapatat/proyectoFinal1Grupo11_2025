@@ -37,7 +37,7 @@ describe('Service: Manufacturer', () => {
         country: 'USA',
         rating_quality: faker.number.float({ min: 1, max: 5 }),
         tax_conditions: faker.lorem.word({ length: 10 }),
-        legal_conditions:faker.lorem.word({ length: 10 }),
+        legal_conditions: faker.lorem.word({ length: 10 }),
       },
       {
         id: faker.string.uuid(),
@@ -48,7 +48,7 @@ describe('Service: Manufacturer', () => {
         country: 'USA',
         rating_quality: faker.number.float({ min: 1, max: 5 }),
         tax_conditions: faker.lorem.word({ length: 10 }),
-        legal_conditions:faker.lorem.word({ length: 10 }),
+        legal_conditions: faker.lorem.word({ length: 10 }),
       }
     ];
 
@@ -64,11 +64,11 @@ describe('Service: Manufacturer', () => {
   it('should create massive manufacturers', () => {
     const fileId = faker.string.uuid();
     const mockBulkTask = new BulkTask(
-          faker.date.past(),
-          faker.string.uuid().toString(),
-          faker.string.uuid().toString(),
-          'QUEUE',
-          faker.date.past()
+      faker.date.past(),
+      faker.string.uuid().toString(),
+      faker.string.uuid().toString(),
+      'QUEUE',
+      faker.date.past()
     )
 
     service.createMassiveManufacturers(fileId).subscribe((response) => {
@@ -79,5 +79,48 @@ describe('Service: Manufacturer', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ file_id: fileId });
     req.flush(mockBulkTask);
+  });
+
+  it('should get the list of manufacturers paginated', () => {
+    const mockManufacturers: Manufacturer[] = [
+      {
+        id: faker.string.uuid(),
+        name: faker.company.name(),
+        address: faker.address.streetAddress(),
+        phone: faker.phone.number().toString(),
+        email: faker.internet.email(),
+        country: 'USA',
+        rating_quality: faker.number.float({ min: 1, max: 5 }),
+        tax_conditions: faker.lorem.word({ length: 10 }),
+        legal_conditions: faker.lorem.word({ length: 10 }),
+      },
+      {
+        id: faker.string.uuid(),
+        name: faker.company.name(),
+        address: faker.address.streetAddress(),
+        phone: faker.phone.number().toString(),
+        email: faker.internet.email(),
+        country: 'USA',
+        rating_quality: faker.number.float({ min: 1, max: 5 }),
+        tax_conditions: faker.lorem.word({ length: 10 }),
+        legal_conditions: faker.lorem.word({ length: 10 }),
+      }
+    ];
+    const page = faker.number.int({ min: 1, max: 10 });
+    const perPage = faker.number.int({ min: 1, max: 10 });
+    const mockResponse = {
+      page: page,
+      per_page: perPage,
+      total: mockManufacturers.length,
+      manufacturers: mockManufacturers,
+    };
+
+    service.getManufacturersByList(page, perPage).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpMock.expectOne(`${environment.apiManufacturerUrl}/manufacturers/list?page=${page}&per_page=${perPage}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
   });
 });

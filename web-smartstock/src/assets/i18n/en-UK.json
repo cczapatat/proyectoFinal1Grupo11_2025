@@ -69,7 +69,7 @@
     "NO_CHANGES": "No changes to save.",
     "ASSIGN_SUCCESS": "Assignments saved successfully.",
     "ASSIGN_ERROR": "Error saving assignments.",
-    "STORES" : "Stores"
+    "STORES": "Stores"
   },
   "PRODUCT": {
     "TITLE_CREATE": "Create Product",
@@ -133,7 +133,7 @@
     "FILTER_BY_NAME": "Filter by name",
     "NO_PRODUCTS_FOUND": "No products found",
     "PREVIOUS": "Previous",
-    "NEXT": "Next",   
+    "NEXT": "Next",
     "QUANTITY": "Quantity",
     "TITLE_LIST": "Products"
   },
@@ -219,7 +219,7 @@
     "ERROR_MESSAGE": "An error occurred:",
     "ERROR_TITLE": "Error",
     "EMPTY_SALESPEOPLE": "Salespeople not found",
-    "EMPTY_CUSTOMERS":"Customers not found",
+    "EMPTY_CUSTOMERS": "Customers not found",
     "LIST_ERROR_TITLE": "Error",
     "LIST_ERROR_SALESPEOPLE": "An error has occurred: Sellers consult cannot be made",
     "LIST_ERROR_CUSTOMER": "An error has occurred: Customers consult cannot be made",
@@ -228,17 +228,17 @@
     "ASSOCIATE_ERROR_TITLE": "Error",
     "ASSOCIATE_ERROR_MESSAGE": "An error has occurred: the association cannot be created"
   },
-  "ZONES":{
+  "ZONES": {
     "NORTH": "North",
-    "SOUTH":"South",
-    "EAST":"East",
-    "WEST":"West",
-    "CENTER":"Center",
-    "NOTRHEAST":"North-East",
-    "NORTHEAST":"Norte-East",
-    "NORTHWEST":"North-West",
-    "SOUTHEAST":"South-East",
-    "SOUTHWEST":"South-West"
+    "SOUTH": "South",
+    "EAST": "East",
+    "WEST": "West",
+    "CENTER": "Center",
+    "NOTRHEAST": "North-East",
+    "NORTHEAST": "Norte-East",
+    "NORTHWEST": "North-West",
+    "SOUTHEAST": "South-East",
+    "SOUTHWEST": "South-West"
   },
   "ORDER": {
     "TITLE": "Create Order",
@@ -295,5 +295,46 @@
     "UPDATE_PRODUCTS_DESCRIPTION": "Choose the file you want to upload from your computer.",
     "UPDATE_PRODUCTS_FILE_UPLOADED": "The file {{fileName}} has been uploaded successfully.",
     "UPDATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "All done! You will be notified once the file has been fully processed."
+  },
+  "MANUFACTURER_LIST": {
+    "TITLE": "List of Manufacturers",
+    "MANUFACTURERS": "Manufacturers",
+    "NAME": "Name",
+    "COUNTRY": "Country",
+    "EMAIL": "Email",
+    "EMPTY_MANUFACTURES": "Manufacturers not found",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "PRODUCTS": "Products",
+    "CATEGORY": "Category",
+    "EMPTY_PRODUCTS": "Select a manufacturer",
+    "ERROR_LIST_PRODUCTS": "An error has occurred: the list of products could not be loaded",
+    "ERROR_LIST_MANUFACTURERS": "An error has occurred: the list of manufacturers could not be loaded",
+    "ERROR_TITLE_MANUFACTURERS": "Error",
+    "ERROR_TITLE_PRODUCTS": "Error"
+  },
+  "COUNTRIES": {
+    "USA": "USA",
+    "CANADA": "Canada",
+    "MEXICO": "Mexico",
+    "BRAZIL": "Brazil",
+    "ARGENTINA": "Argentina",
+    "CHILE": "Chile",
+    "COLOMBIA": "Colombia",
+    "PERU": "Peru",
+    "VENEZUELA": "Venezuela",
+    "UNITED_KINGDOM": "Reino Unido"
+  },
+  "CATEGORIES": {
+    "ELECTRONICS": "Electronics",
+    "FURNITURE": "Furniture",
+    "CLOTHING": "Clothing",
+    "FOOD": "Food",
+    "TOYS": "Toys",
+    "BOOKS": "Books",
+    "BEAUTY": "Beauty",
+    "SPORTS": "Sports",
+    "AUTOMOTIVE": "Automotive",
+    "HEALTH": "Health"
   }
 }

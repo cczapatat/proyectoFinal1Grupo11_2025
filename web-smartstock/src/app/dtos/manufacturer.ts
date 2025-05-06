@@ -31,3 +31,10 @@ export class Manufacturer {
         this.rating_quality = rating_quality;
     }
 }
+
+export interface ManufacturerPaginateDTO {
+    page: number;
+    per_page: number;
+    total: number;
+    manufacturers: Manufacturer[];
+}

@@ -77,6 +77,17 @@ export class ProductService {
     return this.http.get<Product[]>(`${this.apiProductUrl}/list?all=true`, { headers: headers })
   }
 
+  getProductsByManufactureId(page: number, perPage: number, manufactureId: string): Observable<Product[]> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${sessionStorage.getItem('token')}`,
+      'x-token': environment.xToken
+    })
+    return this.http.get<Product[]>(
+      `${this.apiProductUrl}/list?manufacture_id=${manufactureId}&page=${page}&per_page=${perPage}`,
+      { headers: headers },
+    )
+  }
+
   getProductCategories(): Observable<ProductCategory[]> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${sessionStorage.getItem('token')}`,

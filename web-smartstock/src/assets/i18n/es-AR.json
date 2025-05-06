@@ -296,5 +296,46 @@
     "UPDATE_PRODUCTS_DESCRIPTION": "Elegí el archivo que querés subir desde tu computadora.",
     "UPDATE_PRODUCTS_FILE_UPLOADED": "El archivo {{fileName}} ha sido subido correctamente.",
     "UPDATE_PRODUCT_FILE_UPDLOADED_NOTIFICATION": "¡Listo! Te vamos a notificar cuando el archivo esté 100% procesado."
+  },
+  "MANUFACTURER_LIST": {
+    "TITLE": "Lista productos de un Fabricante",
+    "MANUFACTURERS": "Fabricantes",
+    "NAME": "Nombre",
+    "COUNTRY": "País",
+    "EMAIL": "Correo Electrónico",
+    "EMPTY_MANUFACTURES": "No se encontraron fabricantes",
+    "PREVIOUS": "Anterior",
+    "NEXT": "Siguiente",
+    "PRODUCTS": "Productos",
+    "CATEGORY": "Categoría",
+    "EMPTY_PRODUCTS": "Seleccionar un Fabricante",
+    "ERROR_LIST_PRODUCTS": "Ha ocurrido un error: no se pudo cargar la lista de productos",
+    "ERROR_LIST_MANUFACTURERS": "Ha ocurrido un error: no se pudo cargar la lista de fabricantes",
+    "ERROR_TITLE_MANUFACTURERS": "Error",
+    "ERROR_TITLE_PRODUCTS": "Error"
+  },
+  "COUNTRIES": {
+    "USA": "USA",
+    "CANADA": "Canada",
+    "MEXICO": "Mexico",
+    "BRAZIL": "Brazil",
+    "ARGENTINA": "Argentina",
+    "CHILE": "Chile",
+    "COLOMBIA": "Colombia",
+    "PERU": "Peru",
+    "VENEZUELA": "Venezuela",
+    "UNITED_KINGDOM": "Reino Unido"
+  },
+  "CATEGORIES": {
+    "ELECTRONICS": "Electronicos",
+    "FURNITURE": "Muebles",
+    "CLOTHING": "Ropa",
+    "FOOD": "Comida",
+    "TOYS": "Juguetes",
+    "BOOKS": "Libros",
+    "BEAUTY": "Belleza",
+    "SPORTS": "Deportes",
+    "AUTOMOTIVE": "Automotriz",
+    "HEALTH": "Salud"
   }
 }
