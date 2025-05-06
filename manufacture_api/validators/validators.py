@@ -16,6 +16,7 @@ SchemaBulkTask = {
     "required": ["file_id", "user_id"]
 }
 
+
 def validate_schema(json_data, schema):
     try:
         validate(instance=json_data, schema=schema)
@@ -23,6 +24,7 @@ def validate_schema(json_data, schema):
         traceback.print_exc()
         raise BadRequest(f"Invalid data: {e.message}")
     
+
 def validate_token(headers):
     token = headers.get('x-token', None)
 

@@ -1,6 +1,7 @@
-import uuid
 import enum
+import uuid
 from datetime import datetime
+
 from sqlalchemy import Column, String, DateTime, Enum, Float, Boolean, CheckConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
@@ -14,6 +15,7 @@ class CURRENCY_PRODUCT(enum.Enum):
     GBP = 'GBP'
     ARS = 'ARS'
 
+
 class CATEGORY_PRODUCT(enum.Enum):
     ELECTRONICS = "ELECTRONICS"
     FURNITURE = "FURNITURE"
@@ -25,7 +27,6 @@ class CATEGORY_PRODUCT(enum.Enum):
     SPORTS = "SPORTS"
     AUTOMOTIVE = "AUTOMOTIVE"
     HEALTH = "HEALTH"
-    
 
 
 class Product(db.Model):

@@ -1,15 +1,16 @@
-from datetime import datetime
 import os
 import traceback
 import uuid
+from datetime import datetime
 
-from ..models.Operations import BULK_STATUS
+from flask import jsonify
 from sqlalchemy.exc import SQLAlchemyError
-from ..models.Models import db, BulkTask
-from ..errors.errors import ApiError
+
 from .base_command import BaseCommand
+from ..errors.errors import ApiError
+from ..models.Models import db, BulkTask
+from ..models.Operations import BULK_STATUS
 from ..utilities.publisher_service import PublisherService
-from flask import  jsonify
 
 project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinalmiso2025')
 topic_id = os.environ.get('GCP_PRODUCT_MASSIVE_TOPIC', 'commands_to_massive')

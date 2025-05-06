@@ -10,6 +10,7 @@ from manufacture_api.commands.get_all_manufacturer import GetAllManufacturer
 from manufacture_api.commands.reset import ResetBulkTask
 from manufacture_api import create_app
 
+
 @pytest.fixture
 def app():
     os.environ['TESTING'] = 'True'
@@ -22,39 +23,47 @@ def app():
     db.session.close()
     db.drop_all()
 
+
 @pytest.fixture
 def client(app):
     return app.test_client()
+
 
 @pytest.fixture
 def mock_api():
     with requests_mock.Mocker() as m:
         yield m
 
+
 @pytest.fixture
 def create_bulk_task(mock_api):
-  create_bulk_task = CreateBulkTask()
-  return create_bulk_task
+    create_bulk_task = CreateBulkTask()
+    return create_bulk_task
+
 
 @pytest.fixture
 def create_manufacturer(mock_api):
-  create_manufacturer = CreateManufacturer()
-  return create_manufacturer
+    create_manufacturer = CreateManufacturer()
+    return create_manufacturer
+
 
 @pytest.fixture
 def get_all_manufacturer(mock_api):
-  get_all_manufacturer = GetAllManufacturer()
-  return get_all_manufacturer
+    get_all_manufacturer = GetAllManufacturer()
+    return get_all_manufacturer
+
 
 @pytest.fixture
 def reset_bulk_task(mock_api):
-  reset_bulk_task = ResetBulkTask()
-  return reset_bulk_task
+    reset_bulk_task = ResetBulkTask()
+    return reset_bulk_task
+
 
 def pytest_configure(config):
-  env_file = find_dotenv('../.env.test')
-  load_dotenv(env_file)
-  return config
+    env_file = find_dotenv('../.env.test')
+    load_dotenv(env_file)
+    return config
+
 
 @pytest.fixture(autouse=True)
 def mock_pubsub(monkeypatch):
