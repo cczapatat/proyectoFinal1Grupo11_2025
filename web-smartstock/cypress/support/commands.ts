@@ -102,3 +102,12 @@ Cypress.Commands.add('navigateToMassiveProductsEdit', () => {
   cy.get('#nav_massive_products_modify').click();
   cy.url().should('include', '/massive/product/edit');
 });
+
+Cypress.Commands.add('navigateToManufactureListProducts', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_languages').click();
+  cy.get('#nav_es-CO').click();
+  cy.get('#nav_customers').click();
+  cy.get('#nav_customer_search').click();
+  cy.url().should('include', '/manufacturers/list-products');
+});

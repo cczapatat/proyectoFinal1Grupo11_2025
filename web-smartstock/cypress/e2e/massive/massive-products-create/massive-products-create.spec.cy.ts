@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 describe('Create Massive Products Test', () => {
   beforeEach(() => {
     cy.login('admin.admin@sta.com', '123456');

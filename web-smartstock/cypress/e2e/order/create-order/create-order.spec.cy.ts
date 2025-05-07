@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 describe('Create Order Test', () => {
   afterEach(() => {
     cy.logout();

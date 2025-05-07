@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 describe('Associale Seller to clients Test', () => {
   it('Associate Sellers', () => {
     cy.visit('/user-sessions/login');
