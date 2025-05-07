@@ -1,5 +1,3 @@
-import { faker } from '@faker-js/faker';
-
 describe('Assign Stock to Store', () => {
   it('Assign new stock to store', () => {
     cy.visit('/user-sessions/login');

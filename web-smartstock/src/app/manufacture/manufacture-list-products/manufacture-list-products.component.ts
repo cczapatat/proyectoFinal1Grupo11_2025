@@ -68,7 +68,7 @@ export class ManufactureListProductsComponent implements OnInit {
       ).subscribe({
         next: (res) => {
           this.products = res;
-          this.productTotalItems = res[0]?.total_items || 0;
+          this.productTotalItems = Math.ceil((res[0]?.total_items || 0) / this.productPerPage);
         },
         error: (err) => {
           this.toastr.error(
