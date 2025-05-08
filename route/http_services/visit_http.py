@@ -17,3 +17,14 @@ def create_visit(visit_data: dict, token: str) -> [int, dict]:
     )
 
     return [visit_response.status_code, visit_response.json()]
+
+def get_all_visits_by_date(visit_date: str, token: str) -> [int, dict]:
+    visit_response = requests.get(
+        f'{visits_path}/visits/by-visit-date/{visit_date}',
+        headers={
+            'x-token': internal_token,
+            'Authorization': token,
+        },
+    )
+
+    return [visit_response.status_code, visit_response.json()]

@@ -1,4 +1,10 @@
+from typing import List
 import uuid
+
+from werkzeug.exceptions import InternalServerError
+
+from ..dtos.client_in_dto import ClientInDTO
+from ..dtos.extended_visit_in_dto import ExtendedVisitInDTO
 
 from ..dtos.visit_in_dto import VisitInDTO
 from ..http_services.users_http import get_seller_by_id, get_client_by_id
@@ -28,3 +34,31 @@ class VisitManager:
         [visit, products] = self.transaction.run(transaction_operations)
 
         return visit.to_dict(products)
+    
+    def get_all_visits_by_visit_date(self, visit_date: str):
+        try:
+            # Ensure visit_date is compared as a date, not as a string
+            visits = self.visit_repository.get_all_visits_by_visit_date(visit_date)
+            return [
+                {
+                    'id': str(visit.id),
+                    'user_id': visit.user_id,
+                    'seller_id': visit.seller_id,
+                    'client': self.__get_client_by_id(visit.client_id, visit.seller_id), 
+                    'description': visit.description,
+                    'visit_date': visit.visit_date.strftime('%Y-%m-%d %H:%M:%S'),
+                    
+                } for visit in visits
+            ]
+        except Exception as e:
+            raise InternalServerError(description=f"Error retrieving visits: {str(e)}")
+
+    def __get_client_by_id(self, client_id: uuid.UUID, seller_id: uuid.UUID) -> ClientInDTO:
+        client_data = get_client_by_id(client_id, seller_id)
+        client_dto = ClientInDTO(
+            id=client_data["id"],
+            name=client_data["name"],
+            zone=client_data["zone"],
+            client_type=client_data["client_type"],
+        )
+        return client_dto

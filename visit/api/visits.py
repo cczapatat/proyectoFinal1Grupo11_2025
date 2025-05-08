@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import datetime
 
 import requests
 from flask import Blueprint, jsonify, request
@@ -85,6 +86,28 @@ def create_order():
     visit_created = visit_manager.create_visit(visit_in_dto)
 
     return jsonify(visit_created), 201
+
+@bp.route('/by-visit-date/<string:visit_date>', methods=('GET',))
+def get_all_visits_by_visit_date(visit_date: str):
+    __there_is_token()
+    user_auth = __validate_auth_token()
+
+    if user_auth['user_type'] != 'SELLER':
+        raise Unauthorized(description='un authorization operation')
+
+    seller_id = user_auth['user_id']
+
+    if seller_id is None:
+        return jsonify({'message': 'seller_id is required'}), 400
+
+    try:
+        # Ensure visit_date is parsed correctly
+        parsed_date = datetime.strptime(visit_date, '%Y-%m-%d').date()
+        visits = visit_manager.get_all_visits_by_visit_date(parsed_date)
+    except ValueError:
+        return jsonify({'message': 'Invalid date format. Use YYYY-MM-DD.'}), 400
+
+    return jsonify(visits), 200
 
 
 @bp.errorhandler(400)

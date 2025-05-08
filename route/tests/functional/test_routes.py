@@ -108,3 +108,59 @@ def test_create_visit_seller_required_because_auth_is_admin(client, headers):
     assert data['description'] == visit_data_mock['description']
     assert data['products'] == visit_data_mock['products']
     assert data['seller_id'] == seller_id
+
+
+def test_get_all_visits_by_visit_date_missing_date(client, headers):
+    headers['Authorization'] = 'Bearer valid_token'
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': str(uuid.uuid4()),
+            'user_id': str(uuid.uuid4()),
+            'user_type': 'SELLER',
+        })
+
+        response = client.get('/routes/visits/get_by_visit_date', headers=headers)
+        data = json.loads(response.data)
+
+    assert response.status_code == 401
+    assert data['message'] == 'visit_date required'
+
+
+def test_get_all_visits_by_visit_date_unauthorized(client):
+    response = client.get('/routes/visits/get_by_visit_date', headers={'Content-Type': 'application/json'})
+    data = json.loads(response.data)
+
+    assert response.status_code == 401
+    assert data['message'] == 'x-token required'
+
+
+def test_get_all_visits_by_visit_date_success(client, headers):
+    headers['Authorization'] = 'Bearer valid_token'
+    visit_date = '2024-06-09'
+    visits_mock = [
+        {
+            'id': str(uuid.uuid4()),
+            'client_id': client_id,
+            'visit_date': visit_date,
+            'description': 'Visit description',
+            'products': visit_data_mock['products'],
+        }
+    ]
+
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': str(uuid.uuid4()),
+            'user_id': str(uuid.uuid4()),
+            'user_type': 'SELLER',
+        })
+
+        # Mock get visits response
+        m.get(f'{visits_path}/visits/by-visit-date/{visit_date}', json=visits_mock, status_code=200)
+
+        response = client.get(f'/routes/visits/get_by_visit_date?visit_date={visit_date}', headers=headers)
+        data = json.loads(response.data)
+
+    assert response.status_code == 200
+    assert data == visits_mock
