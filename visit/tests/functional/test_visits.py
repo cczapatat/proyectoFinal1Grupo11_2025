@@ -1,8 +1,14 @@
 import json
 import os
 import uuid
+from datetime import datetime
 
+import pytest
 import requests_mock
+
+import sys
+from visit.models.visit_model import Visit
+from visit.config.db import db
 
 user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
 sellers_path = os.getenv('SELLERS_PATH', default='http://localhost:3007')
@@ -26,6 +32,30 @@ visit_data_mock = {
         }
     ],
 }
+
+
+@pytest.fixture
+def setup_database():
+    # Ensure the database is clean before each test
+    db.session.query(Visit).delete()
+    db.session.commit()
+
+    # Insert mock data
+    visit_date = "2024-06-09"
+    visit = Visit(
+        id=uuid.uuid4(),
+        user_id=str(uuid.uuid4()),
+        seller_id=uuid.uuid4(),
+        client_id=uuid.uuid4(),
+        description="Test visit description",
+        visit_date=datetime.strptime(visit_date, '%Y-%m-%d'),
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    )
+    db.session.add(visit)
+    db.session.commit()
+
+    return visit_date
 
 
 def test_unauthorized_access(client):
@@ -176,3 +206,5 @@ def test_create_visit_success(client, headers):
     assert data['client_id'] == client_id
     assert data['seller_id'] == seller_id
     assert len(data['products']) == 2
+
+
