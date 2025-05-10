@@ -61,7 +61,12 @@ def process_create_product( transaction_id: str, entities):
 
 def process_update_product(transaction_id: str, entities):
     try:
-        product_ids = [product_data.get("id") for product_data in entities if product_data.get("id")]
+        products_data = []
+        for index, product_data in enumerate(entities):
+            products_data.append(
+                {key.lstrip('\ufeff'): value for key, value in product_data.items()}
+            )
+        product_ids = [product_data.get("id") for product_data in products_data if product_data.get("id")]
         existing_product_ids = set(product_repository.get_existing_product_ids(product_ids))
 
         valid_products = [
@@ -79,7 +84,7 @@ def process_update_product(transaction_id: str, entities):
                 "url_photo": product_data.get("url_photo"),
                 "store_conditions": product_data.get("store_conditions")
             }
-            for product_data in entities
+            for product_data in products_data
             if product_data.get("id") in existing_product_ids
         ]
 

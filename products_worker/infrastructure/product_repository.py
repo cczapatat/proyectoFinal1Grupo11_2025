@@ -50,7 +50,7 @@ class ProductRepository:
     def get_existing_product_ids(product_ids):
         try:
             existing_product_ids = session.query(Product.id).filter(Product.id.in_(product_ids)).all()
-            return [product_id[0] for product_id in existing_product_ids]
+            return [str(product_id[0]) for product_id in existing_product_ids]
         except Exception as ex:
             print(f"[Get Existing Product IDs] error: {ex}")
             return []
