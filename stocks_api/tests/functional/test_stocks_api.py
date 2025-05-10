@@ -187,7 +187,7 @@ def test_get_stocks_by_ids_http_products_fail(client, headers, create_test_stock
     assert data_ids['message'] == 'products not found'
 
 
-def test_assign_stock_to_store_success(client, headers, create_test_stocks):
+def test_assign_stock_to_store_success(client, headers, create_test_stocks, mock_pubsub):
     data = {
         "store_id": "ca2b8eb4-431d-4abf-8afe-96f687890dac",
         "stocks": [
@@ -204,6 +204,7 @@ def test_assign_stock_to_store_success(client, headers, create_test_stocks):
 
     assert response.status_code == 200
     assert data_response['message'] == 'Stocks assigned successfully'
+    assert not mock_pubsub.publish.called
 
 
 def test_assign_stock_to_store_invalid(client, headers, create_test_stocks):
@@ -225,10 +226,10 @@ def test_assign_stock_to_store_invalid(client, headers, create_test_stocks):
     assert data_response['message'] == 'Error: Invalid product or stock data'
 
 
-def test_assign_stock_to_store_update(client, headers, create_test_stocks):
-    stock_id_one = uuid.uuid4()
+def test_assign_stock_to_store_update(client, headers, create_test_stocks, mock_pubsub):
     id_store = uuid.uuid4()
     id_product = uuid.uuid4()
+    stock_id_one = uuid.uuid4()
     stock_one = Stock(id=stock_id_one, id_store=id_store, id_product=id_product, quantity_in_stock=100,
                       last_quantity=100,
                       enabled=True)
@@ -249,11 +250,9 @@ def test_assign_stock_to_store_update(client, headers, create_test_stocks):
     response = client.put('/stocks-api/stocks/assign-stock-store', headers=headers, json=data)
     data_response = json.loads(response.data)
 
-    # Verifying the stock was updated in the database
-    updated_stock = Stock.query.get(stock_id_one)
-
     assert response.status_code == 200
     assert data_response['message'] == 'Stocks assigned successfully'
+    assert mock_pubsub.publish.called
 
 
 def test_get_stock_by_store_id(client, headers, create_test_stocks):

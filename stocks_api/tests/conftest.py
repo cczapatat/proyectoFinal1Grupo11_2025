@@ -1,7 +1,8 @@
 import os
 import uuid
+from unittest.mock import Mock
+
 import pytest
-import uuid
 
 from stocks_api import create_app
 
@@ -35,7 +36,7 @@ def headers():
 def create_test_stocks(app):
     from stocks_api.config.db import db
     from stocks_api.models.stock_model import Stock
-    
+
     id_store = uuid.uuid4()
 
     stocks = []
@@ -54,3 +55,17 @@ def create_test_stocks(app):
         db.session.commit()
 
     return stocks
+
+
+@pytest.fixture(autouse=True)
+def mock_pubsub(monkeypatch):
+    """Mock PubSub client for all tests"""
+    mock_publisher = Mock()
+    mock_publisher.publish.return_value.result.return_value = 'message_id'
+    mock_publisher.topic_path.return_value = 'mock_topic_path'
+
+    def mock_client():
+        return mock_publisher
+
+    monkeypatch.setattr('google.cloud.pubsub_v1.PublisherClient', mock_client)
+    return mock_publisher
