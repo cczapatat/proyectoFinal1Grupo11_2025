@@ -1,6 +1,7 @@
 import uuid
+from typing import Optional
 
-from ..dtos.store_x_products_dto import StoreXProductsDTO
+from ..dtos.store_x_products_dto import StoreXProductsDTO, StoreXProductDTO
 from ..http_services.products_http import get_products_by_id
 from ..infrastructure.cache_repository import CacheRepository
 from ..infrastructure.stock_repository import StockRepository
@@ -53,6 +54,14 @@ def populate_products(stocks: list):
             else:
                 stock['product'] = {}
 
+def populate_product(stock: dict):
+    if not stock or 'id_product' not in stock:
+        return
+
+    products = get_products_by_id([stock['id_product']])
+    product = products[0] if products else {}
+
+    stock['product'] = product  # Embed product directly into stock dict
 
 class StockManager:
     @staticmethod
@@ -113,3 +122,14 @@ class StockManager:
             cache_repository.set(cache_key, data)
 
         return {'message': 'Stocks assigned successfully'}
+
+    @staticmethod
+    def get_stocks_by_product_id_and_store_id(id_product:uuid.uuid4, id_store: uuid.uuid4) -> Optional[dict]:
+        stock = stock_repository.get_stock_by_product_id_and_store_id(id_product, id_store)
+        if stock is None:
+            return None
+
+        stock_dict = stock.to_dict()  # Convert to dict for enrichment
+        print('***************Populate')
+        populate_product(stock_dict)  # Enrich the nested ProductStockDTO dict
+        return stock_dict

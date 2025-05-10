@@ -144,4 +144,8 @@
     <string name="zone_southeast">Sureste</string>
     <string name="zone_southwest">Suroeste</string>
 
+    <!--Product availability-->
+    <string name="error_stock_not_found">Error no se encuentran existencias</string>
+    <string name="error_id_store_required">Error, se requiere bodega</string>
+    <string name="error_id_product_required">Error, se requiere producto</string>
 </resources>

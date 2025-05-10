@@ -33,6 +33,7 @@ def test_invalid_token(client):
 
 
 def test_get_stocks_success(client, headers, create_test_stocks):
+
     with requests_mock.Mocker() as m:
         m.post(f'{products_path}/products/by-ids', headers=headers, json=[])
         response = client.get('/stocks-api/stocks/all', headers=headers)
@@ -271,3 +272,61 @@ def test_get_stock_by_store_id(client, headers, create_test_stocks):
     assert response.status_code == 200
     assert len(data_response) == 2
     assert data_response['store_id'] == str(store_id)
+
+
+def test_get_stocks_by_product_id_by_store_id_success(client, headers, create_test_stocks):
+    stock_id_one = uuid.uuid4()
+    store_id_one = uuid.uuid4()
+    product_id = uuid.uuid4()
+    stock_one = Stock(id=stock_id_one, id_product=product_id, id_store=store_id_one, quantity_in_stock=100,
+                      last_quantity=100, enabled=True)
+    db.session.add(stock_one)
+
+    db.session.commit()
+
+    with requests_mock.Mocker() as m:
+        m.post(f'{products_path}/products/by-ids', headers=headers,
+               json=[{
+                   "category": "BOOKS",
+                   "created_at": "2025-04-12T22:45:18.261098",
+                   "currency_price": "COP",
+                   "description": "Producto colombiano de alta calidad",
+                   "discount_price": 0.0,
+                   "expired_at": "2028-01-02T00:00:00",
+                   "id": str(product_id),
+                   "is_promotion": False,
+                   "manufacturer_id": "4307b4f3-d6e0-4d09-8f9c-69ece6160361",
+                   "name": "Achiras del Huila",
+                   "store_conditions": "Conservar en lugar fresco y seco...",
+                   "total_items": 0,
+                   "unit_price": 21890.0,
+                   "updated_at": "2025-04-26T15:27:33.043944",
+                   "url_photo": "https://www.images.com/image.png"
+               }]
+               )
+
+        response_stock = client.get(f'/stocks-api/stocks/product_and_store?id_store={store_id_one}&id_product={product_id}',
+                                    headers=headers)
+        stock = response_stock.get_json()
+
+    assert response_stock.status_code == 200
+    assert stock['product']['id'] == str(stock_one.id_product)
+
+
+def test_get_stocks_by_product_id_by_store_id_fail(client, headers, create_test_stocks):
+    stock_id_one = uuid.uuid4()
+    store_id_one = uuid.uuid4()
+    stock_one = Stock(id=stock_id_one, id_product=uuid.uuid4(), id_store=store_id_one, quantity_in_stock=100,
+                      last_quantity=100, enabled=True)
+    db.session.add(stock_one)
+    db.session.commit()
+
+    with requests_mock.Mocker() as m:
+        m.post(f'{products_path}/products/by-ids', json=[])
+        response_stock = client.get(f'/stocks-api/stocks/product_and_store?id_store={uuid.uuid4()}&id_product={stock_one.id_product}',
+                                    headers=headers)
+
+        data = json.loads(response_stock.data)
+        assert data['message'] == 'stock not found'
+
+    assert response_stock.status_code == 404

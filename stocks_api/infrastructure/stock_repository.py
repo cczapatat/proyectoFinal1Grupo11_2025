@@ -6,7 +6,7 @@ from google.cloud import pubsub_v1
 from sqlalchemy import asc
 
 from ..config.db import db
-from ..dtos.store_x_products_dto import ProductStockDTO, StoreXProductsDTO
+from ..dtos.store_x_products_dto import ProductStockDTO, StoreXProductsDTO, StoreXProductDTO
 from ..models.stock_model import Stock
 
 project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinalmiso2025')
@@ -87,5 +87,27 @@ class StockRepository:
         # Commit the changes to the database
         db.session.commit()
 
+
         if is_update:
             _publish_update_stock(stock.id, stock.id_product, stock.quantity_in_stock)
+
+    @staticmethod
+    def unassign_stock_to_store(id_store: uuid.uuid4, selected_stocks: list[ProductStockDTO]):
+        # get all the stocks by store id
+        stocks = db.session.query(Stock).filter_by(id_store=id_store).all()
+        # if any of the stocks are not in the selected stocks, remove them
+        for stock in stocks:
+            if stock.id_product not in [selected_stock.id_product for selected_stock in selected_stocks]:
+                db.session.delete(stock)
+        # commit the changes to the database
+        db.session.commit()
+        # return the stocks left
+        stocks = db.session.query(Stock).filter_by(id_store=id_store).all()
+        return stocks
+
+    @staticmethod
+    def get_stock_by_product_id_and_store_id(id_product: uuid.UUID, id_store: uuid.UUID) -> Stock | None:
+        stock = db.session.query(Stock).filter_by(id_store=id_store, id_product=id_product).first()
+        print('******************stock')
+        return stock
+
