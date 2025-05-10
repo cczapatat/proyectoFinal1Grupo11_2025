@@ -784,3 +784,46 @@ jobs:
         run: |
           cd manufacturers_worker
           coverage report -m --fail-under=90
+
+  monitor_coverage:
+    name: Monitor Coverage
+    needs: start_continue_validation_coverage
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14-alpine
+        env:
+          POSTGRES_USER: user_final
+          POSTGRES_PASSWORD: pass_final
+          POSTGRES_DB: project_final
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@v2
+      - name: Python Env Configuration 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd monitor
+          python --version
+          pip install --upgrade --no-cache-dir pip==23.2.1
+          pip --version
+          pip install --no-cache-dir -r requirements.txt
+      - name: Run tests
+        run: |
+          cd monitor
+          echo "Creating credentials.json"
+          echo ${{ secrets.GCP_CREDENTIALS }} > credentials.json
+          export GOOGLE_APPLICATION_CREDENTIALS="credentials.json"
+          coverage run -m pytest -vv
+      - name: Validate test
+        if: ${{ failure() }}
+        run: echo "One or more tests failed."
+      - name: Validate coverage
+        run: |
+          cd monitor
+          coverage report -m --fail-under=90

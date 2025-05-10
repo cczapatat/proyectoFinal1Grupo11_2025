@@ -14,7 +14,7 @@ commands_to_stock_update_name_pub = os.environ.get('GCP_STOCK_UPDATE_TOPIC', 'co
 
 
 def _get_publisher():
-    if os.getenv('TESTING'):
+    if str(os.getenv('TESTING')).lower() == 'true':
         return publisher_stock_update
     return pubsub_v1.PublisherClient()
 

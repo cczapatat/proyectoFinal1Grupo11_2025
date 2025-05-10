@@ -9,7 +9,7 @@ commands_to_stock_update_name_sub = os.environ.get('GCP_STOCK_UPDATE_SUB', 'comm
 
 
 def _get_subscriber():
-    if os.getenv('TESTING'):
+    if str(os.getenv('TESTING')).lower() == 'true':
         return subscriber_stock_update
     return pubsub_v1.SubscriberClient()
 
