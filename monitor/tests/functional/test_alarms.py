@@ -4,6 +4,10 @@ import uuid
 
 import requests_mock
 
+from monitor.config.db import db
+from monitor.consumer.stock_update import read_messages
+from monitor.models.alarm_trigger import AlarmTrigger
+
 user_session_manager_path = os.getenv('USER_SESSION_MANAGER_PATH', default='http://localhost:3008')
 
 manufacture_id = str(uuid.uuid4())
@@ -16,6 +20,14 @@ alarm_data_mock = {
     "maximum_value": 100,
     "notes": "Test alarm notes"
 }
+
+
+class MockMessage:
+    def __init__(self, data):
+        self.data = data
+
+    def ack(self):
+        pass
 
 
 def test_unauthorized_access(client):
@@ -196,3 +208,45 @@ def test_create_alarm_success_only_maximum_value(client, headers):
     assert data['minimum_value'] is None
     assert data['maximum_value'] == 100
     assert data['notes'] == 'Test alarm notes'
+
+
+def test_create_alarm_success_alarm_trigger_success(client, headers):
+    headers['Authorization'] = 'Bearer valid_token'
+    with requests_mock.Mocker() as m:
+        # Mock auth response
+        m.get(f'{user_session_manager_path}/user_sessions/auth', json={
+            'user_session_id': str(uuid.uuid4()),
+            'user_id': str(uuid.uuid4()),
+            'user_type': 'ADMIN'
+        })
+
+        alarm_data = {
+            "manufacture_id": manufacture_id,
+            "product_id": product_id,
+            "minimum_value": 300,
+            "maximum_value": 350,
+            "notes": "Test alarm notes"
+        }
+        response = client.post('/monitor/new', headers=headers, json=alarm_data)
+        data = json.loads(response.data)
+
+    assert response.status_code == 201
+    assert 'id' in data
+
+    read_messages(
+        MockMessage(data=json.dumps(
+            {'product_id': str(product_id), 'stock_unit': 340, 'stock_id': str(uuid.uuid4())}
+        ).encode('utf-8'))
+    )
+
+    alarm_trigger = db.session.query(AlarmTrigger).filter(AlarmTrigger.product_id == product_id).all()
+    assert len(alarm_trigger) == 0
+
+    read_messages(
+        MockMessage(data=json.dumps(
+            {'product_id': str(product_id), 'stock_unit': 380, 'stock_id': str(uuid.uuid4())}
+        ).encode('utf-8'))
+    )
+
+    alarm_trigger = db.session.query(AlarmTrigger).filter(AlarmTrigger.product_id == product_id).all()
+    assert len(alarm_trigger) == 1

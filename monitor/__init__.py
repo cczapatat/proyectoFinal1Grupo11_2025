@@ -1,10 +1,12 @@
 import logging
 import os
+import threading
 
 from flask import Flask, jsonify
 from flask_cors import CORS
 
 from .config.db import create_db, get_uri_db
+from .consumer.stock_update import stock_update_consume_messages
 
 
 def create_app() -> Flask:
@@ -31,5 +33,8 @@ def create_app() -> Flask:
     @app.route('/monitor/health')
     def health():
         return jsonify({'status': 'up'})
+
+    thread = threading.Thread(target=stock_update_consume_messages, args=(app,), daemon=True)
+    thread.start()
 
     return app
