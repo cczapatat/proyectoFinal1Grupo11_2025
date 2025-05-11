@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/createordertest"
+    android:id="@+id/searchstocktest"
     android:paddingTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,22 +11,22 @@
     android:background="@drawable/centered_background_one"
     android:clipToOutline="true"
     android:theme="@style/Theme.MyApplication"
-    tools:context="com.smartstock.myapplication.ui.CreateOrderFragment">
+    tools:context="com.smartstock.myapplication.ui.SearchStockFragment">
 
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/section_create_order_1"
+        android:id="@+id/section_search_stock_1"
         android:layout_width="411dp"
         android:layout_height="100dp"
         android:clipToOutline="true"
         >
         <TextView
-            android:id="@+id/crear_nueva"
+            android:id="@+id/buscar_nueva"
             android:layout_centerVertical="true"
             android:layout_width="420dp"
-            android:layout_height="50dp"
-            android:text="@string/crear_pedido"
+            android:layout_height="100dp"
+            android:text="@string/consulta_disponibilidad_titulo"
 
             android:textAppearance="@style/crear_nueva"
             android:lineSpacingExtra="2sp"
@@ -35,20 +35,20 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/section_create_order_2"
+        android:id="@+id/section_search_stock_2"
         android:layout_width="411dp"
         android:layout_height="100dp"
         android:clipToOutline="true"
-        android:layout_below="@id/section_create_order_1"
+        android:layout_below="@id/section_search_stock_1"
         >
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/CustomExposedDropdownMenu"
-            android:id="@+id/textField4_5"
+            android:id="@+id/textField6_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:hint="@string/seleccionar_cliente"
+            android:hint="@string/consulta_disponibilidad_bodega"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
             android:background="@color/white"
@@ -71,63 +71,26 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/section_create_order_3"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
-        android:layout_below="@id/section_create_order_2"
-        android:clipToOutline="true">
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/LoginTextInputLayoutStyle2"
-            android:id="@+id/textField7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:hint="@string/seleccionar_fecha"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-
-
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/baseline_calendar_today_24"
-            app:endIconContentDescription="@string/seleccionar_fecha"
-            app:hintTextColor="@color/black"
-            app:endIconTint="@color/schemesSecondary"
-            >
-
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/datePickerCreate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/textAppearanceBodyLarge"
-                android:inputType="date"
-                android:background="@color/white"
-                android:textColor="@color/black" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/section_create_order_4"
+        android:id="@+id/section_search_stock_3"
         android:layout_width="411dp"
         android:layout_height="100dp"
         android:clipToOutline="true"
-        android:layout_below="@id/section_create_order_3"
+        android:layout_below="@id/section_search_stock_2"
         >
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/CustomExposedDropdownMenu"
-            android:id="@+id/textField4_6"
+            android:id="@+id/textField6_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:hint="@string/tipo_pago"
+            android:hint="@string/consulta_disponibilidad_producto"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
+            android:background="@color/white"
+
             app:boxBackgroundColor="@color/white"
             app:hintTextColor="@color/black"
-            android:background="@color/white"
             app:endIconTint="@color/schemesSecondary">
 
             <AutoCompleteTextView
@@ -142,16 +105,16 @@
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
 
+
     <RelativeLayout
-        android:id="@+id/section_create_order_5"
+        android:id="@+id/section_search_stock_4"
         android:layout_width="411dp"
         android:layout_height="55dp"
         android:clipToOutline="true"
-        android:layout_below="@id/section_create_order_4"
+        android:layout_below="@id/section_search_stock_3"
         >
-
         <Button
-            android:id="@+id/buttonAddProduct"
+            android:id="@+id/buttonSearchProduct"
             android:layout_width="203dp"
             android:layout_height="42dp"
             android:layout_centerVertical="true"
@@ -159,86 +122,47 @@
             android:layout_marginLeft="2dp"
             android:backgroundTint="@color/schemesOrange600"
             android:background="@drawable/rounded_button_small"
-            android:text="@string/add_product"
+            android:text="@string/consulta_disponibilidad_buscar"
             android:textColor="@color/colorBackground"
             android:textSize="@dimen/textAppearanceTitleSmall" />
-
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/section_create_order_6"
+        android:id="@+id/section_search_stock_5"
         android:layout_width="411dp"
-        android:layout_height="200dp"
+        android:layout_height="90dp"
         android:clipToOutline="true"
-        android:layout_below="@id/section_create_order_5"
+        android:layout_below="@id/section_search_stock_4"
         >
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/productsOrderRv"
+            android:id="@+id/stocksResultRv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/product_item" />
+            tools:listitem="@layout/stock_item" />
     </RelativeLayout>
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/section_create_order_7"
-        android:layout_width="411dp"
-        android:layout_height="40dp"
-        android:clipToOutline="true"
-        android:layout_below="@id/section_create_order_6"
-        >
-        <TextView
-            android:id="@+id/total_value_order"
-            android:layout_width="420dp"
-            android:layout_height="50dp"
-            android:text="@string/total"
-            android:textAppearance="@style/total"
-            android:lineSpacingExtra="2sp"
-            android:gravity="left|center_vertical"
-            />
-    </RelativeLayout>
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
-        android:id="@+id/section_create_order_8"
+        android:id="@+id/section_search_stock_6"
         android:layout_width="411dp"
         android:layout_height="150dp"
         android:clipToOutline="true"
-        android:layout_below="@id/section_create_order_7"
+        android:layout_below="@id/section_search_stock_5"
         >
         <Button
             android:id="@+id/buttonCancelCreate"
             android:layout_width="203dp"
-            android:layout_height="62dp"
+            android:layout_height="42dp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/rounded_button"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/center_divider_action"
             android:layout_marginLeft="2dp"
             android:backgroundTint="@color/schemesOrange600"
-            android:text="@string/cancelar"
+            android:text="@string/consulta_disponibilidad_volver"
             android:textColor="@color/colorBackground"
-            android:textSize="@dimen/textAppearanceHeadlineSmall" />
-        <Button
-            android:id="@+id/buttonAcceptCreate"
-            android:layout_width="203dp"
-            android:layout_height="62dp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/rounded_button"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="2dp"
-            android:layout_toRightOf="@+id/center_divider_action"
-            android:backgroundTint="@color/schemesOrange600"
-            android:text="@string/crear"
-            android:textColor="@color/colorBackground"
-            android:textSize="@dimen/textAppearanceHeadlineSmall" />
-        <View
-            android:id="@+id/center_divider_action"
-            android:layout_width="5dp"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:visibility="invisible" />
+            android:textSize="@dimen/textAppearanceTitleSmall" />
+
+
     </RelativeLayout>
 </RelativeLayout>
 

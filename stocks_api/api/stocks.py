@@ -117,6 +117,36 @@ def get_stocks_by_store_id():
 
     return jsonify(stocks.to_dict()), 200
 
+@bp.route('/product_and_store', methods=('GET',))
+def get_stocks_by_product_id_and_store_id():
+    __there_is_token()
+
+    id_store = request.args.get('id_store', None)
+    id_product = request.args.get('id_product', None)
+
+    if not id_store:
+        return jsonify({'message': 'id_store is required'}), 400
+
+    if not id_product:
+        return jsonify({'message': 'id_product is required'}), 400
+
+    try:
+        id_product = uuid.UUID(id_product)
+    except ValueError:
+        return jsonify({'message': 'invalid id_product'}), 400
+    try:
+        id_store = uuid.UUID(id_store)
+    except ValueError:
+        return jsonify({'message': 'invalid id_store'}), 400
+
+    stock = stock_manager.get_stocks_by_product_id_and_store_id(id_product, id_store)
+    if stock is None:
+        return jsonify({'message': 'stock not found'}), 404
+
+    if not stock.get("product"):
+        return jsonify({'message': 'stock not found'}), 404
+
+    return jsonify(stock), 200
 
 @bp.errorhandler(400)
 @bp.errorhandler(401)

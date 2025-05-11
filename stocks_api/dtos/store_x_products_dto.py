@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import dataclass, field
 
 
@@ -24,4 +25,15 @@ class StoreXProductsDTO:
         return {
             'store_id': str(self.id_store),
             'stocks': [stock.to_dict() for stock in self.stocks]
+        }
+
+@dataclass
+class StoreXProductDTO:
+    id_store: uuid.UUID = field(default=None)
+    stock: ProductStockDTO = field(default=None)
+
+    def to_dict(self):
+        return {
+            'store_id': str(self.id_store),
+            'stock': self.stock.to_dict() if self.stock else None
         }

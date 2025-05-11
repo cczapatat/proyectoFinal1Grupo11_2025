@@ -94,6 +94,8 @@ class MainActivity : AppCompatActivity() {
             "SELLER" -> {
                 popup.menu.findItem(R.id.RegisterClientFragment).isVisible = true
                 popup.menu.findItem(R.id.RoutesCreateVisitFragment).isVisible = true
+                popup.menu.findItem(R.id.ClientFragment).isVisible = true
+                popup.menu.findItem(R.id.SearchStockFragment).isVisible = true
                 popup.menu.findItem(R.id.ClientVisitFragment).isVisible = true
                 popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
                 popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
@@ -101,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             "CLIENT" -> {
-                popup.menu.findItem(R.id.ConsultaProductos).isVisible = true
+                popup.menu.findItem(R.id.SearchStockFragment).isVisible = true
                 popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
                 popup.menu.findItem(R.id.UploadVideoFragment).isVisible = true
             }
@@ -113,6 +115,8 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.RegisterClientFragment -> navController.navigate(R.id.RegisterClientFragment)
                 R.id.RoutesCreateVisitFragment -> navController.navigate(R.id.RoutesCreateVisitFragment)
+                R.id.ClientFragment -> navController.navigate(R.id.ClientFragment)
+                R.id.SearchStockFragment -> navController.navigate(R.id.SearchStockFragment)
                 R.id.ClientVisitFragment -> navController.navigate(R.id.ClientVisitFragment)
                 R.id.ConsultaProductos -> navController.navigate(R.id.ConsultaProductos)
                 R.id.CreateOrderFragment -> navController.navigate(R.id.CreateOrderFragment)

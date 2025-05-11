@@ -18,6 +18,7 @@ import com.smartstock.myapplication.models.CreatedOrder
 import com.smartstock.myapplication.models.CreatedRecommendation
 import com.smartstock.myapplication.models.CreatedRouteVisit
 import com.smartstock.myapplication.models.CreatedUpload
+import com.smartstock.myapplication.models.Manufacturer
 import com.smartstock.myapplication.models.Order
 import com.smartstock.myapplication.models.Product
 import com.smartstock.myapplication.models.ProductVisit
@@ -25,6 +26,7 @@ import com.smartstock.myapplication.models.Recommendation
 import com.smartstock.myapplication.models.RouteVisit
 import com.smartstock.myapplication.models.SimpleProductName
 import com.smartstock.myapplication.models.Stock
+import com.smartstock.myapplication.models.Store
 import com.smartstock.myapplication.models.User
 import com.smartstock.myapplication.models.UserToken
 import com.smartstock.myapplication.models.UserVerify
@@ -47,9 +49,11 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
         const val BASE_URL_CLIENTS = "http://130.211.32.9/"
         const val BASE_URL_PRODUCTS_STOCK = "http://130.211.32.9/"
+        //const val BASE_URL_PRODUCTS_STOCK ="https://3a07-186-29-181-170.ngrok-free.app/"
         const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
         const val BASE_ROUTES = "http://130.211.32.9/"
-
+        const val BASE_URL_MANUFACTURER = "http://130.211.32.9/manufacture-api/"
+        const val BASE_URL_STORE = "http://130.211.32.9/stores/"
         const val BASE_URL_ORDER = "http://130.211.32.9/"
         const val BASE_URL_VIDEO = "http://130.211.32.9/"
         const val BASE_URL_DOCUMENT_MANAGER = "http://130.211.32.9/document-manager/"
@@ -63,6 +67,10 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val VIDEO_CREATE = "video/create"
         const val DOCUMENT_UPLOAD = "document/create"
         const val ROUTE_CREATE_VISIT = "routes/visits/create"
+        const val GET_MANUFACTURERS_PAGINATED = "manufacturers/list"
+        const val GET_STORES_PAGINATED = "paginated_full"
+        const val GET_PRODUCTS_BY_CATEGORY_BY_MANUFACTURER = "products/category_manufacturer_paginated"
+        const val GET_PRODUCTS_BY_ID_BY_STORE = "stocks-api/stocks/product_and_store"
         const val BASE_VISITS = "http://130.211.32.9/"
         const val GET_PAGINATED_VISITS = "visits/by-visit-date-paginated/"
         const val UNKNOWN = "unknown"
@@ -361,6 +369,88 @@ open class NetworkServiceAdapter constructor(context: Context){
             })
         )
     }
+    suspend fun fetchPaginatedStores(page: Int, perPage: Int) : List<Store> = suspendCoroutine { cont ->
+
+        val url = "$BASE_URL_STORE$GET_STORES_PAGINATED"
+        val path = "?page=$page&per_page=$perPage&sort_order=asc"
+
+        requestQueue.add(
+            getRequest(url, path, { response ->
+                try{
+                    val jsonArray = response.getJSONArray("data")
+                    val stores = mutableListOf<Store>()
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        stores.add(
+                            Store(
+                                id = item.getString("id"),
+                                name = item.getString("name")
+                            )
+                        )
+                    }
+                    cont.resume(stores)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    print(e.message)
+                    cont.resumeWithException(e)
+                }
+
+            }, {
+                cont.resumeWithException(it)
+            })
+        )
+    }
+
+
+    suspend fun fetchStockByProductIdAndStoreId(
+        productId: String?,
+        storeId: String?,
+        context: Context,
+    ): Stock = suspendCoroutine { cont ->
+
+        val url = "$BASE_URL_PRODUCTS_STOCK"
+        val path = "$GET_PRODUCTS_BY_ID_BY_STORE?id_product=$productId&id_store=$storeId"
+
+        requestQueue.add(
+            getRequest(url, path, { response ->
+                try{
+                    val productJson = response.getJSONObject("product")
+                    val product = Product(
+                        id = productJson.optString("id"),
+                        manufacturer_id = productJson.optString("manufacturer_id"),
+                        name = productJson.optString("name"),
+                        description = productJson.optString("description"),
+                        category = productJson.optString("category"),
+                        unit_price = productJson.optDouble("unit_price"),
+                        currency_price = productJson.optString("currency_price"),
+                        is_promotion = productJson.optBoolean("is_promotion"),
+                        discount_price = productJson.optDouble("discount_price"),
+                        expired_at = productJson.optString("expired_at"),
+                        url_photo = productJson.optString("url_photo"),
+                        store_conditions = productJson.optString("store_conditions")
+                    )
+
+                    val stock = Stock(
+                        id = response.optString("id"),
+                        quantity_in_stock = response.optInt("quantity_in_stock"),
+                        product = product
+                    )
+
+                    cont.resume(stock)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    cont.resumeWithException(e)
+                }
+
+            }, { error ->
+                val networkResponse = error.networkResponse
+                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                showToast(errorMessage, context)
+                cont.resumeWithException(error)
+            })
+        )
+    }
+
 
     suspend fun fetchPaginatedClientVisits(page: Int, perPage: Int, token : String? ) : List<ClientVisit> = suspendCoroutine { cont ->
 
@@ -663,6 +753,9 @@ open class NetworkServiceAdapter constructor(context: Context){
                 "Client already exists"-> context.getString(R.string.error_client_exists)
                 "Email format is not valid"-> context.getString(R.string.error_email_format)
                 "Phone format is not valid"-> context.getString(R.string.error_phone_format)
+                "stock not found" -> context.getString(R.string.error_stock_not_found)
+                "id_store is required" -> context.getString(R.string.error_id_store_required)
+                "id_product is required" -> context.getString(R.string.error_id_product_required)
                 else -> context.getString(R.string.error_unknown)
             }
         } catch (e: Exception) {
