@@ -25,6 +25,7 @@ COPY . .
 # Set Python path
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
+ENV TESTING=false
 
 # Expose port 8000
 EXPOSE 3020

@@ -1,12 +1,36 @@
+import json
+import os
+import uuid
 from datetime import datetime
-from typing import List
-from sqlalchemy.orm import Session
 from threading import Thread
+from typing import List
+
+from app.cache.redis_handler import update_stock_cache
+from app.dtos.product_update_dto import ProductUpdateDTO
 from app.models.stock import Stock
 from app.models.update_stock_attempt import UpdateStockAttempt, UpdateStatus
-from app.dtos.product_update_dto import ProductUpdateDTO
-from app.pubsub.dispatcher import dispatch_stock_updated_event
-from app.cache.redis_handler import update_stock_cache
+from google.cloud import pubsub_v1
+from sqlalchemy.orm import Session
+
+project_id = os.environ.get('GCP_PROJECT_ID', 'proyectofinalmiso2025')
+commands_to_stock_update_name_pub = os.environ.get('GCP_STOCK_UPDATE_TOPIC', 'commands_to_stock_update')
+
+
+def _get_publisher():
+    if str(os.getenv('TESTING')).lower() == 'true':
+        return publisher_stock_update
+    return pubsub_v1.PublisherClient()
+
+
+publisher_stock_update = pubsub_v1.PublisherClient()
+topic_path_stock_update = publisher_stock_update.topic_path(project_id, commands_to_stock_update_name_pub)
+
+
+def _publish_update_stock(stock_id: uuid, product_base_id: uuid, stock_unit: int) -> None:
+    data = {"stock_id": str(stock_id), "product_id": str(product_base_id), "stock_unit": stock_unit}
+    data_str = json.dumps(data).encode("utf-8")
+    future = _get_publisher().publish(topic_path_stock_update, data_str)
+    print(f"[Publish Update Stock] Published: {future.result()}, data: {data_str}")
 
 
 class StockRepository:
@@ -34,7 +58,6 @@ class StockRepository:
                     stock = self.session.query(Stock).filter(Stock.id == product_id).first()
                     if not stock:
                         update_attempt.status = UpdateStatus.ROLLED_BACK
-                        ## TODO: Comando de rollback a la order
                         update_attempt.last_update_date = datetime.utcnow()
                         print(f" > Producto {product_id} no encontrado")
                         results.append({"product_id": str(product_id), "error": "Producto no encontrado"})
@@ -89,12 +112,7 @@ class StockRepository:
                 thread_redis.start()
 
                 # Despachar evento de stock actualizado
-                #thread = Thread(
-                #    target=dispatch_stock_updated_event,
-                #    args=(result["product_id"], result["product_name"], result["last_quantity"], result["new_quantity"]),
-                #    daemon=True
-                #)
-                #thread.start()
+                _publish_update_stock(updated_stock.id, updated_stock.id_product, updated_stock.quantity_in_stock)
 
             except Exception as e:
                 print(f" > Error al actualizar stock para producto {product_id}: {e}")

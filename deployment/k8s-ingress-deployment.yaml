@@ -102,3 +102,10 @@ spec:
                 name: route-service
                 port:
                   number: 80
+          - path: /monitor
+            pathType: Prefix
+            backend:
+              service:
+                name: monitor-service
+                port:
+                  number: 80

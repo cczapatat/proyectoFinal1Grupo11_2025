@@ -15,8 +15,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 3010/tcp
+EXPOSE 3025/tcp
 ENV PYTHONUNBUFFERED=1
 ENV TESTING=false
 
-CMD [ "flask", "--app", ".", "run", "--host=0.0.0.0", "--port=3010" ]
+CMD [ "flask", "--app", ".", "run", "--host=0.0.0.0", "--port=3025" ]
