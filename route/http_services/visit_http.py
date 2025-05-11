@@ -28,3 +28,14 @@ def get_all_visits_by_date(visit_date: str, token: str) -> [int, dict]:
     )
 
     return [visit_response.status_code, visit_response.json()]
+
+def get_all_visits_by_date_paginated(visit_date: str, page: int, per_page: int, token: str) -> [int, dict]:
+    visit_response = requests.get(
+        f'{visits_path}/visits/by-visit-date-paginated/{visit_date}?page={page}&per_page={per_page}',
+        headers={
+            'x-token': internal_token,
+            'Authorization': token,
+        },
+    )
+
+    return [visit_response.status_code, visit_response.json()]
