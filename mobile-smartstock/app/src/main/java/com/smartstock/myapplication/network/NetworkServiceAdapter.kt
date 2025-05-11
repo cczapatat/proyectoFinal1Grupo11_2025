@@ -45,6 +45,7 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
         const val BASE_URL_CLIENTS = "http://130.211.32.9/"
         const val BASE_URL_PRODUCTS_STOCK = "http://130.211.32.9/"
+        //const val BASE_URL_PRODUCTS_STOCK ="https://3a07-186-29-181-170.ngrok-free.app/"
         const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
         const val BASE_ROUTES = "http://130.211.32.9/"
         const val BASE_URL_MANUFACTURER = "http://130.211.32.9/manufacture-api/"
@@ -399,8 +400,8 @@ open class NetworkServiceAdapter constructor(context: Context){
 
 
     suspend fun fetchStockByProductIdAndStoreId(
-        productId: String,
-        storeId: String,
+        productId: String?,
+        storeId: String?,
         context: Context,
     ): Stock = suspendCoroutine { cont ->
 

@@ -14,16 +14,16 @@
         android:enabled="true"/>
 
     <item
-        android:id="@+id/ListarClientes"
+        android:id="@+id/ClientFragment"
         android:icon="@drawable/baseline_groups_24"
         android:title="@string/menu_listar_clientes"
-        android:enabled="false"/>
+        android:enabled="true"/>
 
     <item
-        android:id="@+id/ConsultaProductos"
+        android:id="@+id/SearchStockFragment"
         android:icon="@drawable/baseline_search_24"
         android:title="@string/menu_consulta_productos"
-        android:enabled="false"/>
+        android:enabled="true"/>
 
     <item
         android:id="@+id/CreateOrderFragment"

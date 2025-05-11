@@ -35,6 +35,16 @@
             app:destination="@id/ClientFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/SearchStockFragment"
+        android:name="com.smartstock.myapplication.ui.SearchStockFragment"
+        android:label="@string/search_stock_fragment_label"
+        tools:layout="@layout/fragment_search_stock">
+        <action
+            android:id="@+id/actionSearchStockFragmentToClientFragment"
+            app:destination="@id/ClientFragment" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/UploadVideoFragment"
