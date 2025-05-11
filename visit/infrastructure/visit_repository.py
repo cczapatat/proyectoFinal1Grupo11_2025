@@ -34,3 +34,19 @@ class VisitRepository:
             return visits
         except Exception as e:
             raise InternalServerError(description=f"Error querying visits by date: {str(e)}")
+    
+    @staticmethod
+    def get_visits_by_date_paginated_full(
+        visit_date: str, page: int = 1, per_page: int = 10, sort_order: str = 'asc'
+    ) -> List[Visit]:
+        try:
+            query = Visit.query.filter(Visit.visit_date.cast(String).contains(visit_date))
+            if sort_order == 'asc':
+                query = query.order_by(Visit.visit_date.asc())
+            else:
+                query = query.order_by(Visit.visit_date.desc())
+            
+            paginated = query.paginate(page=page, per_page=per_page, error_out=False)
+            return paginated
+        except Exception as e:
+            raise InternalServerError(description=f"Error querying visits: {str(e)}")

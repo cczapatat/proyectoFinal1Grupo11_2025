@@ -35,6 +35,43 @@ class VisitManager:
 
         return visit.to_dict(products)
     
+
+    def get_all_visits_by_date_paginated_full(
+        self, visit_date: str, page: int = 1, per_page: int = 10, sort_order: str = 'asc'
+    ) -> dict:
+        try:
+            # Fetch paginated visits from the repository
+            paginated = self.visit_repository.get_visits_by_date_paginated_full(
+                visit_date, page=page, per_page=per_page, sort_order=sort_order
+            )
+
+            # Transform visits into a list of dictionaries
+            visits = [
+                {
+                    'id': str(visit.id),
+                    'user_id': visit.user_id,
+                    'seller_id': visit.seller_id,
+                    'client': self.__get_client_by_id(visit.client_id, visit.seller_id),
+                    'description': visit.description,
+                    'visit_date': visit.visit_date.strftime('%Y-%m-%d %H:%M:%S'),
+                }
+                for visit in paginated.items
+            ]
+
+            # Return paginated response
+            return {
+                'data': visits,
+                'total': paginated.total,
+                'page': paginated.page,
+                'per_page': paginated.per_page,
+                'total_pages': paginated.pages,
+            }
+
+        except Exception as e:
+            # Raise an internal server error with a descriptive message
+            raise InternalServerError(description=f"Error retrieving visits: {str(e)}")
+
+
     def get_all_visits_by_visit_date(self, visit_date: str):
         try:
             # Ensure visit_date is compared as a date, not as a string

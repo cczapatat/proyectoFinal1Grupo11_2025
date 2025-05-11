@@ -109,6 +109,37 @@ def get_all_visits_by_visit_date(visit_date: str):
 
     return jsonify(visits), 200
 
+@bp.route('/by-visit-date-paginated/<string:visit_date>', methods=('GET',))
+def get_all_visits_by_visit_date_paginated(visit_date: str):
+    __there_is_token()
+    user_auth = __validate_auth_token()
+
+    if user_auth['user_type'] != 'SELLER':
+        raise Unauthorized(description='unauthorized operation')
+
+    seller_id = user_auth['user_id']
+
+    if seller_id is None:
+        return jsonify({'message': 'seller_id is required'}), 400
+
+    try:
+        # Parse query parameters with defaults
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
+        sort_order = request.args.get('sort_order', 'asc').lower()
+
+        # Ensure visit_date is parsed correctly
+        parsed_date = datetime.strptime(visit_date, '%Y-%m-%d').date()
+
+        # Fetch paginated visits
+        visits_paginated = visit_manager.get_all_visits_by_date_paginated_full(
+            parsed_date, page=page, per_page=per_page, sort_order=sort_order
+        )
+    except ValueError as e:
+        return jsonify({'message': f'Invalid input: {str(e)}'}), 400
+
+    return jsonify(visits_paginated), 200
+
 
 @bp.errorhandler(400)
 @bp.errorhandler(401)
