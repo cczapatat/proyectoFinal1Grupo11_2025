@@ -72,6 +72,7 @@
             android:hint="@string/seleccionar_cliente"
             android:paddingLeft="4dp"
             android:paddingRight="4dp"
+            android:background="@color/white"
             app:boxBackgroundColor="@color/white"
             app:hintTextColor="@color/black"
             app:endIconTint="@color/schemesSecondary">
@@ -118,6 +119,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/textAppearanceBodyLarge"
                 android:inputType="date"
+                android:background="@color/white"
                 android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>

@@ -28,6 +28,7 @@
     <string name="list_fragment_label">List Fragment</string>
     <string name="upload_video_fragment_label">Upload Video Fragment</string>
     <string name="record_fragment_label">Record Fragment</string>
+    <string name="search_stock_fragment_label">Search Stock Fragment</string>
     <string name="crear_nueva_cuenta">Crear nueva cuenta</string>
     <string name="ya_registrado">Ya te encuentras registrado? Si es asi, ingresa al siguiente
         enlace para iniciar tu sesión </string>
@@ -144,6 +145,21 @@
     <string name="zone_northwest">Noroeste</string>
     <string name="zone_southeast">Sureste</string>
     <string name="zone_southwest">Suroeste</string>
+
+    <!--Product availability-->
+    <string name="error_stock_not_found">Error no se encuentran existencias</string>
+    <string name="error_id_store_required">Error, se requiere bodega</string>
+    <string name="error_id_product_required">Error, se requiere producto</string>
+    <string name="consulta_disponibilidad_titulo">Consultar disponibilidad de productos</string>
+    <string name="consulta_disponibilidad_bodega">Seleccionar Bodega</string>
+    <string name="consulta_disponibilidad_producto">Seleccionar Producto</string>
+    <string name="consulta_disponibilidad_buscar">Buscar Producto</string>
+    <string name="consulta_disponibilidad_volver">Volver</string>
+    <string name="consulta_disponibilidad_precio_unitario">Precio Unitario:</string>
+    <string name="consulta_disponibilidad_precio_promocional">Precio Promocional:</string>
+    <string name="consulta_disponibilidad_descripcion">Descripción:</string>
+    <string name="consulta_disponibilidad_unidad">UND</string>
+    <string name="success_stock">Busquedas de existencias satisfactoria</string>
 
 
 </resources>

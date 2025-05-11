@@ -32,6 +32,7 @@
     <string name="list_fragment_label">List Fragment</string>
     <string name="upload_video_fragment_label">Upload Video Fragment</string>
     <string name="record_fragment_label">Record Fragment</string>
+    <string name="search_stock_fragment_label">Search Stock Fragment</string>
     <string name="crear_nueva_cuenta">Create new account</string>
     <string name="ya_registrado">Are you registered? If yes, signing by accessing to this link </string>
     <string name="aqui">Here.</string>
@@ -143,5 +144,19 @@
     <string name="zone_southeast">Southeast</string>
     <string name="zone_southwest">Southwest</string>
 
+    <!--Product availability-->
+    <string name="error_stock_not_found">Error not available stock</string>
+    <string name="error_id_store_required">Error, store is required</string>
+    <string name="error_id_product_required">Error, product is required</string>
+    <string name="consulta_disponibilidad_titulo">Check product availability</string>
+    <string name="consulta_disponibilidad_bodega">Select Store</string>
+    <string name="consulta_disponibilidad_producto">Select Product</string>
+    <string name="consulta_disponibilidad_buscar">Search product</string>
+    <string name="consulta_disponibilidad_volver">Return</string>
+    <string name="consulta_disponibilidad_precio_unitario">Unit Price:</string>
+    <string name="consulta_disponibilidad_precio_promocional">Discount Price:</string>
+    <string name="consulta_disponibilidad_descripcion">Description:</string>
+    <string name="consulta_disponibilidad_unidad">UNIT</string>
+    <string name="success_stock">Stock search sucessfully</string>
 
 </resources>
