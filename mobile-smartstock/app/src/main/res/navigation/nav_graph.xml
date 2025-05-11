@@ -56,4 +56,14 @@
             app:destination="@id/ClientFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/ClientVisitFragment"
+        android:name="com.smartstock.myapplication.ui.clientVisit.ClientVisitFragment"
+        android:label="@string/registrar_visita"
+        tools:layout="@layout/fragment_list_visits">
+        <action
+            android:id="@+id/actionRoutesCreateVisitFragmentToClientFragment"
+            app:destination="@id/ClientFragment" />
+    </fragment>
+
 </navigation>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="visit"
+            type="com.smartstock.myapplication.models.ClientVisit" />
+        <variable
+            name="onSelectClick"
+            type="kotlin.jvm.functions.Function1&lt;com.smartstock.myapplication.models.ClientVisit, kotlin.Unit&gt;" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewVisit"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/schemesPrimaryContainerCoffe"
+            android:backgroundTint="@color/schemesPrimaryContainerCoffe"
+            app:cardCornerRadius="3dp"
+            android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/schemesPrimaryContainer"
+            style="@style/MaterialCardItemStyle"
+            app:strokeWidth="1dp">
+
+            <RelativeLayout
+                android:id="@+id/fragment_client_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/clientListName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="false"
+                    android:paddingStart="8dp"
+                    android:paddingTop="13dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceHeadlineSmall"
+                    android:text="@{visit.client.name}"
+                    tools:text="Tienda de don Jaime"/>
+
+                <TextView
+                    android:id="@+id/clientListType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="false"
+                    android:paddingStart="8dp"
+                    android:paddingTop="41dp"
+                    android:paddingEnd="13dp"
+                    android:paddingBottom="3dp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceLabelMedium"
+                    android:text="@{visit.client.clientType}"
+                    tools:text="CORNER STORE"/>
+
+                <TextView
+                    android:id="@+id/clientListZone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="false"
+                    android:paddingStart="8dp"
+                    android:paddingTop="57dp"
+                    android:paddingEnd="8dp"
+                    android:paddingBottom="3dp"
+                    android:text='@{visit.client.zone}'
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textAppearanceLabelMedium"
+                    tools:text="CENTER" />
+
+
+                <!-- Third Icon to the Right (before the first one) -->
+                <ImageView
+                    android:id="@+id/deleteSelectedProductIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/baseline_arrow_forward_24"
+                    android:contentDescription="Third Icon"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:onClick="@{() -> onSelectClick.invoke(visit)}"/>
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

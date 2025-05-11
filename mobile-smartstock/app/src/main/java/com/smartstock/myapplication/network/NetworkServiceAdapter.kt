@@ -12,6 +12,8 @@ import com.android.volley.toolbox.Volley
 import com.smartstock.myapplication.R
 import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.models.Client
+import com.smartstock.myapplication.models.ClientSimple
+import com.smartstock.myapplication.models.ClientVisit
 import com.smartstock.myapplication.models.CreatedOrder
 import com.smartstock.myapplication.models.CreatedRecommendation
 import com.smartstock.myapplication.models.CreatedRouteVisit
@@ -31,6 +33,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -45,6 +49,7 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val BASE_URL_PRODUCTS_STOCK = "http://130.211.32.9/"
         const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
         const val BASE_ROUTES = "http://130.211.32.9/"
+
         const val BASE_URL_ORDER = "http://130.211.32.9/"
         const val BASE_URL_VIDEO = "http://130.211.32.9/"
         const val BASE_URL_DOCUMENT_MANAGER = "http://130.211.32.9/document-manager/"
@@ -58,7 +63,10 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val VIDEO_CREATE = "video/create"
         const val DOCUMENT_UPLOAD = "document/create"
         const val ROUTE_CREATE_VISIT = "routes/visits/create"
+        const val BASE_VISITS = "http://130.211.32.9/"
+        const val GET_PAGINATED_VISITS = "visits/by-visit-date-paginated/"
         const val UNKNOWN = "unknown"
+        val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         const val COVER_UNKNOWN =
             "https://www.alleganyco.gov/wp-content/uploads/unknown-person-icon-Image-from.png"
         private var instance: NetworkServiceAdapter? = null
@@ -192,42 +200,39 @@ open class NetworkServiceAdapter constructor(context: Context){
                     put("product_id", it.id)
                 }
             }))
-
-        println("JSON Payload: $jsonPayload")
-
         requestQueue.add(
             postRequestWithToken(BASE_ROUTES,
                 ROUTE_CREATE_VISIT,jsonPayload,context, token, { response ->
-                try{
+                    try{
 
-                    val routeVisitCreated = CreatedRouteVisit(
-                        clientId = UUID.fromString(response.optString("client_id")),
-                        createdAt = response.optString("created_at"),
-                        description = response.optString("description"),
-                        id = UUID.fromString(response.optString("id")),
-                        products = response.getJSONArray("products").let { jsonArray ->
-                            List(jsonArray.length()) { index ->
-                                val productJson = jsonArray.getJSONObject(index)
-                                ProductVisit(
-                                    id = UUID.fromString(productJson.optString("id")),
-                                    productId = UUID.fromString(productJson.optString("product_id")),
-                                    visitId = UUID.fromString(productJson.optString("visit_id")),
-                                    createdAt = productJson.optString("created_at"),
-                                    updatedAt = productJson.optString("updated_at")
-                                )
-                            }
-                        },
-                        updatedAt = response.optString("updated_at"),
-                        userId = UUID.fromString(response.optString("user_id")),
-                        visitDate = response.optString("visit_date"),
-                        sellerId = response.optString("seller_id"),
-                    )
-                    cont.resume(routeVisitCreated)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    cont.resumeWithException(e)
-                }
-            }) { error ->
+                        val routeVisitCreated = CreatedRouteVisit(
+                            clientId = UUID.fromString(response.optString("client_id")),
+                            createdAt = response.optString("created_at"),
+                            description = response.optString("description"),
+                            id = UUID.fromString(response.optString("id")),
+                            products = response.getJSONArray("products").let { jsonArray ->
+                                List(jsonArray.length()) { index ->
+                                    val productJson = jsonArray.getJSONObject(index)
+                                    ProductVisit(
+                                        id = UUID.fromString(productJson.optString("id")),
+                                        productId = UUID.fromString(productJson.optString("product_id")),
+                                        visitId = UUID.fromString(productJson.optString("visit_id")),
+                                        createdAt = productJson.optString("created_at"),
+                                        updatedAt = productJson.optString("updated_at")
+                                    )
+                                }
+                            },
+                            updatedAt = response.optString("updated_at"),
+                            userId = UUID.fromString(response.optString("user_id")),
+                            visitDate = response.optString("visit_date"),
+                            sellerId = response.optString("seller_id"),
+                        )
+                        cont.resume(routeVisitCreated)
+                    } catch (e: Exception) {
+                        //showToast(context.getString(R.string.error_database_integrity), context)
+                        cont.resumeWithException(e)
+                    }
+                }) { error ->
                 val networkResponse = error.networkResponse
                 val errorMessage = extractVolleyErrorMessage(networkResponse, context)
                 showToast(errorMessage, context)
@@ -249,26 +254,26 @@ open class NetworkServiceAdapter constructor(context: Context){
         requestQueue.add(
             postRequestWithToken(BASE_URL_VIDEO,
                 VIDEO_CREATE,jsonPayload,context, token, { response ->
-                try{
-                    val videoCreated = CreatedRecommendation(
-                        mensaje = response.optString("mensaje"),
-                        resultado = Recommendation(
-                            id = response.optString("id"),
-                            document_id = response.optString("document_id"),
-                            file_path = response.optString("file_path"),
-                            tags = response.optString("file_path"),
-                            store_id = null,
-                            enabled = response.optBoolean("enabled"),
-                            update_date = response.optString("update_date"),
-                            creation_date = response.optString("creation_date"),
+                    try{
+                        val videoCreated = CreatedRecommendation(
+                            mensaje = response.optString("mensaje"),
+                            resultado = Recommendation(
+                                id = response.optString("id"),
+                                document_id = response.optString("document_id"),
+                                file_path = response.optString("file_path"),
+                                tags = response.optString("file_path"),
+                                store_id = null,
+                                enabled = response.optBoolean("enabled"),
+                                update_date = response.optString("update_date"),
+                                creation_date = response.optString("creation_date"),
+                            )
                         )
-                    )
-                    cont.resume(videoCreated)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    cont.resumeWithException(e)
-                }
-            }) { error ->
+                        cont.resume(videoCreated)
+                    } catch (e: Exception) {
+                        //showToast(context.getString(R.string.error_database_integrity), context)
+                        cont.resumeWithException(e)
+                    }
+                }) { error ->
                 val networkResponse = error.networkResponse
                 val errorMessage = extractVolleyErrorMessage(networkResponse, context)
                 showToast(errorMessage, context)
@@ -325,7 +330,6 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
-
     suspend fun fetchPaginatedSimpleProductName(page: Int, perPage: Int) : List<SimpleProductName> = suspendCoroutine { cont ->
 
         val url = "$BASE_URL_PRODUCTS$GET_ALL_PRODUCTS"
@@ -355,6 +359,54 @@ open class NetworkServiceAdapter constructor(context: Context){
             }, {
                 cont.resumeWithException(it)
             })
+        )
+    }
+
+    suspend fun fetchPaginatedClientVisits(page: Int, perPage: Int, token : String? ) : List<ClientVisit> = suspendCoroutine { cont ->
+
+        val todaysDate: String = LocalDateTime
+            .now()
+            .format(DATE_FORMATTER)
+
+        val url = "$BASE_VISITS$GET_PAGINATED_VISITS$todaysDate"
+        val path = "?page=$page&per_page=$perPage&sort_order=asc"
+
+        requestQueue.add(
+            getRequestWithToken(url, path, { response ->
+                try{
+                    val jsonArray = response.getJSONArray("data")
+                    val clientVisits = mutableListOf<ClientVisit>()
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        val clientJson = item.getJSONObject("client")
+                        clientVisits.add(
+                            ClientVisit(
+                                id = item.optString("id"),
+                                description = item.optString("description"),
+                                visitDate = item.optString("visit_date"),
+                                sellerId = item.optString("seller_id"),
+                                userId = item.optString("user_id"),
+                                client =  ClientSimple(
+                                    id = clientJson.optString("id"),
+                                    name = clientJson.optString("name"),
+                                    clientType = clientJson.optString("client_type"),
+                                    zone = clientJson.optString("zone")
+                                )
+                            )
+                        )
+                    }
+                    cont.resume(clientVisits)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    print(e.message)
+                    cont.resumeWithException(e)
+                }
+
+            }, {
+                cont.resumeWithException(it)
+            },
+                token
+            )
         )
     }
     suspend fun fetchPaginatedClientsBySellerId(
@@ -432,6 +484,25 @@ open class NetworkServiceAdapter constructor(context: Context){
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
                 //headers["Authorization"] = "Bearer $token"
+                headers["content-type"] = "application/json"
+                headers["x-token"] = INTERNAL_TOKEN
+                return headers
+            }
+
+        }
+    }
+
+    private fun getRequestWithToken(
+        base: String,
+        path: String,
+        responseListener: Response.Listener<JSONObject>,
+        errorListener: Response.ErrorListener,
+        token: String?
+    ): JsonObjectRequest {
+        return object : JsonObjectRequest(Method.GET, base + path,null, responseListener, errorListener) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
                 headers["content-type"] = "application/json"
                 headers["x-token"] = INTERNAL_TOKEN
                 return headers

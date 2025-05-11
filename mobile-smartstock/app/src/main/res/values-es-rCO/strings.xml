@@ -16,6 +16,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Route Visit -->
+    <string name="lista_de_visitas">Mis Visitas</string>
     <string name="registrar_visita">Registrar Visita</string>
     <string name="registrar_visita_descripcion">Describa su visita</string>
     <string name="registrar_visita_existoso">Visita registrada con exito</string>
@@ -60,6 +61,7 @@
     <string name="nav_menu">Menu</string>
     <string name="menu_registrar_visita">Registrar visita</string>
     <string name="menu_listar_clientes">Listar Clientes</string>
+    <string name="menu_listar_visitas">Listar Visitas</string>
     <string name="menu_crear_cliente">Crear Cliente</string>
     <string name="menu_consulta_productos">Consulta Productos</string>
     <string name="menu_pedidos">Crear Pedido</string>

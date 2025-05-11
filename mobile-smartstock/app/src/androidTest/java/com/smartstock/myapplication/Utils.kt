@@ -21,6 +21,7 @@ object Utils {
             "add" -> if (locale.language == "es") "Agregar" else "Add"
             "clients" -> if (locale.language == "es") "Agregar" else "Clients"
             "menu_cargar_video" -> if (locale.language == "es") "Cargar Video" else "Upload video"
+            "menu_listar_visitas" -> if (locale.language == "es") "Listar Visitas" else "List Visits"
             else -> key
         }
     }
