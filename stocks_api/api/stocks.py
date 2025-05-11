@@ -140,7 +140,6 @@ def get_stocks_by_product_id_and_store_id():
         return jsonify({'message': 'invalid id_store'}), 400
 
     stock = stock_manager.get_stocks_by_product_id_and_store_id(id_product, id_store)
-    print(stock)
     if stock is None:
         return jsonify({'message': 'stock not found'}), 404
 

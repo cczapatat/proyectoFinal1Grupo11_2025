@@ -108,6 +108,5 @@ class StockRepository:
     @staticmethod
     def get_stock_by_product_id_and_store_id(id_product: uuid.UUID, id_store: uuid.UUID) -> Stock | None:
         stock = db.session.query(Stock).filter_by(id_store=id_store, id_product=id_product).first()
-        print('******************stock')
         return stock
 

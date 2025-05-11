@@ -130,6 +130,5 @@ class StockManager:
             return None
 
         stock_dict = stock.to_dict()  # Convert to dict for enrichment
-        print('***************Populate')
         populate_product(stock_dict)  # Enrich the nested ProductStockDTO dict
         return stock_dict
