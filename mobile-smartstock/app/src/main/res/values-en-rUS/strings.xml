@@ -16,7 +16,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Route Visit -->
-    <string name="registrar_visita">Register Visit</string>
+    <string name="lista_de_visitas">My Visits</string>
+    <string name="registrar_visita">Register a Visit</string>
     <string name="registrar_visita_descripcion">Describe your visit here</string>
     <string name="registrar_visita_existoso">Visit was successfully registered</string>
     <string name="registrar_visita_error">An error ocurred while registering the visit</string>
@@ -58,8 +59,9 @@
     <string name="crear">Create</string>
     <string name="nav_cliente">My Clients</string>
     <string name="nav_menu">Menu</string>
-    <string name="menu_registrar_visita">Visit registration</string>
+    <string name="menu_registrar_visita">Register Visit</string>
     <string name="menu_listar_clientes">Client list</string>
+    <string name="menu_listar_visitas">List Visits</string>
     <string name="menu_crear_cliente">Create client</string>
     <string name="menu_consulta_productos">Product search</string>
     <string name="menu_pedidos">Create Order</string>

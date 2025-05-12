@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listVisitsFragment"
+    android:paddingTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:background="@drawable/centered_background_one"
+    android:clipToOutline="true"
+    android:theme="@style/Theme.MyApplication"
+    tools:context="com.smartstock.myapplication.ui.clientVisit.ClientVisitFragment">
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/section_20"
+        android:layout_width="411dp"
+        android:layout_height="100dp"
+        android:clipToOutline="true"
+        >
+        <TextView
+            android:id="@+id/client_list"
+            android:layout_centerVertical="true"
+            android:layout_width="420dp"
+            android:layout_height="50dp"
+            android:text="@string/lista_de_visitas"
+            android:textAppearance="@style/crear_nueva"
+            android:lineSpacingExtra="2sp"
+            android:gravity="center_horizontal|center_vertical"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/section_21"
+        android:layout_width="411dp"
+        android:layout_height="600dp"
+        android:clipToOutline="true"
+        android:layout_below="@id/section_20"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/visitClientsRv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/visit_item" />
+    </RelativeLayout>
+
+
+</RelativeLayout>
+

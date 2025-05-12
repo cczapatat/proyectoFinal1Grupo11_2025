@@ -14,9 +14,9 @@
         android:enabled="true"/>
 
     <item
-        android:id="@+id/ClientFragment"
+        android:id="@+id/ClientVisitFragment"
         android:icon="@drawable/baseline_groups_24"
-        android:title="@string/menu_listar_clientes"
+        android:title="@string/menu_listar_visitas"
         android:enabled="true"/>
 
     <item

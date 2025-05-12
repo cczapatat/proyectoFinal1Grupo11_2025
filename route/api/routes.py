@@ -4,7 +4,7 @@ import requests
 from flask import Blueprint, jsonify, request
 from werkzeug.exceptions import Unauthorized, InternalServerError
 
-from ..http_services.visit_http import create_visit, get_all_visits_by_date
+from ..http_services.visit_http import create_visit, get_all_visits_by_date, get_all_visits_by_date_paginated
 
 bp = Blueprint('routes', __name__, url_prefix='/routes')
 
@@ -62,6 +62,23 @@ def get_all_visits_by_visit_date():
     [status_code, visits] = get_all_visits_by_date(visit_date, request.headers.get('Authorization'))
 
     return jsonify(visits), status_code
+
+@bp.route('/visits/by-visit-date-paginated/', methods=('GET',))
+def get_all_visits_by_visit_date_paginated():
+    __there_is_token()
+    __validate_auth_token()
+
+    visit_date = request.args.get('visit_date')
+    page = request.args.get('page', default=1, type=int)
+    per_page = request.args.get('per_page', default=10, type=int)
+
+    if not visit_date:
+        raise Unauthorized(description='visit_date required')
+
+    [status_code, visits] = get_all_visits_by_date_paginated(visit_date, page, per_page, request.headers.get('Authorization'))
+
+    return jsonify(visits), status_code
+
 
 
 @bp.errorhandler(400)
