@@ -9,7 +9,7 @@ import com.smartstock.myapplication.database.dao.UserTokenDao
 import com.smartstock.myapplication.models.UserToken
 import com.smartstock.myapplication.models.Client
 
-@Database(entities = [UserToken::class, Client::class], version = 3, exportSchema = false)
+@Database(entities = [UserToken::class, Client::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userTokenDao(): UserTokenDao
     abstract fun clientDao(): ClientDao
