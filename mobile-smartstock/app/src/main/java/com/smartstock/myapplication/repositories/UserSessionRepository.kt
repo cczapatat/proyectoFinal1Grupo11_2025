@@ -18,6 +18,11 @@ class UserSessionRepository(
 
     }
 
+    suspend fun getSavedId(): String? {
+        return this.userTokenDao.getToken()?.id
+
+    }
+
     suspend fun deleteSavedToken() {
         this.userTokenDao.clearToken()
     }

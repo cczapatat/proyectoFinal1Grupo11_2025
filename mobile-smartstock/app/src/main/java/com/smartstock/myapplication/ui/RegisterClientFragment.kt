@@ -112,12 +112,14 @@ class RegisterClientFragment : Fragment() {
         if (this.formIsValid(argsArray)) {
 
             lifecycleScope.launch {
-                val userId = withContext(Dispatchers.IO) {
-                    userSessionRepository.getSavedUserId()
+                val id = withContext(Dispatchers.IO) {
+                    userSessionRepository.getSavedId()
                 }
                 val token = withContext(Dispatchers.IO) {
                     userSessionRepository.getSavedToken()
                 }
+                println("POST ID*******************: $id")
+                println("POST TOKEN*******************: $token")
                 val client = Client(
                     name = name,
                     phone = phone,
@@ -126,7 +128,7 @@ class RegisterClientFragment : Fragment() {
                     clientType = mappedType,
                     zone = mappedZone,
                     userId = user_id,
-                    sellerId = UUID.fromString(userId)
+                    sellerId = UUID.fromString(id)
                 )
 
                 try {

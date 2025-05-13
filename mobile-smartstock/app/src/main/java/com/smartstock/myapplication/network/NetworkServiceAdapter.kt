@@ -103,7 +103,7 @@ open class NetworkServiceAdapter constructor(context: Context){
                     val db = AppDatabase.getDatabase(context)
                     db.userTokenDao().clearToken()
                     db.userTokenDao().insertToken(UserToken(userLoggedIn.user_id,
-                        userLoggedIn.token, userLoggedIn.type))
+                        userLoggedIn.token, userLoggedIn.type, userLoggedIn.id))
                 }
 
                 cont.resume(userLoggedIn)
