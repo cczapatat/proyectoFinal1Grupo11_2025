@@ -5,6 +5,9 @@ COPY credentials.json /.config_app/credentials.json
 RUN export GOOGLE_APPLICATION_CREDENTIALS="/.config_app/credentials.json"
 ENV GOOGLE_APPLICATION_CREDENTIALS="/.config_app/credentials.json"
 
+COPY firebase-cred.json /.config_app/firebase-cred.json
+ENV FIREBASE_PATH="/.config_app/firebase-cred.json"
+
 WORKDIR app
 COPY requirements.txt ./
 

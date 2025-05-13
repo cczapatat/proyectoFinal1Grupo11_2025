@@ -210,7 +210,7 @@ def test_create_alarm_success_only_maximum_value(client, headers):
     assert data['notes'] == 'Test alarm notes'
 
 
-def test_create_alarm_success_alarm_trigger_success(client, headers):
+def test_create_alarm_success_alarm_trigger_success(client, headers, mock_firebase):
     headers['Authorization'] = 'Bearer valid_token'
     with requests_mock.Mocker() as m:
         # Mock auth response
@@ -241,6 +241,7 @@ def test_create_alarm_success_alarm_trigger_success(client, headers):
 
     alarm_trigger = db.session.query(AlarmTrigger).filter(AlarmTrigger.product_id == product_id).all()
     assert len(alarm_trigger) == 0
+    assert mock_firebase['reference'].call_count == 1
 
     read_messages(
         MockMessage(data=json.dumps(
@@ -250,3 +251,4 @@ def test_create_alarm_success_alarm_trigger_success(client, headers):
 
     alarm_trigger = db.session.query(AlarmTrigger).filter(AlarmTrigger.product_id == product_id).all()
     assert len(alarm_trigger) == 1
+    assert mock_firebase['reference'].call_count == 2

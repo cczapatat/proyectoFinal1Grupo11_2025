@@ -48,6 +48,10 @@ jobs:
           echo "Creating credentials.json"
           mkdir -p data_app
           echo ${{ secrets.GCP_CREDENTIALS }} > data_app/credentials.json
+      - name: Create Firebase firebase-cred.json
+        run: |
+          echo "Creating firebase firebase-cred.json"
+          echo ${{ secrets.FIREBASE_CREDENTIALS }} > data_app/firebase-cred.json
       - name: Config GCP
         run: |
           echo "Configuring GCP"
@@ -86,6 +90,7 @@ jobs:
           sed -i.bak "s/:latest/:$tag/g" k8s-base-layer-deployment.yaml
           sed -i.bak "s/fakeKeyOpenApi/${{ secrets.OPENAI_API_KEY }}/g" secrets.yaml
           sed -i.bak "s/GcpRedisHost/${{ secrets.GCP_REDIS_HOST }}/g" secrets.yaml
+          sed -i.bak "s/FirebaseDatabaseMiso/${{ secrets.FIREBASE_DATABASE_MISO }}/g" secrets.yaml
           kubectl apply -f secrets.yaml
           kubectl apply -f k8s-base-layer-deployment.yaml
           kubectl apply -f k8s-ingress-deployment.yaml
