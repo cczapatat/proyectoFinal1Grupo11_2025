@@ -2090,6 +2090,11 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: GCP_STOCK_UPDATE_SUB
+            - name: "FIREBASE_DATABASE_MISO"
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: FIREBASE_DATABASE_MISO
           imagePullPolicy: Always
 ---
 apiVersion: cloud.google.com/v1

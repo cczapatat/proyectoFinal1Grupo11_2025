@@ -20,6 +20,7 @@ build_and_push() {
     
     # Copiar credenciales
     cp data_app/credentials.json $service/credentials.json
+    cp data_app/firebase-cred.json $service/firebase-cred.json
     
     # Cambiar al directorio del servicio
     cd $service
@@ -46,6 +47,7 @@ build_and_push() {
     # Volver al directorio raíz y limpiar credenciales
     cd ..
     rm $service/credentials.json
+    rm $service/firebase-cred.json
     
     echo "Completed building $service"
 }

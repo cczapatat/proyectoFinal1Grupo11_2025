@@ -38,6 +38,7 @@ class AlarmRepository:
             alarm_trigger.minimum_value = alarm['minimum_value']
             alarm_trigger.maximum_value = alarm['maximum_value']
             alarm_trigger.new_stock_unit = alarm['new_stock_unit']
+            alarm_trigger.notes = alarm['notes']
             alarm_trigger.created_at = datetime.now()
             alarm_trigger.updated_at = datetime.now()
 

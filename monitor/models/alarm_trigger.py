@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Column, String, DateTime, event, DDL, Integer
+from sqlalchemy import Column, String, DateTime, event, DDL, Integer, Text
 from sqlalchemy.dialects.postgresql import UUID
 
 from ..config.db import db
@@ -26,5 +26,6 @@ class AlarmTrigger(db.Model):
     minimum_value = Column(Integer, nullable=True)
     maximum_value = Column(Integer, nullable=True)
     new_stock_unit = Column(Integer, nullable=True)
+    notes = Column(Text, nullable=False)
     created_at = Column(DateTime(), default=datetime.now)
     updated_at = Column(DateTime(), default=datetime.now)
