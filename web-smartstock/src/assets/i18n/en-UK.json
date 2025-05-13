@@ -336,5 +336,33 @@
     "SPORTS": "Sports",
     "AUTOMOTIVE": "Automotive",
     "HEALTH": "Health"
+  },
+  "ALARM": {
+    "TITLE_CREATE": "Create Alarm",
+    "MANUFACTURER": "Manufacturer",
+    "MANUFACTURER_REQUIRED": "Manufacturer is required.",
+    "MANUFACTURER_SELECTED": "Select a Manufacturer",
+    "PRODUCT": "Product",
+    "PRODUCT_REQUIRED": "Product is required.",
+    "PRODUCT_SELECTED": "Select a Product",
+    "MIN_VALUE_LABEL": "Minimum Value",
+    "MIN_VALUE_REQUIRED": "Minimum value is required.",
+    "MIN_VALUE_INVALID": "Minimum value must be greater than or equal to 0.",
+    "MAX_VALUE_LABEL": "Maximum Value",
+    "MAX_VALUE_REQUIRED": "Maximum value is required.",
+    "MAX_VALUE_INVALID": "Maximum value must be a number greater than 0.",
+    "MIN_VALUE_PLACEHOLDER": "Enter minimum value",
+    "MAX_VALUE_PLACEHOLDER": "Enter maximum value",
+    "NOTES": "Notes",
+    "NOTES_REQUIRED": "Notes are required.",
+    "NOTES_PLACEHOLDER": "Write notes here",
+    "CREATE_BUTTON": "Create",
+    "CREATE_LOAD_SERVICES_INFORMATION_ERROR_TITLE": "Loading Error",
+    "CREATE_LOAD_SERVICES_INFORMATION_PRODUCTS_ERROR_MESSAGE": "An error occurred: products could not be loaded.",
+    "CREATE_LOAD_SERVICES_INFORMATION_MANUFACTURERS_ERROR_MESSAGE": "An error occurred: manufacturers could not be loaded.",
+    "CREATE_SUCCESS_TITLE": "Successfully Created",
+    "CREATE_SUCCESS_MESSAGE": "The alarm was created successfully.",
+    "CREATE_ERROR_TITLE": "Creation Error",
+    "CREATE_ERROR_MESSAGE": "An error occurred: the alarm could not be created."
   }
 }

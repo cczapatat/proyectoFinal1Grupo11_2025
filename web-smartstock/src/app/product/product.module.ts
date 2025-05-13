@@ -6,7 +6,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { ProductRoutingModule } from './product-routing-module';
-import { Product } from './product';
 import { ProductListComponent } from './product-list/product-list.component';
 
 @NgModule({
