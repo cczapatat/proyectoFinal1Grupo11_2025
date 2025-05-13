@@ -9,5 +9,6 @@ export const environment = {
     apiClientUrl: 'http://127.0.0.1:3009/clients',
     apiOrderUrl: 'http://127.0.0.1:3006/orders',
     apiDocumentManagerUrl: 'http://127.0.0.1:3003/document-manager',
+    apiAlarmUrl: 'http://127.0.0.1:3025/monitor',
     xToken: 'internal_token',
 };

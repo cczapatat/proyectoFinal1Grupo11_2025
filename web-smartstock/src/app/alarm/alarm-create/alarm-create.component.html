@@ -1,3 +1,92 @@
-<div class="container">
-  <h2>Crear Alarma</h2>
-</div>
+<main>
+  <div class="container">
+    <h1 id="alarm_create_title" class="text-center title">{{ 'ALARM.TITLE_CREATE' | translate }}</h1>
+    <div class="form-container">
+      <form [formGroup]="alarmForm" (ngSubmit)="createAlarm(alarmForm)">
+  
+        <div class="mb-3">
+          <label class="form-label" for="manufacture_id">{{ 'ALARM.MANUFACTURER' | translate }}</label>
+          <select id="manufacture_id" formControlName="manufacture_id" class="form-control" [attr.aria-label]="'ALARM.MANUFACTURER_SELECTED' | translate">
+            <option value="" disabled>{{ 'ALARM.MANUFACTURER_SELECTED' | translate }}</option>
+            <option *ngFor="let manufacturer of manufacturerList" [ngValue]="manufacturer.id">
+              {{manufacturer.name}}</option>
+          </select>
+          <div id="alarm_manufactuer_required" class="text-danger" *ngIf="alarmForm.get('manufacture_id')!.hasError('required') && alarmForm.get('manufacture_id')!.touched">
+            {{ 'ALARM.MANUFACTURER_REQUIRED' | translate }}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="product_id">{{ 'ALARM.PRODUCT' | translate }}</label>
+          <select id="product_id" formControlName="product_id" class="form-control" [attr.aria-label]="'ALARM.PRODUCT_SELECTED' | translate">
+            <option value="" disabled>{{ 'ALARM.PRODUCT_SELECTED' | translate }}</option>
+            <option *ngFor="let product of productList" [ngValue]="product.id">
+              {{product.name}}</option>
+          </select>
+          <div id="alarm_product_required" class="text-danger" *ngIf="alarmForm.get('product_id')!.hasError('required') && alarmForm.get('product_id')!.touched">
+            {{ 'ALARM.PRODUCT_REQUIRED' | translate }}
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6 mb-3">
+            <input type="checkbox" id="is_set_min_value" class="form-check-input" formControlName="is_set_min_value" />
+            <label class="form-label" for="is_set_min_value">{{ 'ALARM.MIN_VALUE_LABEL' | translate }}</label>
+          </div>
+          <div class="col-md-6 mb-3">
+            <input type="checkbox" id="is_set_max_value" class="form-check-input" formControlName="is_set_max_value" />
+            <label class="form-label" for="is_set_max_value">{{ 'ALARM.MAX_VALUE_LABEL' | translate }}</label>
+          </div>
+          <div class="col-md-4 mb-3">
+            
+            <input novalidate id="minimum_value" class="form-control" formControlName="minimum_value"
+                placeholder="{{ 'ALARM.MIN_VALUE_PLACEHOLDER' | translate }}" />
+              <div id="alarm_min_value_required" class="text-danger" *ngIf="
+              alarmForm.get('minimum_value')!.hasError('required') &&
+              alarmForm.get('minimum_value')!.touched">
+              {{ 'ALARM.MIN_VALUE_REQUIRED' | translate }}
+              </div>
+              <div id="alarm_min_value_invalid" class="text-danger" *ngIf="
+              alarmForm.get('minimum_value')!.hasError('min') &&
+              alarmForm.get('minimum_value')!.touched">
+              {{ 'ALARM.MIN_VALUE_INVALID' | translate }}
+              </div>
+            <label class="form-label" for="minimum_value"></label>
+          </div>
+          <div class="col-md-2 mb-3">
+          </div>
+          <div class="col-md-4 mb-3">
+            
+            <input novalidate id="maximum_value" class="form-control" formControlName="maximum_value"
+                placeholder="{{ 'ALARM.MAX_VALUE_PLACEHOLDER' | translate }}" />
+              <div id="alarm_max_value_required" class="text-danger" *ngIf="
+              alarmForm.get('maximum_value')!.hasError('required') &&
+              alarmForm.get('maximum_value')!.touched">
+              {{ 'ALARM.MAX_VALUE_REQUIRED' | translate }}
+              </div>
+              <div id="alarm_max_value_invalid" class="text-danger" *ngIf="
+              alarmForm.get('maximum_value')!.hasError('notPositive') &&
+              alarmForm.get('maximum_value')!.touched">
+              {{ 'ALARM.MAX_VALUE_INVALID' | translate }}
+              </div>
+            <label class="form-label" for="maximum_value"></label>
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label" for="notes">{{ 'ALARM.NOTES' | translate }}</label>
+          <textarea novalidate id="notes" class="form-control" formControlName="notes"
+                placeholder="{{ 'ALARM.NOTES_PLACEHOLDER' | translate }}" rows="6"></textarea>
+              <div id="alarm_notes_required" class="text-danger" *ngIf="
+              alarmForm.get('notes')!.hasError('required') &&
+              alarmForm.get('notes')!.touched">
+              {{ 'ALARM.NOTES_REQUIRED' | translate }}
+              </div>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn register-btn" [disabled]="!alarmForm.valid" [ngClass]="{'register-btn-active': !alarmForm.invalid}">{{ 'ALARM.CREATE_BUTTON' | translate }}</button>&nbsp;
+        </div>
+      </form>
+    </div>
+  </div>
+</main>

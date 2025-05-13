@@ -337,5 +337,33 @@
     "SPORTS": "Deportes",
     "AUTOMOTIVE": "Automotriz",
     "HEALTH": "Salud"
+  },
+  "ALARM": {
+    "TITLE_CREATE": "Crear Alarma",
+    "MANUFACTURER": "Fabricante",
+    "MANUFACTURER_REQUIRED": "El fabricante es obligatorio.",
+    "MANUFACTURER_SELECTED": "Seleccionar un Fabricante",
+    "PRODUCT": "Producto",
+    "PRODUCT_REQUIRED": "El producto es obligatorio.",
+    "PRODUCT_SELECTED": "Seleccionar un Producto",
+    "MIN_VALUE_LABEL": "Valor Mínimo",
+    "MIN_VALUE_REQUIRED": "El valor mínimo es obligatorio.",
+    "MIN_VALUE_INVALID": "El valor mínimo debe ser mayor o igual a 0.",
+    "MAX_VALUE_LABEL": "Valor Máximo",
+    "MAX_VALUE_REQUIRED": "El valor máximo es obligatorio.",
+    "MAX_VALUE_INVALID": "El valor máximo debe ser un numero mayor a 0.",
+    "MIN_VALUE_PLACEHOLDER": "Establecer valor mínimo",
+    "MAX_VALUE_PLACEHOLDER": "Establecer valor máximo",
+    "NOTES": "Notas",
+    "NOTES_REQUIRED": "Las notas son obligatorias.",
+    "NOTES_PLACEHOLDER": "Escribe acá las notas",
+    "CREATE_BUTTON": "Crear",
+    "CREATE_LOAD_SERVICES_INFORMATION_ERROR_TITLE": "Error de Carga",
+    "CREATE_LOAD_SERVICES_INFORMATION_PRODUCTS_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar los productos.",
+    "CREATE_LOAD_SERVICES_INFORMATION_MANUFACTURERS_ERROR_MESSAGE": "Ocurrió un error: no se pudieron cargar los fabricantes.",
+    "CREATE_SUCCESS_TITLE": "Creación Exitosa",
+    "CREATE_SUCCESS_MESSAGE": "La alarma ha sido creada exitosamente",
+    "CREATE_ERROR_TITLE": "Error de Creación",
+    "CREATE_ERROR_MESSAGE": "Ocurrió un error: no se pudo crear la alarma."
   }
 }
