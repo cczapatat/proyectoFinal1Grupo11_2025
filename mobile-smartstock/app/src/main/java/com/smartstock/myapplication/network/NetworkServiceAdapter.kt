@@ -12,6 +12,8 @@ import com.android.volley.toolbox.Volley
 import com.smartstock.myapplication.R
 import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.models.Client
+import com.smartstock.myapplication.models.ClientSimple
+import com.smartstock.myapplication.models.ClientVisit
 import com.smartstock.myapplication.models.CreatedOrder
 import com.smartstock.myapplication.models.CreatedRecommendation
 import com.smartstock.myapplication.models.CreatedRouteVisit
@@ -33,6 +35,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -67,6 +71,8 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val GET_STORES_PAGINATED = "paginated_full"
         const val GET_PRODUCTS_BY_CATEGORY_BY_MANUFACTURER = "products/category_manufacturer_paginated"
         const val GET_PRODUCTS_BY_ID_BY_STORE = "stocks-api/stocks/product_and_store"
+        const val GET_PAGINATED_VISITS = "routes/visits/by-visit-date-paginated"
+        val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         const val UNKNOWN = "unknown"
         const val COVER_UNKNOWN =
             "https://www.alleganyco.gov/wp-content/uploads/unknown-person-icon-Image-from.png"
@@ -398,8 +404,60 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
+    suspend fun fetchPaginatedClientVisits(
+        page: Int,
+        perPage: Int,
+        token: String?
+    ): List<ClientVisit> = suspendCoroutine { cont ->
 
-    suspend fun fetchStockByProductIdAndStoreId(
+        val todaysDate: String = LocalDateTime
+            .now()
+            .format(DATE_FORMATTER)
+
+        val url = "$BASE_ROUTES$GET_PAGINATED_VISITS?visit_date=$todaysDate"
+        val path = "&page=$page&per_page=$perPage&sort_order=asc"
+        println("Get fetchPaginatedClientVisits URL: $url$path")
+        requestQueue.add(
+            getRequestWithToken(url, path, { response ->
+                try {
+                    val jsonArray = response.getJSONArray("data")
+                    val clientVisits = mutableListOf<ClientVisit>()
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        val clientJson = item.getJSONObject("client")
+                        clientVisits.add(
+                            ClientVisit(
+                                id = item.optString("id"),
+                                description = item.optString("description"),
+                                visitDate = item.optString("visit_date"),
+                                sellerId = item.optString("seller_id"),
+                                userId = item.optString("user_id"),
+                                client = ClientSimple(
+                                    id = clientJson.optString("id"),
+                                    name = clientJson.optString("name"),
+                                    clientType = clientJson.optString("client_type"),
+                                    zone = clientJson.optString("zone")
+                                )
+                            )
+                        )
+                    }
+                    cont.resume(clientVisits)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    print(e.message)
+                    cont.resumeWithException(e)
+                }
+
+            }, {
+                cont.resumeWithException(it)
+            },
+                token
+            )
+        )
+    }
+
+
+suspend fun fetchStockByProductIdAndStoreId(
         productId: String?,
         storeId: String?,
         context: Context,
@@ -530,6 +588,27 @@ open class NetworkServiceAdapter constructor(context: Context){
 
         }
     }
+
+    private fun getRequestWithToken(
+        base: String,
+        path: String,
+        responseListener: Response.Listener<JSONObject>,
+        errorListener: Response.ErrorListener,
+        token: String?
+    ): JsonObjectRequest {
+        return object :
+            JsonObjectRequest(Method.GET, base + path, null, responseListener, errorListener) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
+                headers["content-type"] = "application/json"
+                headers["x-token"] = INTERNAL_TOKEN
+                return headers
+            }
+
+        }
+    }
+
 
     private fun postRequestNoToken(
         base: String,
