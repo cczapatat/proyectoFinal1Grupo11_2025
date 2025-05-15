@@ -62,6 +62,7 @@
     <string name="registrar_cliente_seleccionar_tipo">Seleccionar tipo</string>
     <string name="registrar_cliente_seleccionar_tipo_desc">Descripción: Seleccionar tipo</string>
 
+    <string name="desc_notification_icon">Icono de notificación</string>
     <string name="seleccionar_tono">Seleccionar tono</string>
     <string name="cancelar">Cancelar</string>
     <string name="crear">Crear</string>
@@ -225,6 +226,7 @@
     <string name="desc_producto_seleccionado">Seleccionado: %1$s</string>
     <string name="card_desc_producto_stock">Información de producto en stock</string>
     <!-- Descripciones generales -->
+    <string name="title_notifications_list">Notificaciones</string>
     <string name="card_desc_cliente">Información de cliente</string>
     <string name="card_nombre_cliente">Cliente: %1$s</string>
     <string name="card_tipo_cliente">Tipo: %1$s</string>

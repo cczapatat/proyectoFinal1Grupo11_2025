@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.CreateOrderFragment -> navController.navigate(R.id.CreateOrderFragment)
                 R.id.UploadVideoFragment -> navController.navigate(R.id.UploadVideoFragment)
                 R.id.action_show_notifications -> {
-                     listenForNotifications()
+                    navController.navigate(R.id.notificationsListFragment)
                 }
                 R.id.CerrarSesion -> closeSesion()
             }

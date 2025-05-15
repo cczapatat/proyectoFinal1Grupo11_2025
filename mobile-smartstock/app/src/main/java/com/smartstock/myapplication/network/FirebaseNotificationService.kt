@@ -5,6 +5,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.smartstock.myapplication.models.NewsAlert
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -95,6 +96,45 @@ class FirebaseNotificationService {
         awaitClose {
             Log.d(TAG, "Removing Firebase NewsAlert listener.")
             newsRef.removeEventListener(childEventListener) // Remove the listener when the flow is closed
+        }
+    }
+
+    /**
+     * Fetches all news alerts from the "news" node once.
+     * @return A Flow that emits a single list of all NewsAlert objects or an error.
+     */
+    fun getAllNewsAlerts(): Flow<List<NewsAlert>> = callbackFlow {
+        val valueEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val alertsList = mutableListOf<NewsAlert>()
+                if (snapshot.exists()) {
+                    for (alertSnapshot in snapshot.children) {
+                        try {
+                            val newsAlert = alertSnapshot.getValue(NewsAlert::class.java)
+                            newsAlert?.let { alert ->
+                                alert.firebaseKey = alertSnapshot.key ?: ""
+                                alertsList.add(alert)
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error parsing individual NewsAlert snapshot during getAll: ${alertSnapshot.key}", e)
+                        }
+                    }
+                }
+                Log.d(TAG, "Fetched ${alertsList.size} news alerts.")
+                trySend(alertsList.reversed()).isSuccess // Emit the list (reversed to show newest first, optional)
+                close() // Close the flow after emitting once
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Failed to fetch all news alerts", error.toException())
+                close(error.toException()) // Close the flow with an error
+            }
+        }
+
+        newsRef.addListenerForSingleValueEvent(valueEventListener) // Use addListenerForSingleValueEvent to fetch once
+
+        awaitClose {
+            Log.d(TAG, "getAllNewsAlerts flow closed.")
         }
     }
 

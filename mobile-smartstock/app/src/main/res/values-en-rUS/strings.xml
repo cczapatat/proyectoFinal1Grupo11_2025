@@ -223,6 +223,8 @@
     <string name="desc_producto_seleccionado">Selected: %1$s</string>
     <string name="card_desc_producto_stock">Product in stock information</string>
     <!-- Descripciones generales -->
+    <string name="title_notifications_list">Notifications</string>
+    <string name="desc_notification_icon">Notification Icon</string>
     <string name="card_desc_cliente">Client information</string>
     <string name="card_nombre_cliente">Client: %1$s</string>
     <string name="card_tipo_cliente">Type: %1$s</string>
