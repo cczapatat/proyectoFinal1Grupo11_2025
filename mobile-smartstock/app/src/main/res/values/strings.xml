@@ -67,6 +67,7 @@
     <string name="crear">Crear</string>
     <string name="nav_cliente">Mis Clientes</string>
     <string name="nav_menu">Menu</string>
+    <string name="menu_notifications">Notificaciones</string>
     <string name="menu_registrar_visita">Registrar visita</string>
     <string name="menu_listar_clientes">Listar Clientes</string>
     <string name="menu_listar_visitas">Listar Visitas</string>

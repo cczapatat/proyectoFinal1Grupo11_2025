@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -18,6 +21,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.databinding.ActivityMainBinding
 import com.smartstock.myapplication.repositories.UserSessionRepository
+import com.smartstock.myapplication.network.FirebaseNotificationService
+import com.smartstock.myapplication.util.NotificationTracker
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,10 +33,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var bottomNavigationView: BottomNavigationView
 
+    private val firebaseNotificationService = FirebaseNotificationService()
+    private lateinit var notificationTracker: NotificationTracker
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        notificationTracker = NotificationTracker(applicationContext)
 
         val bundle = intent.extras
         sharedPreferences = getSharedPreferences("CLL_APP", Context.MODE_PRIVATE)
@@ -52,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         // Set up navigation with BottomNavigationView
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
         // Connect BottomNavigationView to NavController
         bottomNavigationView.setupWithNavController(navController)
@@ -83,12 +95,44 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        listenForNotifications()
+
+    }
+
+    private fun listenForNotifications() {
+        lifecycleScope.launch {
+            firebaseNotificationService.getNewNewsAlerts().collectLatest { newsAlert ->
+                // Check if the alarm_id is valid and not already displayed
+                if (newsAlert.alarm_id.isNotEmpty() && !notificationTracker.isAlarmDisplayed(newsAlert.alarm_id)) {
+                    runOnUiThread {
+                        val toastMessage = "🔔 ${newsAlert.notes}"
+                        Toast.makeText(
+                            this@MainActivity,
+                            toastMessage,
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        // Mark this alarm_id as displayed
+                        notificationTracker.markAlarmAsDisplayed(newsAlert.alarm_id)
+                    }
+                } else {
+                    // Optional: Log if the alert is empty or already displayed
+                    if (newsAlert.alarm_id.isEmpty()) {
+                        Log.d("NotificationListener", "Received NewsAlert with empty alarm_id.")
+                    } else {
+                        Log.d("NotificationListener", "NewsAlert for alarm_id ${newsAlert.alarm_id} already displayed or empty.")
+                    }
+                }
+            }
+        }
     }
 
     private fun showPopupMenu(anchorView: View, userType: String) {
         val popup = PopupMenu(this, anchorView)
         popup.menuInflater.inflate(R.menu.popup_menu, popup.menu)
         popup.menu.setGroupVisible(0, false)
+
+        popup.menu.findItem(R.id.action_show_notifications).isVisible = true
 
         when (userType) {
             "SELLER" -> {
@@ -117,6 +161,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.ClientVisitFragment -> navController.navigate(R.id.ClientVisitFragment)
                 R.id.CreateOrderFragment -> navController.navigate(R.id.CreateOrderFragment)
                 R.id.UploadVideoFragment -> navController.navigate(R.id.UploadVideoFragment)
+                R.id.action_show_notifications -> {
+                     listenForNotifications()
+                }
                 R.id.CerrarSesion -> closeSesion()
             }
             true

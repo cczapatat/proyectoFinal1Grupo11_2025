@@ -75,6 +75,7 @@
     <string name="menu_registrar_visita">Register Visit</string>
     <string name="menu_listar_clientes">Client list</string>
     <string name="menu_listar_visitas">List Visits</string>
+    <string name="menu_notifications">Notifications</string>
     <string name="menu_crear_cliente">Create client</string>
     <string name="menu_consulta_productos">Product search</string>
     <string name="menu_pedidos">Create Order</string>

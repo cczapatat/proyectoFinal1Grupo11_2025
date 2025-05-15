@@ -75,6 +75,7 @@
     <string name="nav_menu">Menu</string>
     <string name="menu_registrar_visita">Registrar visita</string>
     <string name="menu_listar_clientes">Listar Clientes</string>
+    <string name="menu_notifications">Notificaciones</string>
     <string name="menu_listar_visitas">Listar Visitas</string>
     <string name="menu_crear_cliente">Crear Cliente</string>
     <string name="menu_consulta_productos">Consulta Productos</string>
