@@ -1,4 +1,3 @@
-// In: app/src/main/java/com/smartstock/myapplication/models/NewsAlert.kt
 package com.smartstock.myapplication.models
 
 import com.google.firebase.database.Exclude
