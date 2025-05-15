@@ -14,7 +14,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="100dp"
+        android:importantForAccessibility="no"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        >
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardViewClient"
@@ -30,6 +34,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:strokeColor="@color/schemesPrimaryContainer"
             style="@style/MaterialCardItemStyle"
+            android:contentDescription="@string/card_desc_cliente"
             app:strokeWidth="1dp">
 
             <RelativeLayout
@@ -51,6 +56,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceHeadlineSmall"
                     android:text="@{client.name}"
+                    android:importantForAccessibility="yes"
+                    android:contentDescription='@{@string/desc_nombre_cliente(client.name)}'
                     tools:text="Tienda de don Jaime"/>
 
                 <TextView
@@ -65,6 +72,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceLabelMedium"
                     android:text="@{client.clientType}"
+                    android:importantForAccessibility="yes"
+                    android:contentDescription='@{@string/card_tipo_cliente(client.name)}'
                     tools:text="Tienda de barrio"/>
 
                 <TextView
@@ -79,6 +88,8 @@
                     android:text='@{client.address}'
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceLabelMedium"
+                    android:importantForAccessibility="yes"
+                    android:contentDescription='@{@string/card_direccion_cliente(client.name)}'
                     tools:text="Av 123 #45 60" />
 
 
@@ -90,9 +101,11 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/baseline_arrow_forward_24"
-                    android:contentDescription="Third Icon"
-                    android:paddingStart="4dp"
-                    android:paddingEnd="4dp"
+                    android:contentDescription='@{@string/card_boton_seleccionar_cliente(client.name)}'
+                    android:padding="8dp"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:importantForAccessibility="yes"
                     android:onClick="@{() -> onSelectClick.invoke(client)}"/>
 
             </RelativeLayout>

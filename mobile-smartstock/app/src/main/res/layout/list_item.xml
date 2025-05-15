@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView
+    xmlns:tools="http://schemas.android.com/tools"
     android:backgroundTint="@color/schemesPrimaryContainer"
     android:textColor="@color/black"
     android:background="@color/schemesPrimaryContainer"
@@ -10,5 +11,9 @@
     android:ellipsize="end"
     android:textSize="@dimen/textAppearanceBodyLarge"
     android:maxLines="1"
+    tools:text="Elemento"
     android:textAppearance="?attr/textAppearanceSubtitle1"
+
+    android:contentDescription="@string/desc_elemento_lista"
+    android:minHeight="48dp"
     />

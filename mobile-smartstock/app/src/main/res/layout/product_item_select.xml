@@ -6,7 +6,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="?attr/selectableItemBackground">
+    android:minHeight="48dp"
+    android:background="?attr/selectableItemBackground"
+    android:focusable="true"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    android:importantForAccessibility="yes">
 
     <TextView
         android:id="@+id/productNameSelect"
@@ -14,6 +19,8 @@
         android:layout_height="wrap_content"
         android:text="Product Name"
         android:textColor="@android:color/black"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:importantForAccessibility="no"
+        android:contentDescription="@string/desc_nombre_producto"/>
 
 </LinearLayout>

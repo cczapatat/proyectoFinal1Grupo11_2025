@@ -17,32 +17,42 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/section_20"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="24dp"
         >
         <TextView
             android:id="@+id/client_list"
             android:layout_centerVertical="true"
-            android:layout_width="420dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/lista_de_clientes"
             android:textAppearance="@style/crear_nueva"
             android:lineSpacingExtra="2sp"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
+            android:minHeight="50dp"
+            android:paddingVertical="8dp"
+            android:importantForAccessibility="yes"
+            android:contentDescription="@string/lista_de_clientes_titulo"
             />
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/section_21"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="600dp"
         android:clipToOutline="true"
         android:layout_below="@id/section_20"
+        android:paddingTop="8dp"
         >
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/clientsRv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:importantForAccessibility="yes"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             tools:listitem="@layout/client_item" />
     </RelativeLayout>
 

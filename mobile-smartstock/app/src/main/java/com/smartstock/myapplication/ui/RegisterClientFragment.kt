@@ -91,6 +91,17 @@ class RegisterClientFragment : Fragment() {
 
         binding.autoCompleteTextViewCreate1.setAdapter(adapterType)
         binding.autoCompleteTextViewCreate2.setAdapter(adapterZone)
+
+        binding.autoCompleteTextViewCreate1.setOnItemClickListener { parent, view, position, id ->
+            val selectedItem = parent.getItemAtPosition(position).toString()
+            binding.autoCompleteTextViewCreate1.contentDescription = "Seleccionado: $selectedItem"
+            binding.autoCompleteTextViewCreate1.announceForAccessibility("Seleccionado $selectedItem")
+        }
+        binding.autoCompleteTextViewCreate2.setOnItemClickListener { parent, view, position, id ->
+            val selectedItem = parent.getItemAtPosition(position).toString()
+            binding.autoCompleteTextViewCreate2.contentDescription = "Seleccionado: $selectedItem"
+            binding.autoCompleteTextViewCreate2.announceForAccessibility("Seleccionado $selectedItem")
+        }
     }
 
     private fun addClient() {

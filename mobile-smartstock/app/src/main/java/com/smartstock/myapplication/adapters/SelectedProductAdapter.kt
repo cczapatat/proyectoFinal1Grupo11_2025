@@ -36,6 +36,7 @@ class SelectedProductAdapter(
 
         fun bind(item: SimpleProductName) {
             nameText.text = item.name
+            nameText.contentDescription = item.name
             deleteIcon.setOnClickListener {
                 onRemove(item)
             }

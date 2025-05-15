@@ -17,29 +17,36 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/section_create_order_1"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
         >
         <TextView
             android:id="@+id/crear_nueva"
             android:layout_centerVertical="true"
-            android:layout_width="420dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/crear_pedido"
 
             android:textAppearance="@style/crear_nueva"
             android:lineSpacingExtra="2sp"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
+            android:minHeight="50dp"
+            android:contentDescription="@string/crear_pedido_titulo"
+            android:importantForAccessibility="yes"
             />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/section_create_order_2"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_create_order_1"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -49,12 +56,12 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/seleccionar_cliente"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             android:background="@color/white"
             app:boxBackgroundColor="@color/white"
             app:hintTextColor="@color/black"
-            app:endIconTint="@color/schemesSecondary">
+            app:endIconTint="@color/schemesSecondary"
+            android:contentDescription="@string/desc_seleccionar_cliente">
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextViewCreate1"
@@ -64,6 +71,7 @@
                 android:popupBackground="@drawable/custom_popup_background"
                 android:textSize="@dimen/textAppearanceBodyLarge"
                 android:inputType="none"
+                android:importantForAccessibility="yes"
                 />
 
 
@@ -72,10 +80,13 @@
 
     <RelativeLayout
         android:id="@+id/section_create_order_3"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/section_create_order_2"
-        android:clipToOutline="true">
+        android:clipToOutline="true"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        >
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/LoginTextInputLayoutStyle2"
@@ -84,18 +95,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/seleccionar_fecha"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-
-
+            android:paddingHorizontal="4dp"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/baseline_calendar_today_24"
             app:endIconContentDescription="@string/seleccionar_fecha"
             app:hintTextColor="@color/black"
             app:endIconTint="@color/schemesSecondary"
             >
-
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/datePickerCreate"
                 android:layout_width="match_parent"
@@ -103,17 +109,21 @@
                 android:textSize="@dimen/textAppearanceBodyLarge"
                 android:inputType="date"
                 android:background="@color/white"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:contentDescription="@string/desc_seleccionar_fecha"
+                android:importantForAccessibility="yes"/>
 
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/section_create_order_4"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_create_order_3"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -123,12 +133,12 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/tipo_pago"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             app:boxBackgroundColor="@color/white"
             app:hintTextColor="@color/black"
             android:background="@color/white"
-            app:endIconTint="@color/schemesSecondary">
+            app:endIconTint="@color/schemesSecondary"
+            android:contentDescription="@string/desc_seleccionar_tipo_pago">
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextViewCreate2"
@@ -138,30 +148,35 @@
                 android:popupBackground="@drawable/custom_popup_background"
                 android:textSize="@dimen/textAppearanceBodyLarge"
                 android:inputType="none"
+                android:importantForAccessibility="yes"
                 />
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/section_create_order_5"
-        android:layout_width="411dp"
-        android:layout_height="55dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_create_order_4"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
         >
 
         <Button
             android:id="@+id/buttonAddProduct"
-            android:layout_width="203dp"
-            android:layout_height="42dp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="2dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:minWidth="180dp"
+            android:minHeight="48dp"
             android:backgroundTint="@color/schemesOrange600"
             android:background="@drawable/rounded_button_small"
             android:text="@string/add_product"
             android:textColor="@color/colorBackground"
-            android:textSize="@dimen/textAppearanceTitleSmall" />
+            android:textSize="@dimen/textAppearanceTitleSmall"
+            android:contentDescription="@string/boton_agregar_producto"
+            android:importantForAccessibility="yes"/>
 
     </RelativeLayout>
 
@@ -182,10 +197,12 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/section_create_order_7"
-        android:layout_width="411dp"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="yes"
         android:clipToOutline="true"
         android:layout_below="@id/section_create_order_6"
+        android:contentDescription="@string/lista_productos_total"
         >
         <TextView
             android:id="@+id/total_value_order"
@@ -200,38 +217,44 @@
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
         android:id="@+id/section_create_order_8"
-        android:layout_width="411dp"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_create_order_7"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="24dp"
         >
         <Button
             android:id="@+id/buttonCancelCreate"
-            android:layout_width="203dp"
-            android:layout_height="62dp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="180dp"
+            android:minHeight="60dp"
             android:background="@drawable/rounded_button"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_toLeftOf="@+id/center_divider_action"
             android:layout_marginLeft="2dp"
             android:backgroundTint="@color/schemesOrange600"
             android:text="@string/cancelar"
             android:textColor="@color/colorBackground"
+            android:contentDescription="@string/boton_cancelar"
+            android:importantForAccessibility="yes"
             android:textSize="@dimen/textAppearanceHeadlineSmall" />
         <Button
             android:id="@+id/buttonAcceptCreate"
-            android:layout_width="203dp"
-            android:layout_height="62dp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:minWidth="180dp"
+            android:minHeight="60dp"
             android:background="@drawable/rounded_button"
-            android:layout_alignParentRight="true"
             android:layout_marginRight="2dp"
             android:layout_toRightOf="@+id/center_divider_action"
             android:backgroundTint="@color/schemesOrange600"
             android:text="@string/crear"
             android:textColor="@color/colorBackground"
+            android:contentDescription="@string/boton_agregar_crear"
+            android:importantForAccessibility="yes"
             android:textSize="@dimen/textAppearanceHeadlineSmall" />
         <View
             android:id="@+id/center_divider_action"
