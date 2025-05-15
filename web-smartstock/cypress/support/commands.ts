@@ -111,3 +111,9 @@ Cypress.Commands.add('navigateToManufactureListProducts', () => {
   cy.get('#nav_customer_search').click();
   cy.url().should('include', '/manufacturers/list-products');
 });
+
+Cypress.Commands.add('navigateToAlarmCreate', () => {
+  cy.get('.menu-toggle').click();
+  cy.get('#nav_alarm_create').click();
+  cy.url().should('include', '/alarm/create');
+});
