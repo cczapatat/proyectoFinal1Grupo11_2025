@@ -34,7 +34,7 @@ class StockAdapter (
         fun bind(stock: Stock) {
             val product = stock.product
             binding.productNameSelect.text = "${product.name} (${product.unit_price} x UND) (${stock.quantity_in_stock})"
-
+            binding.productNameSelect.contentDescription = "${product.name} (${product.unit_price} x UND) (${stock.quantity_in_stock})"
             val isOutOfStock = stock.quantity_in_stock <= 0
             val isSelected = stock.id == selectedStockId
 

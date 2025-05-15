@@ -17,28 +17,35 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/section_4"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="24dp"
         >
         <TextView
             android:id="@+id/crear_nueva"
             android:layout_centerVertical="true"
-            android:layout_width="420dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/registrar_cliente"
-
             android:textAppearance="@style/crear_nueva"
             android:lineSpacingExtra="2sp"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
+            android:minHeight="50dp"
+            android:contentDescription="@string/registro_clientes_titulo"
+            android:importantForAccessibility="yes"
             />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/section_4_1"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_4"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -48,8 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/registrar_cliente_nombre"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             app:boxBackgroundColor="@color/white"
             app:endIconMode="clear_text"
             app:hintTextColor="@color/black"
@@ -60,16 +66,22 @@
                 android:layout_width="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textAppearanceBodyLarge"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:importantForAutofill="yes"
+                android:autofillHints="name"
+                android:inputType="textPersonName"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/section_4_2"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_4_1"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -79,8 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/registrar_cliente_direccion"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             app:boxBackgroundColor="@color/white"
             app:endIconMode="clear_text"
             app:hintTextColor="@color/black"
@@ -91,47 +102,56 @@
                 android:layout_width="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textAppearanceBodyLarge"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:importantForAutofill="yes"
+                android:autofillHints="postalAddress"
+                android:inputType="textPostalAddress"/>
 
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/section_4_3"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_4_2"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/LoginTextInputLayoutStyle2"
             android:id="@+id/textField4_3"
+            style="@style/LoginTextInputLayoutStyle2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:hint="@string/registrar_cliente_telefono"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             app:boxBackgroundColor="@color/white"
             app:endIconMode="clear_text"
-            app:hintTextColor="@color/black"
-            app:endIconTint="@color/schemesSecondary">
+            app:endIconTint="@color/schemesSecondary"
+            app:hintTextColor="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phone"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="phone"
+                android:importantForAutofill="yes"
+                android:inputType="phone"
                 android:textColor="@color/black"
-                android:textSize="@dimen/textAppearanceBodyLarge"
-                android:layout_height="wrap_content" />
+                android:textSize="@dimen/textAppearanceBodyLarge" />
 
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/section_4_4"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_4_3"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -141,8 +161,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/registrar_cliente_email"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             app:boxBackgroundColor="@color/white"
             app:endIconMode="clear_text"
             app:hintTextColor="@color/black"
@@ -153,18 +172,23 @@
                 android:layout_width="match_parent"
                 android:textColor="@color/black"
                 android:textSize="@dimen/textAppearanceBodyLarge"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:importantForAutofill="yes"
+                android:autofillHints="email"
+                android:inputType="textEmailAddress"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/section_4_5"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_4_4"
-
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -174,11 +198,12 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/registrar_cliente_seleccionar_tipo"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             android:background="@color/white"
             app:boxBackgroundColor="@color/white"
             app:hintTextColor="@color/black"
+            android:importantForAccessibility="no"
+            android:focusable="false"
             app:endIconTint="@color/schemesSecondary">
 
             <AutoCompleteTextView
@@ -189,7 +214,12 @@
                 android:popupBackground="@drawable/custom_popup_background"
                 android:textSize="@dimen/textAppearanceBodyLarge"
                 android:inputType="none"
-                />
+                android:importantForAccessibility="yes"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:contentDescription="@string/registrar_cliente_seleccionar_tipo_desc"/>
+            />
 
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -197,11 +227,12 @@
 
     <RelativeLayout
         android:id="@+id/section_4_6"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_4_5"
-
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -211,11 +242,12 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/registrar_cliente_seleccionar_zona"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             android:background="@color/white"
             app:boxBackgroundColor="@color/white"
             app:hintTextColor="@color/black"
+            android:importantForAccessibility="no"
+            android:focusable="false"
             app:endIconTint="@color/schemesSecondary">
 
             <AutoCompleteTextView
@@ -226,7 +258,12 @@
                 android:popupBackground="@drawable/custom_popup_background"
                 android:textSize="@dimen/textAppearanceBodyLarge"
                 android:inputType="none"
-                />
+                android:importantForAccessibility="yes"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:clickable="true"
+                android:contentDescription="@string/registrar_cliente_seleccionar_zona_desc"/>
+            />
 
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -237,16 +274,21 @@
     <!-- Auto layout, variables, and unit scale are not yet supported -->
     <RelativeLayout
         android:id="@+id/section_11"
-        android:layout_width="411dp"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/section_4_6"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="24dp"
         >
 
         <Button
             android:id="@+id/buttonCancelCreate"
-            android:layout_width="203dp"
-            android:layout_height="62dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:minWidth="180dp"
+            android:minHeight="60dp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:layout_alignParentLeft="true"
@@ -256,12 +298,16 @@
             android:background="@drawable/rounded_button"
             android:text="@string/cancelar"
             android:textColor="@color/colorBackground"
+            android:importantForAccessibility="yes"
             android:textSize="@dimen/textAppearanceHeadlineSmall" />
 
         <Button
             android:id="@+id/buttonAcceptCreate"
-            android:layout_width="203dp"
-            android:layout_height="62dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:minWidth="180dp"
+            android:minHeight="60dp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:layout_alignParentRight="true"
@@ -271,6 +317,7 @@
             android:background="@drawable/rounded_button"
             android:text="@string/crear"
             android:textColor="@color/colorBackground"
+            android:importantForAccessibility="yes"
             android:textSize="@dimen/textAppearanceHeadlineSmall" />
 
         <View

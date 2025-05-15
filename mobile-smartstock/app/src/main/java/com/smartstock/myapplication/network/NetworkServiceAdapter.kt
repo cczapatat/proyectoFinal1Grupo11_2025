@@ -12,6 +12,8 @@ import com.android.volley.toolbox.Volley
 import com.smartstock.myapplication.R
 import com.smartstock.myapplication.database.AppDatabase
 import com.smartstock.myapplication.models.Client
+import com.smartstock.myapplication.models.ClientSimple
+import com.smartstock.myapplication.models.ClientVisit
 import com.smartstock.myapplication.models.CreatedOrder
 import com.smartstock.myapplication.models.CreatedRecommendation
 import com.smartstock.myapplication.models.CreatedRouteVisit
@@ -33,19 +35,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.TimeZone
 import java.util.UUID
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
-open class NetworkServiceAdapter constructor(context: Context){
+open class NetworkServiceAdapter constructor(context: Context) {
 
     companion object {
         const val INTERNAL_TOKEN = "internal_token"
         const val BASE_URL_USER_SESSIONS = "http://130.211.32.9/"
         const val BASE_URL_CLIENTS = "http://130.211.32.9/"
         const val BASE_URL_PRODUCTS_STOCK = "http://130.211.32.9/"
-        //const val BASE_URL_PRODUCTS_STOCK ="https://3a07-186-29-181-170.ngrok-free.app/"
         const val BASE_URL_PRODUCTS = "http://130.211.32.9/"
         const val BASE_ROUTES = "http://130.211.32.9/"
         const val BASE_URL_MANUFACTURER = "http://130.211.32.9/manufacture-api/"
@@ -65,9 +72,12 @@ open class NetworkServiceAdapter constructor(context: Context){
         const val ROUTE_CREATE_VISIT = "routes/visits/create"
         const val GET_MANUFACTURERS_PAGINATED = "manufacturers/list"
         const val GET_STORES_PAGINATED = "paginated_full"
-        const val GET_PRODUCTS_BY_CATEGORY_BY_MANUFACTURER = "products/category_manufacturer_paginated"
+        const val GET_PRODUCTS_BY_CATEGORY_BY_MANUFACTURER =
+            "products/category_manufacturer_paginated"
         const val GET_PRODUCTS_BY_ID_BY_STORE = "stocks-api/stocks/product_and_store"
+        const val GET_PAGINATED_VISITS = "routes/visits/by-visit-date-paginated"
         const val UNKNOWN = "unknown"
+        val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         const val COVER_UNKNOWN =
             "https://www.alleganyco.gov/wp-content/uploads/unknown-person-icon-Image-from.png"
         private var instance: NetworkServiceAdapter? = null
@@ -102,8 +112,12 @@ open class NetworkServiceAdapter constructor(context: Context){
                 CoroutineScope(Dispatchers.IO).launch {
                     val db = AppDatabase.getDatabase(context)
                     db.userTokenDao().clearToken()
-                    db.userTokenDao().insertToken(UserToken(userLoggedIn.user_id,
-                        userLoggedIn.token, userLoggedIn.type, userLoggedIn.id))
+                    db.userTokenDao().insertToken(
+                        UserToken(
+                            userLoggedIn.user_id,
+                            userLoggedIn.token, userLoggedIn.type, userLoggedIn.id
+                        )
+                    )
                 }
 
                 cont.resume(userLoggedIn)
@@ -113,290 +127,307 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
-    suspend fun addClient(client: Client, context: Context, token: String?) = suspendCoroutine { cont ->
+    suspend fun addClient(client: Client, context: Context, token: String?) =
+        suspendCoroutine { cont ->
 
-        val jsonPayload = JSONObject()
-        jsonPayload.put("name", client.name)
-            .put("phone", client.phone)
-            .put("email", client.email)
-            .put("password", "1234567")
-            .put("type", "CLIENT")
-            .put("seller_id", client.sellerId)
-            .put("address", client.address)
-            .put("client_type", client.clientType)
-            .put("zone", client.zone)
+            val jsonPayload = JSONObject()
+            jsonPayload.put("name", client.name)
+                .put("phone", client.phone)
+                .put("email", client.email)
+                .put("password", "1234567")
+                .put("type", "CLIENT")
+                .put("seller_id", client.sellerId)
+                .put("address", client.address)
+                .put("client_type", client.clientType)
+                .put("zone", client.zone)
 
-        requestQueue.add(
-            postRequestWithToken(BASE_URL_CLIENTS,CREATE_CLIENT_PATH,jsonPayload,context,token, { response ->
-                try{
-                    val clientCreated = Client(
-                        id = UUID.fromString(response.optString("id")),
-                        name = response.optString("name"),
-                        phone = response.optString("phone"),
-                        zone = response.optString("zone"),
-                        email = response.optString("email"),
-                        clientType = response.optString("client_type"),
-                        address = response.optString("address"),
-                        sellerId = client.sellerId,
-                        userId = UUID.fromString(response.optString("user_id")),
-                    )
-                    cont.resume(clientCreated)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    cont.resumeWithException(e)
+            requestQueue.add(
+                postRequestWithToken(
+                    BASE_URL_CLIENTS,
+                    CREATE_CLIENT_PATH,
+                    jsonPayload,
+                    context,
+                    token,
+                    { response ->
+                        try {
+                            val clientCreated = Client(
+                                id = UUID.fromString(response.optString("id")),
+                                name = response.optString("name"),
+                                phone = response.optString("phone"),
+                                zone = response.optString("zone"),
+                                email = response.optString("email"),
+                                clientType = response.optString("client_type"),
+                                address = response.optString("address"),
+                                sellerId = client.sellerId,
+                                userId = UUID.fromString(response.optString("user_id")),
+                            )
+                            cont.resume(clientCreated)
+                        } catch (e: Exception) {
+                            //showToast(context.getString(R.string.error_database_integrity), context)
+                            cont.resumeWithException(e)
+                        }
+
+                    }) { error ->
+                    val networkResponse = error.networkResponse
+                    val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                    showToast(errorMessage, context)
+                    cont.resumeWithException(error)
                 }
+            )
+        }
 
-            }) { error ->
-                val networkResponse = error.networkResponse
-                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
-                showToast(errorMessage, context)
-                cont.resumeWithException(error)
-            }
-        )
-    }
+    suspend fun addOrder(order: Order, context: Context, token: String?) =
+        suspendCoroutine { cont ->
 
-    suspend fun addOrder(order: Order, context: Context, token: String?) = suspendCoroutine { cont ->
+            val jsonPayload = JSONObject()
+            jsonPayload.put("client_id", order.client_id)
+                .put("delivery_date", order.delivery_date)
+                .put("payment_method", order.payment_method)
+                .put("products", JSONArray(order.products.map {
+                    JSONObject().apply {
+                        put("product_id", it.product_id)
+                        put("units", it.units)
+                    }
+                }))
 
-        val jsonPayload = JSONObject()
-        jsonPayload.put("client_id", order.client_id)
-            .put("delivery_date", order.delivery_date)
-            .put("payment_method", order.payment_method)
-            .put("products", JSONArray(order.products.map {
-                JSONObject().apply {
-                    put("product_id", it.product_id)
-                    put("units", it.units)
+            requestQueue.add(
+                postRequestWithToken(
+                    BASE_URL_ORDER,
+                    CREATE_ORDER_PATH,
+                    jsonPayload,
+                    context,
+                    token,
+                    { response ->
+                        try {
+                            val orderCreated = CreatedOrder(
+                                id = UUID.fromString(response.optString("id")),
+                                clientId = response.optString("client_id"),
+                                sellerId = response.optString("seller_id"),
+                            )
+                            cont.resume(orderCreated)
+                        } catch (e: Exception) {
+                            //showToast(context.getString(R.string.error_database_integrity), context)
+                            cont.resumeWithException(e)
+                        }
+                    }) { error ->
+                    val networkResponse = error.networkResponse
+                    val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                    showToast(errorMessage, context)
+                    cont.resumeWithException(error)
                 }
-            }))
+            )
+        }
 
-        requestQueue.add(
-            postRequestWithToken(BASE_URL_ORDER,CREATE_ORDER_PATH,jsonPayload,context, token, { response ->
-                try{
-                    val orderCreated = CreatedOrder(
-                        id = UUID.fromString(response.optString("id")),
-                        clientId = response.optString("client_id"),
-                        sellerId = response.optString("seller_id"),
-                    )
-                    cont.resume(orderCreated)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    cont.resumeWithException(e)
+    suspend fun addRouteVisit(routeVisit: RouteVisit, context: Context, token: String?) =
+        suspendCoroutine { cont ->
+
+            val jsonPayload = JSONObject()
+            jsonPayload.put("client_id", routeVisit.client_id)
+                .put("visit_date", routeVisit.visit_date)
+                .put("description", routeVisit.description)
+                .put("products", JSONArray(routeVisit.products.map {
+                    JSONObject().apply {
+                        put("product_id", it.id)
+                    }
+                }))
+            requestQueue.add(
+                postRequestWithToken(BASE_ROUTES,
+                    ROUTE_CREATE_VISIT, jsonPayload, context, token, { response ->
+                        try {
+
+                            val routeVisitCreated = CreatedRouteVisit(
+                                clientId = UUID.fromString(response.optString("client_id")),
+                                createdAt = response.optString("created_at"),
+                                description = response.optString("description"),
+                                id = UUID.fromString(response.optString("id")),
+                                products = response.getJSONArray("products").let { jsonArray ->
+                                    List(jsonArray.length()) { index ->
+                                        val productJson = jsonArray.getJSONObject(index)
+                                        ProductVisit(
+                                            id = UUID.fromString(productJson.optString("id")),
+                                            productId = UUID.fromString(productJson.optString("product_id")),
+                                            visitId = UUID.fromString(productJson.optString("visit_id")),
+                                            createdAt = productJson.optString("created_at"),
+                                            updatedAt = productJson.optString("updated_at")
+                                        )
+                                    }
+                                },
+                                updatedAt = response.optString("updated_at"),
+                                userId = UUID.fromString(response.optString("user_id")),
+                                visitDate = response.optString("visit_date"),
+                                sellerId = response.optString("seller_id"),
+                            )
+                            cont.resume(routeVisitCreated)
+                        } catch (e: Exception) {
+                            //showToast(context.getString(R.string.error_database_integrity), context)
+                            cont.resumeWithException(e)
+                        }
+                    }) { error ->
+                    val networkResponse = error.networkResponse
+                    val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                    showToast(errorMessage, context)
+                    cont.resumeWithException(error)
                 }
-            }) { error ->
-                val networkResponse = error.networkResponse
-                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
-                showToast(errorMessage, context)
-                cont.resumeWithException(error)
-            }
-        )
-    }
+            )
+        }
 
-    suspend fun addRouteVisit(routeVisit: RouteVisit, context: Context, token: String?) = suspendCoroutine { cont ->
+    suspend fun addRecomendation(recomendation: Recommendation, context: Context, token: String?) =
+        suspendCoroutine { cont ->
 
-        val jsonPayload = JSONObject()
-        jsonPayload.put("client_id", routeVisit.client_id)
-            .put("visit_date", routeVisit.visit_date)
-            .put("description", routeVisit.description)
-            .put("products", JSONArray(routeVisit.products.map {
-                JSONObject().apply {
-                    put("product_id", it.id)
-                }
-            }))
+            val jsonPayload = JSONObject()
+            jsonPayload.put("document_id", recomendation.document_id)
+                .put("file_path", recomendation.file_path)
+                .put("store_id", recomendation.store_id)
+                .put("tags", recomendation.tags)
+                .put("enabled", recomendation.enabled)
+                .put("update_date", recomendation.update_date)
+                .put("creation_date", recomendation.creation_date)
 
-        println("JSON Payload: $jsonPayload")
-
-        requestQueue.add(
-            postRequestWithToken(BASE_ROUTES,
-                ROUTE_CREATE_VISIT,jsonPayload,context, token, { response ->
-                try{
-
-                    val routeVisitCreated = CreatedRouteVisit(
-                        clientId = UUID.fromString(response.optString("client_id")),
-                        createdAt = response.optString("created_at"),
-                        description = response.optString("description"),
-                        id = UUID.fromString(response.optString("id")),
-                        products = response.getJSONArray("products").let { jsonArray ->
-                            List(jsonArray.length()) { index ->
-                                val productJson = jsonArray.getJSONObject(index)
-                                ProductVisit(
-                                    id = UUID.fromString(productJson.optString("id")),
-                                    productId = UUID.fromString(productJson.optString("product_id")),
-                                    visitId = UUID.fromString(productJson.optString("visit_id")),
-                                    createdAt = productJson.optString("created_at"),
-                                    updatedAt = productJson.optString("updated_at")
+            requestQueue.add(
+                postRequestWithToken(BASE_URL_VIDEO,
+                    VIDEO_CREATE, jsonPayload, context, token, { response ->
+                        try {
+                            val videoCreated = CreatedRecommendation(
+                                mensaje = response.optString("mensaje"),
+                                resultado = Recommendation(
+                                    id = response.optString("id"),
+                                    document_id = response.optString("document_id"),
+                                    file_path = response.optString("file_path"),
+                                    tags = response.optString("file_path"),
+                                    store_id = null,
+                                    enabled = response.optBoolean("enabled"),
+                                    update_date = response.optString("update_date"),
+                                    creation_date = response.optString("creation_date"),
                                 )
-                            }
-                        },
-                        updatedAt = response.optString("updated_at"),
-                        userId = UUID.fromString(response.optString("user_id")),
-                        visitDate = response.optString("visit_date"),
-                        sellerId = response.optString("seller_id"),
-                    )
-                    cont.resume(routeVisitCreated)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    cont.resumeWithException(e)
-                }
-            }) { error ->
-                val networkResponse = error.networkResponse
-                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
-                showToast(errorMessage, context)
-                cont.resumeWithException(error)
-            }
-        )
-    }
-    suspend fun addRecomendation(recomendation: Recommendation, context: Context, token: String?) = suspendCoroutine { cont ->
-
-        val jsonPayload = JSONObject()
-        jsonPayload.put("document_id", recomendation.document_id)
-            .put("file_path", recomendation.file_path)
-            .put("store_id", recomendation.store_id)
-            .put("tags", recomendation.tags)
-            .put("enabled", recomendation.enabled)
-            .put("update_date", recomendation.update_date)
-            .put("creation_date", recomendation.creation_date)
-
-        requestQueue.add(
-            postRequestWithToken(BASE_URL_VIDEO,
-                VIDEO_CREATE,jsonPayload,context, token, { response ->
-                try{
-                    val videoCreated = CreatedRecommendation(
-                        mensaje = response.optString("mensaje"),
-                        resultado = Recommendation(
-                            id = response.optString("id"),
-                            document_id = response.optString("document_id"),
-                            file_path = response.optString("file_path"),
-                            tags = response.optString("file_path"),
-                            store_id = null,
-                            enabled = response.optBoolean("enabled"),
-                            update_date = response.optString("update_date"),
-                            creation_date = response.optString("creation_date"),
-                        )
-                    )
-                    cont.resume(videoCreated)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    cont.resumeWithException(e)
-                }
-            }) { error ->
-                val networkResponse = error.networkResponse
-                val errorMessage = extractVolleyErrorMessage(networkResponse, context)
-                showToast(errorMessage, context)
-                cont.resumeWithException(error)
-            }
-        )
-    }
-
-    suspend fun fetchPaginatedProductsStocks(page: Int, perPage: Int): List<Stock> = suspendCoroutine { cont ->
-        //val url = "$BASE_URL_PRODUCTS$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
-        val url = "$BASE_URL_PRODUCTS_STOCK"
-        val path = "$GET_PRODUCT_STOCKS?page=$page&per_page=$perPage&sort_order=asc"
-
-        requestQueue.add(
-            getRequest(url, path, { response ->
-                try{
-                    val jsonArray = response.getJSONArray("stocks")
-                    val stocks = mutableListOf<Stock>()
-                    for (i in 0 until jsonArray.length()) {
-                        val stockItem = jsonArray.getJSONObject(i)
-                        val productJson = stockItem.getJSONObject("product")
-                        val product = Product(
-                            id = productJson.optString("id"),
-                            manufacturer_id = productJson.optString("manufacturer_id"),
-                            name = productJson.optString("name"),
-                            description = productJson.optString("description"),
-                            category = productJson.optString("category"),
-                            unit_price = productJson.optDouble("unit_price"),
-                            currency_price = productJson.optString("currency_price"),
-                            is_promotion = productJson.optBoolean("is_promotion"),
-                            discount_price = productJson.optDouble("discount_price"),
-                            expired_at = productJson.optString("expired_at"),
-                            url_photo = productJson.optString("url_photo"),
-                            store_conditions = productJson.optString("store_conditions")
-                        )
-                        val stock = Stock(
-                            id = stockItem.optString("id"),
-                            quantity_in_stock = stockItem.optInt("quantity_in_stock"),
-                            product = product
-                        )
-                        stocks.add(
-                            stock
-                        )
-                    }
-                    cont.resume(stocks)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    cont.resumeWithException(e)
-                }
-
-            }, {
-                cont.resumeWithException(it)
-            })
-        )
-    }
-
-
-    suspend fun fetchPaginatedSimpleProductName(page: Int, perPage: Int) : List<SimpleProductName> = suspendCoroutine { cont ->
-
-        val url = "$BASE_URL_PRODUCTS$GET_ALL_PRODUCTS"
-        val path = "?page=$page&per_page=$perPage&sort_order=asc"
-
-        requestQueue.add(
-            getRequest(url, path, { response ->
-                try{
-                    val jsonArray = response.getJSONArray("data")
-                    val products = mutableListOf<SimpleProductName>()
-                    for (i in 0 until jsonArray.length()) {
-                        val item = jsonArray.getJSONObject(i)
-                        products.add(
-                            SimpleProductName(
-                                id = item.getString("id"),
-                                name = item.getString("name")
                             )
-                        )
-                    }
-                    cont.resume(products)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    print(e.message)
-                    cont.resumeWithException(e)
+                            cont.resume(videoCreated)
+                        } catch (e: Exception) {
+                            //showToast(context.getString(R.string.error_database_integrity), context)
+                            cont.resumeWithException(e)
+                        }
+                    }) { error ->
+                    val networkResponse = error.networkResponse
+                    val errorMessage = extractVolleyErrorMessage(networkResponse, context)
+                    showToast(errorMessage, context)
+                    cont.resumeWithException(error)
                 }
+            )
+        }
 
-            }, {
-                cont.resumeWithException(it)
-            })
-        )
-    }
-    suspend fun fetchPaginatedStores(page: Int, perPage: Int) : List<Store> = suspendCoroutine { cont ->
+    suspend fun fetchPaginatedProductsStocks(page: Int, perPage: Int): List<Stock> =
+        suspendCoroutine { cont ->
+            //val url = "$BASE_URL_PRODUCTS$GET_PRODUCT_PATH?page=$page&per_page=$perPage&sort_order=asc"
+            val url = "$BASE_URL_PRODUCTS_STOCK"
+            val path = "$GET_PRODUCT_STOCKS?page=$page&per_page=$perPage&sort_order=asc"
 
-        val url = "$BASE_URL_STORE$GET_STORES_PAGINATED"
-        val path = "?page=$page&per_page=$perPage&sort_order=asc"
-
-        requestQueue.add(
-            getRequest(url, path, { response ->
-                try{
-                    val jsonArray = response.getJSONArray("data")
-                    val stores = mutableListOf<Store>()
-                    for (i in 0 until jsonArray.length()) {
-                        val item = jsonArray.getJSONObject(i)
-                        stores.add(
-                            Store(
-                                id = item.getString("id"),
-                                name = item.getString("name")
+            requestQueue.add(
+                getRequest(url, path, { response ->
+                    try {
+                        val jsonArray = response.getJSONArray("stocks")
+                        val stocks = mutableListOf<Stock>()
+                        for (i in 0 until jsonArray.length()) {
+                            val stockItem = jsonArray.getJSONObject(i)
+                            val productJson = stockItem.getJSONObject("product")
+                            val product = Product(
+                                id = productJson.optString("id"),
+                                manufacturer_id = productJson.optString("manufacturer_id"),
+                                name = productJson.optString("name"),
+                                description = productJson.optString("description"),
+                                category = productJson.optString("category"),
+                                unit_price = productJson.optDouble("unit_price"),
+                                currency_price = productJson.optString("currency_price"),
+                                is_promotion = productJson.optBoolean("is_promotion"),
+                                discount_price = productJson.optDouble("discount_price"),
+                                expired_at = productJson.optString("expired_at"),
+                                url_photo = productJson.optString("url_photo"),
+                                store_conditions = productJson.optString("store_conditions")
                             )
-                        )
+                            val stock = Stock(
+                                id = stockItem.optString("id"),
+                                quantity_in_stock = stockItem.optInt("quantity_in_stock"),
+                                product = product
+                            )
+                            stocks.add(
+                                stock
+                            )
+                        }
+                        cont.resume(stocks)
+                    } catch (e: Exception) {
+                        //showToast(context.getString(R.string.error_database_integrity), context)
+                        cont.resumeWithException(e)
                     }
-                    cont.resume(stores)
-                } catch (e: Exception) {
-                    //showToast(context.getString(R.string.error_database_integrity), context)
-                    print(e.message)
-                    cont.resumeWithException(e)
-                }
 
-            }, {
-                cont.resumeWithException(it)
-            })
-        )
-    }
+                }, {
+                    cont.resumeWithException(it)
+                })
+            )
+        }
+
+    suspend fun fetchPaginatedSimpleProductName(page: Int, perPage: Int): List<SimpleProductName> =
+        suspendCoroutine { cont ->
+
+            val url = "$BASE_URL_PRODUCTS$GET_ALL_PRODUCTS"
+            val path = "?page=$page&per_page=$perPage&sort_order=asc"
+
+            requestQueue.add(
+                getRequest(url, path, { response ->
+                    try {
+                        val jsonArray = response.getJSONArray("data")
+                        val products = mutableListOf<SimpleProductName>()
+                        for (i in 0 until jsonArray.length()) {
+                            val item = jsonArray.getJSONObject(i)
+                            products.add(
+                                SimpleProductName(
+                                    id = item.getString("id"),
+                                    name = item.getString("name")
+                                )
+                            )
+                        }
+                        cont.resume(products)
+                    } catch (e: Exception) {
+                        //showToast(context.getString(R.string.error_database_integrity), context)
+                        print(e.message)
+                        cont.resumeWithException(e)
+                    }
+
+                }, {
+                    cont.resumeWithException(it)
+                })
+            )
+        }
+
+    suspend fun fetchPaginatedStores(page: Int, perPage: Int): List<Store> =
+        suspendCoroutine { cont ->
+
+            val url = "$BASE_URL_STORE$GET_STORES_PAGINATED"
+            val path = "?page=$page&per_page=$perPage&sort_order=asc"
+
+            requestQueue.add(
+                getRequest(url, path, { response ->
+                    try {
+                        val jsonArray = response.getJSONArray("data")
+                        val stores = mutableListOf<Store>()
+                        for (i in 0 until jsonArray.length()) {
+                            val item = jsonArray.getJSONObject(i)
+                            stores.add(
+                                Store(
+                                    id = item.getString("id"),
+                                    name = item.getString("name")
+                                )
+                            )
+                        }
+                        cont.resume(stores)
+                    } catch (e: Exception) {
+                        //showToast(context.getString(R.string.error_database_integrity), context)
+                        print(e.message)
+                        cont.resumeWithException(e)
+                    }
+
+                }, {
+                    cont.resumeWithException(it)
+                })
+            )
+        }
 
 
     suspend fun fetchStockByProductIdAndStoreId(
@@ -410,7 +441,7 @@ open class NetworkServiceAdapter constructor(context: Context){
 
         requestQueue.add(
             getRequest(url, path, { response ->
-                try{
+                try {
                     val productJson = response.getJSONObject("product")
                     val product = Product(
                         id = productJson.optString("id"),
@@ -448,6 +479,70 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
+
+    suspend fun fetchPaginatedClientVisits(
+        page: Int,
+        perPage: Int,
+        token: String?
+    ): List<ClientVisit> = suspendCoroutine { cont ->
+        // Get current time in UTC
+        val utcNow = ZonedDateTime.now(ZoneOffset.UTC)
+
+        // Convert to device's local timezone (e.g., UTC-5)
+        val localNow = utcNow.withZoneSameInstant(ZoneId.systemDefault())
+
+        // Check if local time is 6pm or later (18:00+)
+        val adjustedDate = if (localNow.hour >= 18) {
+            // If after 6pm local time, use tomorrow's date
+            localNow.plusDays(1).format(DATE_FORMATTER)
+        } else {
+            // Otherwise use today's date
+            localNow.format(DATE_FORMATTER)
+        }
+
+
+        val url = "$BASE_ROUTES$GET_PAGINATED_VISITS?visit_date=$adjustedDate"
+        val path = "&page=$page&per_page=$perPage&sort_order=asc"
+        println("Get fetchPaginatedClientVisits URL: $url$path")
+        requestQueue.add(
+            getRequestWithToken(url, path, { response ->
+                try {
+                    val jsonArray = response.getJSONArray("data")
+                    val clientVisits = mutableListOf<ClientVisit>()
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        val clientJson = item.getJSONObject("client")
+                        clientVisits.add(
+                            ClientVisit(
+                                id = item.optString("id"),
+                                description = item.optString("description"),
+                                visitDate = item.optString("visit_date"),
+                                sellerId = item.optString("seller_id"),
+                                userId = item.optString("user_id"),
+                                client = ClientSimple(
+                                    id = clientJson.optString("id"),
+                                    name = clientJson.optString("name"),
+                                    clientType = clientJson.optString("client_type"),
+                                    zone = clientJson.optString("zone")
+                                )
+                            )
+                        )
+                    }
+                    cont.resume(clientVisits)
+                } catch (e: Exception) {
+                    //showToast(context.getString(R.string.error_database_integrity), context)
+                    print(e.message)
+                    cont.resumeWithException(e)
+                }
+
+            }, {
+                cont.resumeWithException(it)
+            },
+                token
+            )
+        )
+    }
+
     suspend fun fetchPaginatedClientsBySellerId(
         sellerId: String,
         page: Int,
@@ -457,11 +552,12 @@ open class NetworkServiceAdapter constructor(context: Context){
     ): List<Client> = suspendCoroutine { cont ->
 
         val url = "$BASE_URL_USER_SESSIONS"
-        val path = "$GET_CLIENTS_SELLER_PATH$sellerId?page=$page&per_page=$perPage&sort_by=$sortBy&sort_order=$sortOrder"
+        val path =
+            "$GET_CLIENTS_SELLER_PATH$sellerId?page=$page&per_page=$perPage&sort_by=$sortBy&sort_order=$sortOrder"
 
         requestQueue.add(
             getRequest(url, path, { response ->
-                try{
+                try {
                     val jsonArray = response.getJSONArray("data")
                     val clients = mutableListOf<Client>()
                     for (i in 0 until jsonArray.length()) {
@@ -497,7 +593,7 @@ open class NetworkServiceAdapter constructor(context: Context){
         )
     }
 
-    suspend fun verifyUser(token:String) = suspendCoroutine { cont ->
+    suspend fun verifyUser(token: String) = suspendCoroutine { cont ->
 
         requestQueue.add(
             getRequest(BASE_URL_USER_SESSIONS, VERIFY_PATH, { response ->
@@ -519,10 +615,31 @@ open class NetworkServiceAdapter constructor(context: Context){
         responseListener: Response.Listener<JSONObject>,
         errorListener: Response.ErrorListener
     ): JsonObjectRequest {
-        return object : JsonObjectRequest(Method.GET, base + path,null, responseListener, errorListener) {
+        return object :
+            JsonObjectRequest(Method.GET, base + path, null, responseListener, errorListener) {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
                 //headers["Authorization"] = "Bearer $token"
+                headers["content-type"] = "application/json"
+                headers["x-token"] = INTERNAL_TOKEN
+                return headers
+            }
+
+        }
+    }
+
+    private fun getRequestWithToken(
+        base: String,
+        path: String,
+        responseListener: Response.Listener<JSONObject>,
+        errorListener: Response.ErrorListener,
+        token: String?
+    ): JsonObjectRequest {
+        return object :
+            JsonObjectRequest(Method.GET, base + path, null, responseListener, errorListener) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Authorization"] = "Bearer $token"
                 headers["content-type"] = "application/json"
                 headers["x-token"] = INTERNAL_TOKEN
                 return headers
@@ -547,6 +664,7 @@ open class NetworkServiceAdapter constructor(context: Context){
                 headers["x-token"] = INTERNAL_TOKEN
                 return headers
             }
+
             override fun parseNetworkResponse(response: com.android.volley.NetworkResponse?): Response<JSONObject> {
                 return if (response?.statusCode == 401) {
                     Response.error(VolleyError("Unauthorized - 401"))
@@ -574,7 +692,7 @@ open class NetworkServiceAdapter constructor(context: Context){
 
         val request = object : VolleyMultipartRequest(
             Method.POST,
-            BASE_URL_DOCUMENT_MANAGER+ DOCUMENT_UPLOAD,
+            BASE_URL_DOCUMENT_MANAGER + DOCUMENT_UPLOAD,
             { response ->
                 try {
                     val jsonResponse = JSONObject(String(response.data))
@@ -628,7 +746,8 @@ open class NetworkServiceAdapter constructor(context: Context){
         println("POST Headers******************: Authorization=Bearer $token")
         println("POST Body**********************: $body")
 
-        return object : JsonObjectRequest(Method.POST, base + path, body, responseListener, errorListener) {
+        return object :
+            JsonObjectRequest(Method.POST, base + path, body, responseListener, errorListener) {
             override fun getHeaders(): MutableMap<String, String> {
                 val headers = HashMap<String, String>()
                 headers["Authorization"] = "Bearer $token"
@@ -636,21 +755,19 @@ open class NetworkServiceAdapter constructor(context: Context){
                 headers["x-token"] = INTERNAL_TOKEN
                 return headers
             }
+
             override fun parseNetworkResponse(response: com.android.volley.NetworkResponse?): Response<JSONObject> {
 
                 return if (response?.statusCode == 401) {
                     Response.error(VolleyError("Unauthorized - 401"))
-                } else if (response?.statusCode == 400){
+                } else if (response?.statusCode == 400) {
                     val errorMessage = extractVolleyErrorMessage(response, context)
                     Response.error(VolleyError(errorMessage))
-                }
-                else if (response?.statusCode == 409){
+                } else if (response?.statusCode == 409) {
                     Response.error(VolleyError("Conflict in DB - 409"))
-                }
-                else if (response?.statusCode == 500){
+                } else if (response?.statusCode == 500) {
                     Response.error(VolleyError("Error in system - 500"))
-                }
-                else {
+                } else {
                     super.parseNetworkResponse(response)
                 }
             }
@@ -661,7 +778,10 @@ open class NetworkServiceAdapter constructor(context: Context){
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun extractVolleyErrorMessage(response: com.android.volley.NetworkResponse?, context: Context): String {
+    private fun extractVolleyErrorMessage(
+        response: com.android.volley.NetworkResponse?,
+        context: Context
+    ): String {
         return try {
             val responseData = response?.data
             val errorString = responseData?.let { String(it) } ?: "{}"
@@ -678,11 +798,11 @@ open class NetworkServiceAdapter constructor(context: Context){
                 "address is required" -> context.getString(R.string.error_address_required)
                 "client_type is required" -> context.getString(R.string.error_client_type_required)
                 "zone is required" -> context.getString(R.string.error_zone_required)
-                "Email already exists"-> context.getString(R.string.error_email_exists)
-                "Phone already exists"-> context.getString(R.string.error_phone_exists)
-                "Client already exists"-> context.getString(R.string.error_client_exists)
-                "Email format is not valid"-> context.getString(R.string.error_email_format)
-                "Phone format is not valid"-> context.getString(R.string.error_phone_format)
+                "Email already exists" -> context.getString(R.string.error_email_exists)
+                "Phone already exists" -> context.getString(R.string.error_phone_exists)
+                "Client already exists" -> context.getString(R.string.error_client_exists)
+                "Email format is not valid" -> context.getString(R.string.error_email_format)
+                "Phone format is not valid" -> context.getString(R.string.error_phone_format)
                 "stock not found" -> context.getString(R.string.error_stock_not_found)
                 "id_store is required" -> context.getString(R.string.error_id_store_required)
                 "id_product is required" -> context.getString(R.string.error_id_product_required)

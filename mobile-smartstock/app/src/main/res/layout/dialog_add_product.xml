@@ -5,7 +5,8 @@
     android:id="@+id/registerclienttest"
     android:paddingTop="10dp"
     android:layout_width="match_parent"
-    android:layout_height="600dp"
+    android:layout_height="wrap_content"
+    android:minHeight="600dp"
     android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
     android:background="@drawable/centered_background_one"
@@ -17,42 +18,54 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/add_producto_section_1"
-        android:layout_width="411dp"
-        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         >
         <TextView
             android:id="@+id/crear_nueva"
             android:layout_centerVertical="true"
-            android:layout_width="420dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
             android:text="@string/cuadro_agregar_producto"
             android:textAppearance="@style/crear_nueva"
             android:lineSpacingExtra="2sp"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
+            android:contentDescription="@string/titulo_agregar_producto"
+            android:importantForAccessibility="yes"
             />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/add_producto_section_2"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="300dp"
         android:clipToOutline="true"
         android:layout_below="@id/add_producto_section_1"
+        android:paddingHorizontal="8dp"
         >
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/lista_productos_disponibles"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/add_producto_section_3"
-        android:layout_width="411dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:clipToOutline="true"
         android:layout_below="@id/add_producto_section_2"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
         >
 
         <com.google.android.material.textfield.TextInputLayout
@@ -62,12 +75,13 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:hint="@string/cantidad"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingHorizontal="4dp"
             app:boxBackgroundColor="@color/white"
             app:endIconMode="clear_text"
             app:hintTextColor="@color/black"
-            app:endIconTint="@color/schemesSecondary">
+            app:endIconTint="@color/schemesSecondary"
+            android:contentDescription="@string/campo_cantidad_producto"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/quantityInput"
@@ -75,7 +89,11 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/textAppearanceBodyLarge"
                 android:inputType="number"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="yes"
+                android:contentDescription="@string/hint_cantidad_producto"
+                android:importantForAutofill="yes"
+                android:autofillHints="quantity"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

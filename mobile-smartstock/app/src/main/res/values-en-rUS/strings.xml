@@ -15,8 +15,10 @@
     <string name="cerrar_sesion">Logout</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="desc_elemento_lista">Description list element</string>
     <!-- Route Visit -->
     <string name="lista_de_visitas">My Visits</string>
+    <string name="lista_de_visitas_titulo">title: My Visits</string>
     <string name="registrar_visita">Register a Visit</string>
     <string name="registrar_visita_descripcion">Describe your visit here</string>
     <string name="registrar_visita_existoso">Visit was successfully registered</string>
@@ -44,8 +46,17 @@
     <string name="repetir_contrasena">Password Confirmation</string>
     <string name="no_registrado">Not registered? Register by accessing this link </string>
     <string name="iniciar_sesion">Signin</string>
+    <string name="iniciar_sesion_titulo">title: Signin</string>
+    <string name="iniciar_sesion_boton">button: Signin</string>
     <string name="lista_de_clientes">My Clients</string>
     <string name="registrar_cliente">Register client</string>
+    <string name="registro_clientes_titulo">title: Register client</string>
+    <string name="lista_de_clientes_titulo">title: My Clients</string>
+    <string name="lista_de_clientes_menu">menu: My Clients</string>
+    <string name="desc_nombre_cliente">Description nombre cliente</string>
+    <string name="desc_tipo_cliente">client type description</string>
+    <string name="desc_direccion_cliente">client address description</string>
+    <string name="desc_boton_seleccionar_cliente">select client button description</string>
     <string name="registrar_cliente_nombre">Name</string>
     <string name="registrar_cliente_direccion">Address</string>
     <string name="registrar_cliente_telefono">Phone</string>
@@ -53,7 +64,9 @@
     <string name="registrar_cliente_tipo">Client type</string>
     <string name="registrar_cliente_zona">Geographic Zone</string>
     <string name="registrar_cliente_seleccionar_zona">Select a zone</string>
+    <string name="registrar_cliente_seleccionar_zona_desc">Description: Select a zone</string>
     <string name="registrar_cliente_seleccionar_tipo">Select a type</string>
+    <string name="registrar_cliente_seleccionar_tipo_desc">Description: Select a type</string>
     <string name="seleccionar_tono">Seleccionar tono</string>
     <string name="cancelar">Cancel</string>
     <string name="crear">Create</string>
@@ -78,6 +91,10 @@
 
     <!-- TODO: Smart Stock Orden -->
     <string name="crear_pedido">Create Order</string>
+    <string name="desc_seleccionar_cliente">Description Select Client</string>
+    <string name="desc_seleccionar_fecha">Description Select date</string>
+    <string name="desc_seleccionar_tipo_pago">Description select Payment type</string>
+    <string name="crear_pedido_titulo">title: Create Order</string>
     <string name="seleccionar_cliente">Select Client</string>
     <string name="seleccionar_fecha">Select date</string>
     <string name="tipo_pago">Payment type</string>
@@ -87,7 +104,23 @@
     <string name="add_product">Add product</string>
     <string name="moneda">COP</string>
     <string name="total">Total:</string>
+    <string name="lista_productos_total">Total list</string>
     <string name="cuadro_agregar_producto">Add products</string>
+    <string name="titulo_agregar_producto">Title Add Products</string>
+    <string name="lista_productos_disponibles">Available products list</string>
+    <string name="hint_cantidad_producto">Fill quantity</string>
+    <string name="campo_cantidad_producto">Quantity product</string>
+    <string name="boton_agregar_producto">Button Add products</string>
+    <string name="boton_agregar_crear">Button create</string>
+    <string name="boton_cancelar">Button cancel</string>
+    <string name="desc_nombre_producto">Product: %1$s</string>
+    <string name="desc_precio_producto">Price: %1$s %2$.0f</string>
+    <string name="desc_precio_promocional">Promotional price: %1$s %2$.0f</string>
+    <string name="desc_cantidad_disponible">Available quantity: %1$d unidades</string>
+    <string name="desc_cantidad_producto">Quantity: %1$d unidades</string>
+    <string name="desc_precio_unitario">Single Price: %1$s %2$.0f</string>
+    <string name="desc_producto">Description: %1$s</string>
+    <string name="desc_boton_eliminar_producto">Delete product %1$s</string>
     <string name="seleccionar_producto">Select Product</string>
     <string name="cantidad">Quantity</string>
     <string name="agregar">Add</string>
@@ -118,6 +151,19 @@
     <string name="error_phone_format">Phone Format Error</string>
     <string name="error_database_integrity">Server Error</string>
     <!--video tienda-->
+    <string name="pantalla_carga_video">Pantalla para cargar videos</string>
+    <string name="titulo_carga_video">title Load Store video</string>
+    <string name="subtitulo_carga_video">Load Store video Instrucctions</string>
+    <!-- Selectores -->
+    <string name="hint_seleccionar_cliente">Hint view client list</string>
+    <string name="hint_seleccionar_fecha">Hint date select field</string>
+    <string name="boton_calendario">Buton open calendar</string>
+    <!-- Icono y estado -->
+    <string name="icono_cargar_video">Select video icon</string>
+    <string name="estado_video_seleccionado">Status: %1$s</string>
+    <!-- Botones -->
+    <string name="boton_cancelar_carga">upload video cancel button</string>
+    <string name="boton_aceptar_carga">uload video accept button</string>
     <string name="cargar_video_titulo">Load Store video</string>
     <string name="cargar_video_subtitulo">Upload a video of the client’s store to make AI-powered product placement recommendations.</string>
     <string name="cargar_video_seleccionar_cliente">Select client</string>
@@ -160,5 +206,25 @@
     <string name="consulta_disponibilidad_descripcion">Description:</string>
     <string name="consulta_disponibilidad_unidad">UNIT</string>
     <string name="success_stock">Stock search sucessfully</string>
-
+    <!-- Pantalla -->
+    <string name="pantalla_busqueda_stock">Stock search availability screen</string>
+    <string name="titulo_busqueda_stock">Title Stock search availability</string>
+    <!-- Selectores -->
+    <string name="desc_seleccionar_bodega">Description Select store</string>
+    <string name="hint_seleccionar_bodega">Hint view list with available stores</string>
+    <string name="desc_seleccionar_producto">Description select product</string>
+    <string name="hint_seleccionar_producto">Hint view list with available products</string>
+    <!-- Botones -->
+    <string name="boton_buscar_producto">Search product in stock button</string>
+    <string name="boton_volver_busqueda">Return the main menu button</string>
+    <!-- Resultados -->
+    <string name="lista_resultados_stock">Stock search results</string>
+    <string name="desc_producto_seleccionado">Selected: %1$s</string>
+    <string name="card_desc_producto_stock">Product in stock information</string>
+    <!-- Descripciones generales -->
+    <string name="card_desc_cliente">Client information</string>
+    <string name="card_nombre_cliente">Client: %1$s</string>
+    <string name="card_tipo_cliente">Type: %1$s</string>
+    <string name="card_direccion_cliente">Address: %1$s</string>
+    <string name="card_boton_seleccionar_cliente">Select client %1$s</string>
 </resources>

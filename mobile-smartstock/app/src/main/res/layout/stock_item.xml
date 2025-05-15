@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="yes">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardViewArtist"
@@ -27,7 +28,12 @@
             app:layout_constraintTop_toTopOf="parent"
             app:strokeColor="@color/schemesPrimaryContainer"
             style="@style/MaterialCardItemStyle"
-            app:strokeWidth="1dp">
+            app:strokeWidth="1dp"
+            android:focusable="true"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:contentDescription="@string/card_desc_producto_stock"
+            android:screenReaderFocusable="true">
 
             <RelativeLayout
                 android:id="@+id/fragment_stock_item"
@@ -48,6 +54,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text="@{product.name}"
+                    android:contentDescription='@{@string/desc_nombre_producto(product.name)}'
+                    android:importantForAccessibility="yes"
                     tools:text="Saltin Taco grande"/>
 
                 <TextView
@@ -62,6 +70,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text='@{@string/consulta_disponibilidad_precio_unitario + String.valueOf(product.currency_price) +" " + String.format("%,.0f", product.unit_price)}'
+                    android:contentDescription='@{@string/desc_precio_unitario(product.currency_price, product.unit_price)}'
+                    android:importantForAccessibility="yes"
                     tools:text="Precio Unitario: COP 50.000"/>
                 <TextView
                     android:id="@+id/productListPrice"
@@ -75,6 +85,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text='@{@string/consulta_disponibilidad_precio_promocional + String.valueOf(product.currency_price) +" " + String.format("%,.0f", product.discount_price)}'
+                    android:contentDescription='@{@string/desc_precio_promocional(product.currency_price, product.discount_price)}'
+                    android:importantForAccessibility="yes"
                     tools:text="Precio Promocional: COP 40.000"/>
 
                 <TextView
@@ -89,6 +101,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text='@{@string/consulta_disponibilidad_descripcion + String.valueOf(product.currency_price) +" " + String.format("%,.0f", product.discount_price)}'
+                    android:contentDescription='@{@string/desc_producto(product.description)}'
+                    android:importantForAccessibility="yes"
                     tools:text="Descripción: Producto colombiano de alta calidad"/>
                 <!-- First Icon to the Right -->
                 <TextView
@@ -103,6 +117,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text='@{String.valueOf(product.quantity) + " " + @string/unidad}'
+                    android:contentDescription='@{@string/desc_cantidad_disponible(product.quantity)}'
+                    android:importantForAccessibility="yes"
                     tools:text="999 UND"/>
 
             </RelativeLayout>

@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.smartstock.myapplication.R
 import com.smartstock.myapplication.databinding.ProductItemBinding
 import com.smartstock.myapplication.models.Product
 
@@ -19,6 +20,29 @@ class ProductAdapterOrder(
             binding.product = product
             binding.onDeleteClick = onDeleteClick
             binding.executePendingBindings() // Optional: ensure bindings update immediately
+
+            val context = binding.root.context
+            val contentDescription = buildString {
+                append(context.getString(R.string.desc_nombre_producto, product.name))
+                append(". ")
+                append(context.getString(R.string.desc_precio_unitario, product.currency_price, product.unit_price))
+                append(". ")
+                append(context.getString(R.string.desc_precio_promocional, product.currency_price, product.discount_price))
+                append(". ")
+                append(context.getString(R.string.desc_cantidad_disponible, product.quantity))
+                if (product.description?.isNotEmpty() == true) {
+                    append(". ")
+                    append(context.getString(R.string.desc_producto, product.description))
+                }
+            }
+
+            binding.root.contentDescription = contentDescription
+            binding.deleteSelectedProductIcon?.let { deleteIcon ->
+                deleteIcon.contentDescription = context.getString(
+                    R.string.desc_boton_eliminar_producto,
+                    product.name
+                )
+            }
         }
     }
 

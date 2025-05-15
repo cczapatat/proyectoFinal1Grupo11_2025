@@ -14,7 +14,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardViewArtist"
@@ -51,6 +52,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text="@{product.name}"
+                    android:contentDescription='@{@string/desc_nombre_producto(product.name)}'
+                    android:importantForAccessibility="yes"
                     tools:text="Saltin Taco grande"/>
 
                 <TextView
@@ -65,6 +68,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text='@{product.currency_price +" " + String.format("%,.0f", product.unit_price)}'
+                    android:contentDescription='@{@string/desc_precio_producto(product.currency_price, product.unit_price)}'
+                    android:importantForAccessibility="yes"
                     tools:text="COP 50.000"/>
 
 
@@ -82,6 +87,8 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceBodyMedium"
                     android:text='@{String.valueOf(product.quantity) + " " + @string/unidad}'
+                    android:contentDescription='@{@string/desc_cantidad_producto(product.quantity)}'
+                    android:importantForAccessibility="yes"
                     tools:text="20 UND"/>
 
 
@@ -90,12 +97,15 @@
                     android:id="@+id/deleteSelectedProductIcon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:src="@drawable/baseline_delete_48"
-                    android:contentDescription="Third Icon"
+                    android:contentDescription='@{@string/desc_boton_eliminar_producto(product.name)}'
+                    android:importantForAccessibility="yes"
                     android:paddingStart="4dp"
                     android:paddingEnd="4dp"
+                    android:focusable="true"
+                    android:clickable="true"
                     android:onClick="@{() -> onDeleteClick.invoke(product)}"/>
 
             </RelativeLayout>
