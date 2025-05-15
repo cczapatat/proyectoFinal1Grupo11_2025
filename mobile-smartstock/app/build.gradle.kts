@@ -4,6 +4,7 @@ plugins {
     id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp")
     id("androidx.room")
+    id("com.google.gms.google-services")
     kotlin("kapt")
 }
 
@@ -113,4 +114,6 @@ dependencies {
     implementation(kotlin("test"))
 
     implementation ("androidx.paging:paging-runtime:3.2.1")
+    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+    implementation("com.google.firebase:firebase-database-ktx")
 }

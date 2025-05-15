@@ -76,4 +76,15 @@
             app:destination="@id/ClientFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/notificationsListFragment"
+        android:name="com.smartstock.myapplication.ui.notifications.NotificationsListFragment"
+        android:label="@string/title_notifications_list" tools:layout="@layout/fragment_notifications_list">
+    <action
+        android:id="@+id/actionNotificationsFragmentToClientFragment"
+        app:destination="@id/ClientFragment" />
+        />
+    </fragment>
+
+
 </navigation>

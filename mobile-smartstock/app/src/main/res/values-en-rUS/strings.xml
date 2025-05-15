@@ -75,6 +75,7 @@
     <string name="menu_registrar_visita">Register Visit</string>
     <string name="menu_listar_clientes">Client list</string>
     <string name="menu_listar_visitas">List Visits</string>
+    <string name="menu_notifications">Notifications</string>
     <string name="menu_crear_cliente">Create client</string>
     <string name="menu_consulta_productos">Product search</string>
     <string name="menu_pedidos">Create Order</string>
@@ -222,6 +223,8 @@
     <string name="desc_producto_seleccionado">Selected: %1$s</string>
     <string name="card_desc_producto_stock">Product in stock information</string>
     <!-- Descripciones generales -->
+    <string name="title_notifications_list">Notifications</string>
+    <string name="desc_notification_icon">Notification Icon</string>
     <string name="card_desc_cliente">Client information</string>
     <string name="card_nombre_cliente">Client: %1$s</string>
     <string name="card_tipo_cliente">Type: %1$s</string>
