@@ -29,7 +29,8 @@
               <td class="text-center align-middle">
                 <input type="checkbox" class="form-check-input" 
                        [checked]="store === selectedStore" 
-                       (change)="onSelectStore(store)">
+                       (change)="onSelectStore(store)"   
+                       [attr.aria-label]="store.name">
               </td>
               <td class="fw-bold">
                 <img [src]="'assets/images/stores/' + store.image" alt="{{ store.name }}" width="30" height="30">
@@ -96,7 +97,8 @@
               <td class="text-center align-middle">
                 <input type="checkbox" class="form-check-input" 
                        [(ngModel)]="product.selected" 
-                       (ngModelChange)="onProductSelect(product)">
+                       (ngModelChange)="onProductSelect(product)"
+                       [attr.aria-label]="product.name">
               </td>
               <td class="fw-bold">
                 <img [src]="'assets/images/products/' + product.local_image" alt="{{ product.name }}" width="30" height="30">
@@ -107,7 +109,8 @@
                 <input type="number" class="form-control" 
                        [(ngModel)]="product.quantity" 
                        (ngModelChange)="onProductQuantityChange(product)"
-                       min="0" [disabled]="!product.selected">
+                       min="0" [disabled]="!product.selected" 
+                      [attr.aria-label]="product.name">
               </td>
             </tr>
             <ng-container *ngIf="products.length < 10">
