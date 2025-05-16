@@ -38,7 +38,7 @@
       <label class="form-label order-form-label">{{ 'ORDER.DELIVERY_DATE' | translate }}</label>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-        <input type="date" class="form-control" [ngModel]="deliveryDate" id="order_created_delivery_date"/>
+        <input type="date" class="form-control" [ngModel]="deliveryDate" id="order_created_delivery_date" title="{{ 'ORDER.DELIVERY_DATE' | translate }}"/>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@
           <th>{{ 'ORDER.TOTAL' | translate }}</th>
           <th>
             <button id="btn_open_product_stocks" class="btn btn-sm btn-primary btn-add-product" data-bs-toggle="modal"
-              data-bs-target="#addProductModal">
+              data-bs-target="#addProductModal" title="{{ 'ORDER.ADD_PRODUCTS' | translate }}">
               <i class="bi bi-plus"></i>
             </button>
           </th>
@@ -72,19 +72,19 @@
           <td>
             <div class="input-group quantity-control">
               <button id="create_order_btn_increase_quantity_{{i}}" class="quantity-btn" [disabled]="selectedModalProducts[product.id] >= product.quantity_in_stock"
-                (click)="incrementQuantity(product)">
+                (click)="incrementQuantity(product)" title="{{ 'ORDER.INCREASE_QUANTITY' | translate }}">
                 <i class="bi bi-plus"></i>
               </button>
               <span class="quantity-value">{{ product?.quantitySelected || 0 }}</span>
               <button id="create_order_btn_decrease_quantity_{{i}}" class="quantity-btn" [disabled]="product?.quantitySelected <= 1"
-                (click)="decrementQuantity(product)">
+                (click)="decrementQuantity(product)" title="{{ 'ORDER.DECREASE_QUANTITY' | translate }}">
                 <i class="bi bi-dash"></i>
               </button>
             </div>
           </td>
           <td>{{ product.product.unit_price * product.quantity_in_stock }} {{ product.product.currency_price }}</td>
           <td>
-            <button class="btn btn-sm btn-dange btn-iconr" (click)="removeProduct(product)">
+            <button class="btn btn-sm btn-dange btn-iconr" (click)="removeProduct(product)" title="{{ 'ORDER.REMOVE_PRODUCT' | translate }}">
               <i class="bi bi-trash"></i>
             </button>
           </td>
@@ -141,7 +141,7 @@
           <tbody>
             <tr *ngFor="let product of availableProducts; let i = index">
               <td><input id="create_order_checkbox_{{i}}" class="pointer" type="checkbox" [checked]="hasSelectedProductStock(product.id)"
-                  (click)="toggleSelectProduct(product)" /></td>
+                  (click)="toggleSelectProduct(product)" title="{{ 'ORDER.CHECK_BOX' | translate }} {{ product.product.name }}"/></td>
               <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.name }}</td>
               <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.description }}</td>
               <td class="pointer" (click)="toggleSelectProduct(product)">{{ product.product.unit_price }} {{
@@ -151,12 +151,12 @@
                 <div class="input-group input-group-sm quantity-control">
                   <button id="create_order_btn_increase_{{i}}" class="quantity-btn"
                     [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] >= product.quantity_in_stock"
-                    (click)="increaseModalQuantity(product.id, product.quantity_in_stock)"><i
+                    (click)="increaseModalQuantity(product.id, product.quantity_in_stock)" title="{{ 'ORDER.INCREASE_QUANTITY' | translate }}"><i
                       class="bi bi-plus"></i></button>
                   <span class="quantity-value">{{ selectedModalProducts[product.id] || 0 }}</span>
                   <button id="create_order_btn_decrease_{{i}}" class="quantity-btn"
                     [disabled]="!hasSelectedProductStock(product.id) || selectedModalProducts[product.id] <= 1"
-                    (click)="decreaseModalQuantity(product.id)"><i class="bi bi-dash"></i></button>
+                    (click)="decreaseModalQuantity(product.id)" title="'ORDER.DECREASE_QUANTITY' | translate"><i class="bi bi-dash"></i></button>
                 </div>
               </td>
             </tr>

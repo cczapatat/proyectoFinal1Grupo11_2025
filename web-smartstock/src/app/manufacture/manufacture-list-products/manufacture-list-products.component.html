@@ -15,11 +15,11 @@
         </thead>
         <tbody>
           <ng-container *ngIf="manufacturerPaginated.manufacturers; else noManufacturers">
-            <!-- Render sellers -->
+            <!-- Render Manufactures -->
             <tr *ngFor="let manufacturer of manufacturerPaginated.manufacturers" [class.table-active]="manufacturer.id === manufacturerId">
               <td class="text-center align-middle">
                 <input type="checkbox" class="form-check-input" [checked]="manufacturer.id === manufacturerId"
-                  (click)="onSelectManufacturerCheckbox(manufacturer.id)" />
+                  (click)="onSelectManufacturerCheckbox(manufacturer.id)" title="{{ 'MANUFACTURER_LIST.SELECT_MANUFACTURE' | translate }} {{ manufacturer.name }}"/>
               </td>
               <td class="text-start fw-bold">{{ manufacturer.name }}</td>
               <td class="text-start">{{ 'COUNTRIES.'+ manufacturer.country | translate }}</td>
@@ -87,7 +87,7 @@
           <ng-container *ngIf="products.length > 0; else noProducts">
             <tr *ngFor="let product of products">
               <td class="text-center align-middle">
-                <input type="checkbox" class="form-check-input" [checked]="true" [disabled]="true"/>
+                <input type="checkbox" class="form-check-input" [checked]="true" [disabled]="true" title="{{ product.name }}"/>
               </td>
               <td class="text-start pt-0 pb-0 _pname">{{ product.name }}</td>
               <td class="text-start pt-0 pb-0 align-middle">{{ 'CATEGORIES.' + product.category| translate }}</td>

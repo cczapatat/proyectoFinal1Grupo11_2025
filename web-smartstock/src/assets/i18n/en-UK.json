@@ -275,7 +275,12 @@
     "CREATE_SUCCESS_TITLE": "Successful Creation",
     "CREATE_SUCCESS_MESSAGE": "The order has been successfully created",
     "CREATE_ERROR_TITLE": "Error",
-    "CREATE_ERROR_MESSAGE": "An error has occurred: the order cannot be created"
+    "CREATE_ERROR_MESSAGE": "An error has occurred: the order cannot be created",
+    "ADD_PRODUCTS": "Add Products",
+    "INCREASE_QUANTITY": "Increase Quantity",
+    "DECREASE_QUANTITY": "Decrease Quantity",
+    "CHECK_BOX": "Select ",
+    "REMOVE_PRODUCT": "Remove Product"
   },
   "MASSIVES": {
     "CREATE_PRODUCTS_TITLE": "Mass Product Upload",
@@ -311,7 +316,8 @@
     "ERROR_LIST_PRODUCTS": "An error has occurred: the list of products could not be loaded",
     "ERROR_LIST_MANUFACTURERS": "An error has occurred: the list of manufacturers could not be loaded",
     "ERROR_TITLE_MANUFACTURERS": "Error",
-    "ERROR_TITLE_PRODUCTS": "Error"
+    "ERROR_TITLE_PRODUCTS": "Error",
+    "SELECT_MANUFACTURER": "Select "
   },
   "COUNTRIES": {
     "USA": "USA",
