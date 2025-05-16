@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SmartStock</string>
+    <string name="action_settings">Configurações</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Primeiro Fragmento</string>
+    <string name="second_fragment_label">Segundo Fragmento</string>
+    <string name="next">Próximo</string>
+    <string name="previous">Anterior</string>
+    <string name="usuario">Usuário</string>
+    <string name="password">Senha</string>
+    <string name="entrar">ENTRAR</string>
+    <string name="olvide_contrasena">ESQUECI A SENHA</string>
+    <string name="nuevo_usuario">NOVO USUÁRIO</string>
+    <string name="configuraciones">Configurações</string>
+    <string name="cerrar_sesion">Sair</string>
+    <string name="hello_blank_fragment">Fragmento vazio</string>
+    <string name="desc_elemento_lista">Descrição do item da lista</string>
+
+    <!-- Fragments -->
+    <string name="sign_up_fragment_label">Fragmento de Cadastro</string>
+    <string name="create_fragment_label">Fragmento de Criação</string>
+    <string name="client_fragment_label">Fragmento de Clientes</string>
+    <string name="edit_fragment_label">Fragmento de Edição</string>
+    <string name="asociate_fragment_label">Fragmento de Associação</string>
+    <string name="register_client_fragment_label">Fragmento de Cadastro de Cliente</string>
+    <string name="asociate_select_fragment_label">Fragmento de Seleção de Associação</string>
+    <string name="create_order_fragment_label">Fragmento de Criação de Pedido</string>
+    <string name="list_fragment_label">Fragmento de Lista</string>
+    <string name="upload_video_fragment_label">Fragmento de Envio de Vídeo</string>
+    <string name="record_fragment_label">Fragmento de Gravação</string>
+    <string name="search_stock_fragment_label">Fragmento de Consulta de Estoque</string>
+
+    <!-- Auth -->
+    <string name="crear_nueva_cuenta">Criar nova conta</string>
+    <string name="ya_registrado">Já está registrado? Se sim, acesse o link abaixo para fazer login</string>
+    <string name="aqui">Aqui.</string>
+    <string name="registrarse">Cadastrar-se</string>
+    <string name="nombre">Nome</string>
+    <string name="email">Email</string>
+    <string name="constrasena">Senha</string>
+    <string name="repetir_contrasena">Repetir Senha</string>
+    <string name="no_registrado">Não está registrado? Cadastre-se acessando este link</string>
+    <string name="iniciar_sesion">Entrar</string>
+    <string name="iniciar_sesion_titulo">título: Entrar</string>
+    <string name="iniciar_sesion_boton">botão: Entrar</string>
+
+    <!-- Clients -->
+    <string name="lista_de_clientes">Meus Clientes</string>
+    <string name="lista_de_clientes_titulo">título: Meus Clientes</string>
+    <string name="lista_de_clientes_menu">menu: Meus Clientes</string>
+    <string name="desc_nombre_cliente">Descrição nome cliente: %1$s</string>
+    <string name="desc_tipo_cliente">Descrição tipo de cliente</string>
+    <string name="desc_direccion_cliente">Descrição endereço cliente</string>
+    <string name="desc_boton_seleccionar_cliente">Descrição botão selecionar cliente</string>
+    <string name="registrar_cliente">Cadastrar Cliente</string>
+    <string name="registro_clientes_titulo">título: Cadastrar Cliente</string>
+    <string name="registrar_cliente_nombre">Nome</string>
+    <string name="registrar_cliente_direccion">Endereço</string>
+    <string name="registrar_cliente_telefono">Telefone</string>
+    <string name="registrar_cliente_email">Email</string>
+    <string name="registrar_cliente_tipo">Tipo de cliente</string>
+    <string name="registrar_cliente_zona">Zona Geográfica</string>
+    <string name="registrar_cliente_seleccionar_zona">Selecionar zona</string>
+    <string name="registrar_cliente_seleccionar_zona_desc">Descrição: Selecionar zona</string>
+    <string name="registrar_cliente_seleccionar_tipo">Selecionar tipo</string>
+    <string name="registrar_cliente_seleccionar_tipo_desc">Descrição: Selecionar tipo</string>
+
+    <!-- Notifications -->
+    <string name="desc_notification_icon">Ícone de notificação</string>
+    <string name="seleccionar_tono">Selecionar toque</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="crear">Criar</string>
+
+    <!-- Navigation -->
+    <string name="nav_cliente">Meus Clientes</string>
+    <string name="nav_menu">Menu</string>
+    <string name="menu_notifications">Notificações</string>
+    <string name="menu_registrar_visita">Registrar visita</string>
+    <string name="menu_listar_clientes">Listar Clientes</string>
+    <string name="menu_listar_visitas">Listar Visitas</string>
+    <string name="menu_crear_cliente">Criar Cliente</string>
+    <string name="menu_consulta_productos">Consultar Produtos</string>
+    <string name="menu_pedidos">Criar Pedido</string>
+    <string name="menu_cargar_video">Enviar Vídeo</string>
+    <string name="menu_cerrar_sesion">Sair</string>
+    <string name="aceptar">Aceitar</string>
+
+    <!-- Messages -->
+    <string name="error_login_fields">Todos os campos devem ser preenchidos</string>
+    <string name="success_login">Bem-vindo</string>
+    <string name="error_login">Ocorreu um erro ao entrar</string>
+    <string name="success_add_client">Cliente cadastrado com sucesso</string>
+    <string name="error_add_client">Erro ao salvar cliente</string>
+    <string name="error_add_client_fields">Todos os campos devem ser preenchidos</string>
+    <string name="seleccionado">Você selecionou</string>
+
+    <!-- Orders -->
+    <string name="crear_pedido">Criar Pedido</string>
+    <string name="desc_seleccionar_cliente">Descrição selecionar cliente</string>
+    <string name="desc_seleccionar_fecha">Descrição selecionar data</string>
+    <string name="desc_seleccionar_tipo_pago">Descrição selecionar tipo de pagamento</string>
+    <string name="crear_pedido_titulo">título: Criar Pedido</string>
+    <string name="seleccionar_cliente">Selecionar Cliente</string>
+    <string name="seleccionar_fecha">Selecionar Data</string>
+    <string name="tipo_pago">Tipo de pagamento</string>
+    <string name="tipo_pago_ondelivery">Pagamento na entrega</string>
+    <string name="tipo_pago_creditcard">Cartão de crédito</string>
+    <string name="tipo_pago_debitcard">Cartão de débito</string>
+    <string name="add_product">Adicionar Produto</string>
+    <string name="moneda">COP</string>
+    <string name="total">Total:</string>
+    <string name="lista_productos_total">Total da lista</string>
+    <string name="cuadro_agregar_producto">Adicionar Produtos</string>
+    <string name="titulo_agregar_producto">Título Adicionar Produtos</string>
+    <string name="lista_productos_disponibles">Lista de produtos disponíveis</string>
+    <string name="hint_cantidad_producto">Informe a quantidade</string>
+    <string name="campo_cantidad_producto">Quantidade do produto</string>
+    <string name="boton_agregar_producto">Botão Adicionar Produtos</string>
+    <string name="boton_agregar_crear">Botão criar</string>
+    <string name="boton_cancelar">Botão cancelar</string>
+    <string name="desc_nombre_producto">Produto: %1$s</string>
+    <string name="desc_precio_producto">Preço: %1$s %2$.0f</string>
+    <string name="desc_precio_promocional">Preço promocional: %1$s %2$.0f</string>
+    <string name="desc_cantidad_disponible">Quantidade disponível: %1$d unidades</string>
+    <string name="desc_producto">Descrição: %1$s</string>
+    <string name="desc_precio_unitario">Preço unitário: %1$s %2$.0f</string>
+    <string name="desc_cantidad_producto">Quantidade: %1$d unidades</string>
+    <string name="desc_boton_eliminar_producto">Remover produto %1$s</string>
+    <string name="seleccionar_producto">Selecionar Produto</string>
+    <string name="cantidad">Quantidade</string>
+    <string name="agregar">Adicionar</string>
+    <string name="unidad">UND</string>
+    <string name="pedido">Pedido</string>
+    <string name="error_orden">Erro ao criar pedido, tente novamente.</string>
+    <string name="success_orden">Pedido criado com sucesso.</string>
+    <string name="favor_seleccionar_producto">Selecione um produto</string>
+    <string name="favor_ingresar_cantidad">Informe uma quantidade válida</string>
+    <string name="producto_seleccionado">Produto selecionado:</string>
+    <string name="no_stock_available">Sem estoque disponível</string>
+    <string name="max_stock_available">Máximo disponível:</string>
+
+    <!-- Visits -->
+    <string name="lista_de_visitas">Minhas Visitas</string>
+    <string name="lista_de_visitas_titulo">título: Minhas Visitas</string>
+    <string name="registrar_visita">Registrar Visita</string>
+    <string name="registrar_visita_descripcion">Descrição da visita</string>
+    <string name="registrar_visita_existoso">Visita registrada com sucesso</string>
+    <string name="registrar_visita_error">Erro ao registrar visita</string>
+
+    <!-- Video -->
+    <string name="pantalla_carga_video">Tela de envio de vídeo</string>
+    <string name="titulo_carga_video">título Enviar vídeo</string>
+    <string name="subtitulo_carga_video">Instruções para enviar um vídeo</string>
+    <string name="hint_seleccionar_cliente">Hint Mostrar lista de clientes</string>
+    <string name="hint_seleccionar_fecha">Hint Campo para escolher data</string>
+    <string name="boton_calendario">Botão Abrir calendário</string>
+    <string name="icono_cargar_video">Ícone para selecionar vídeo</string>
+    <string name="estado_video_seleccionado">Status: %1$s</string>
+    <string name="boton_cancelar_carga">Botão Cancelar envio de vídeo</string>
+    <string name="boton_aceptar_carga">botão Aceitar e enviar vídeo</string>
+    <string name="cargar_video_titulo">Enviar Vídeo da Loja</string>
+    <string name="cargar_video_subtitulo">Envie um vídeo da loja do cliente para receber recomendações de posicionamento de produtos com IA.</string>
+    <string name="cargar_video_seleccionar_cliente">Selecionar Cliente</string>
+    <string name="cargar_video_seleccionar_fecha">Selecionar Data</string>
+    <string name="cargar_video_seleccionar_cargar">Enviar</string>
+    <string name="cargar_video_analisis">Análise de vídeo</string>
+    <string name="cargar_video_procesando">Em breve você receberá recomendações para posicionar os produtos na loja.</string>
+    <string name="cargar_video_error_tamano">Tamanho máximo do vídeo (20MB) excedido.</string>
+    <string name="cargar_video_error_formato">Formato de vídeo inválido (MP4).</string>
+    <string name="cargar_video_recomendaciones">Recomendações</string>
+    <string name="cargar_video_seleccionado">Vídeo:</string>
+    <string name="cargar_video_seleccionado_ok">Enviado com sucesso!</string>
+    <string name="cargar_video_seleccionado_bad">Falha no envio. Tente novamente</string>
+
+    <!-- Errors -->
+    <string name="error_user_id_required">ID do usuário obrigatório</string>
+    <string name="error_seller_id_required">ID do vendedor obrigatório</string>
+    <string name="error_name_required">Nome obrigatório</string>
+    <string name="error_phone_required">Telefone obrigatório</string>
+    <string name="error_email_required">Email obrigatório</string>
+    <string name="error_address_required">Endereço obrigatório</string>
+    <string name="error_client_type_required">Tipo de cliente obrigatório</string>
+    <string name="error_zone_required">Zona obrigatória</string>
+    <string name="error_unknown">Ocorreu um erro desconhecido</string>
+    <string name="error_network">Erro de rede. Tente novamente.</string>
+    <string name="error_email_exists">Email já cadastrado</string>
+    <string name="error_phone_exists">Telefone já cadastrado</string>
+    <string name="error_client_exists">Cliente já cadastrado</string>
+    <string name="error_email_format">Formato de email inválido</string>
+    <string name="error_phone_format">Formato de telefone inválido</string>
+    <string name="error_database_integrity">Erro no servidor</string>
+
+    <!-- Client Types -->
+    <string name="client_type_supermarket">Supermercado</string>
+    <string name="client_type_corner_store">Mercearia</string>
+
+    <!-- Zones -->
+    <string name="zone_south">Sul</string>
+    <string name="zone_north">Norte</string>
+    <string name="zone_east">Leste</string>
+    <string name="zone_west">Oeste</string>
+    <string name="zone_center">Centro</string>
+    <string name="zone_northeast">Nordeste</string>
+    <string name="zone_northwest">Noroeste</string>
+    <string name="zone_southeast">Sudeste</string>
+    <string name="zone_southwest">Sudoeste</string>
+
+    <!-- Stock -->
+    <string name="error_stock_not_found">Erro: estoque não encontrado</string>
+    <string name="error_id_store_required">Erro, depósito obrigatório</string>
+    <string name="error_id_product_required">Erro, produto obrigatório</string>
+    <string name="consulta_disponibilidad_titulo">Consultar disponibilidade de produtos</string>
+    <string name="consulta_disponibilidad_bodega">Selecionar Depósito</string>
+    <string name="consulta_disponibilidad_producto">Selecionar Produto</string>
+    <string name="consulta_disponibilidad_buscar">Buscar Produto</string>
+    <string name="consulta_disponibilidad_volver">Voltar</string>
+    <string name="consulta_disponibilidad_precio_unitario">Preço Unitário:</string>
+    <string name="consulta_disponibilidad_precio_promocional">Preço Promocional:</string>
+    <string name="consulta_disponibilidad_descripcion">Descrição:</string>
+    <string name="consulta_disponibilidad_unidad">UND</string>
+    <string name="success_stock">Consulta de estoque realizada com sucesso</string>
+    <string name="pantalla_busqueda_stock">Tela de consulta de estoque</string>
+    <string name="titulo_busqueda_stock">título Consulta de disponibilidade</string>
+    <string name="desc_seleccionar_bodega">Descrição Selecionar depósito</string>
+    <string name="hint_seleccionar_bodega">Hint Mostrar lista de depósitos</string>
+    <string name="desc_seleccionar_producto">Descrição Selecionar produto</string>
+    <string name="hint_seleccionar_producto">Hint Mostrar lista de produtos</string>
+    <string name="boton_buscar_producto">Botão Buscar produto no estoque</string>
+    <string name="boton_volver_busqueda">Botão Voltar ao menu principal</string>
+    <string name="lista_resultados_stock">Resultados da consulta</string>
+    <string name="desc_producto_seleccionado">Selecionado: %1$s</string>
+    <string name="card_desc_producto_stock">Informações do produto no estoque</string>
+
+    <!-- General -->
+    <string name="title_notifications_list">Notificações</string>
+    <string name="card_desc_cliente">Informações do cliente</string>
+    <string name="card_nombre_cliente">Cliente: %1$s</string>
+    <string name="card_tipo_cliente">Tipo: %1$s</string>
+    <string name="card_direccion_cliente">Endereço: %1$s</string>
+    <string name="card_boton_seleccionar_cliente">Selecionar cliente %1$s</string>
+</resources>

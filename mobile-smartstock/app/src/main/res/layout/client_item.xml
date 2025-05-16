@@ -71,7 +71,7 @@
                     android:paddingBottom="3dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceLabelMedium"
-                    android:text="@{client.clientType}"
+                    app:translatedClientType="@{client.clientType}"
                     android:importantForAccessibility="yes"
                     android:contentDescription='@{@string/card_tipo_cliente(client.name)}'
                     tools:text="Tienda de barrio"/>
