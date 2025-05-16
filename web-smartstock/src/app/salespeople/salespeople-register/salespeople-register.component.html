@@ -138,7 +138,11 @@
         </div>
       </div>
       <div class="col-md-3" style="padding-top: 1.7rem;">
-        <select id="currencyQuota" formControlName="currencyQuota">
+        <select
+          id="currencyQuota"
+          formControlName="currencyQuota"
+          [attr.aria-label]="'SIGNUP.CURRENCY_LABEL' | translate"
+        >
           <option value="">{{ 'SIGNUP.CURRENCY_SELECTED' | translate }}</option>
           <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
         </select>
@@ -163,7 +167,7 @@
         </div>
       </div>
       <div class="col-md-3" style="padding-top: 1.7rem;">
-        <select id="currencyTarget" formControlName="currencyTarget">
+        <select id="currencyTarget" formControlName="currencyTarget" [attr.aria-label]="'SIGNUP.CURRENCY_LABEL' | translate">
           <option value="">{{ 'SIGNUP.CURRENCY_SELECTED' | translate }}</option>
           <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
         </select>
