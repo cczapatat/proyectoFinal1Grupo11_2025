@@ -276,7 +276,12 @@
     "CREATE_SUCCESS_TITLE": "Creación Éxitosa",
     "CREATE_SUCCESS_MESSAGE": "La orden ha sido creada correctamente",
     "CREATE_ERROR_TITLE": "Error",
-    "CREATE_ERROR_MESSAGE": "Un error ha ocurrido: la orden no pudo ser creada"
+    "CREATE_ERROR_MESSAGE": "Un error ha ocurrido: la orden no pudo ser creada",
+    "ADD_PRODUCTS": "Agregar Productos",
+    "INCREASE_QUANTITY": "Aumentar Cantidad",
+    "DECREASE_QUANTITY": "Disminuir Cantidad",
+    "CHECK_BOX": "Seleccionar ",
+    "REMOVE_PRODUCT": "Eliminar Producto"
   },
   "MASSIVES": {
     "CREATE_PRODUCTS_TITLE": "Registro Masivo de Productos",
@@ -312,7 +317,8 @@
     "ERROR_LIST_PRODUCTS": "Ha ocurrido un error: no se pudo cargar la lista de productos",
     "ERROR_LIST_MANUFACTURERS": "Ha ocurrido un error: no se pudo cargar la lista de fabricantes",
     "ERROR_TITLE_MANUFACTURERS": "Error",
-    "ERROR_TITLE_PRODUCTS": "Error"
+    "ERROR_TITLE_PRODUCTS": "Error",
+    "SELECT_MANUFACTURER": "Seleccionar "
   },
   "COUNTRIES": {
     "USA": "USA",
