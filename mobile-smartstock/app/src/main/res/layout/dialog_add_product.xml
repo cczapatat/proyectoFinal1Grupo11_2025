@@ -42,7 +42,7 @@
     <RelativeLayout
         android:id="@+id/add_producto_section_2"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="500dp"
         android:clipToOutline="true"
         android:layout_below="@id/add_producto_section_1"
         android:paddingHorizontal="8dp"

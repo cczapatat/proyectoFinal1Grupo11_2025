@@ -76,6 +76,9 @@ class MainActivity : AppCompatActivity() {
                     showPopupMenu(bottomNavigationView.findViewById(R.id.nav_menu), userType)
                     return@setOnItemSelectedListener false  // Prevent default behavior
                 }
+                R.id.nav_clients -> {
+                    navController.navigate(R.id.ClientFragment)
+                    true}
                 else -> {
                     NavigationUI.onNavDestinationSelected(item, navController)
                     return@setOnItemSelectedListener true
@@ -147,7 +150,7 @@ class MainActivity : AppCompatActivity() {
             "CLIENT" -> {
                 popup.menu.findItem(R.id.SearchStockFragment).isVisible = true
                 popup.menu.findItem(R.id.CreateOrderFragment).isVisible = true
-                popup.menu.findItem(R.id.UploadVideoFragment).isVisible = true
+                popup.menu.findItem(R.id.UploadVideoFragment).isVisible = false
             }
             // Filter menu based on user type
         }

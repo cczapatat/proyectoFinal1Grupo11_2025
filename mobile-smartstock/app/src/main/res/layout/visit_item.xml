@@ -64,7 +64,7 @@
                     android:paddingBottom="3dp"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textAppearanceLabelMedium"
-                    android:text="@{visit.client.clientType}"
+                    app:translatedClientType="@{visit.client.clientType}"
                     tools:text="CORNER STORE"/>
 
                 <TextView
