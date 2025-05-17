@@ -18,11 +18,11 @@ describe('List Seller´s clients Test', () => {
     .find('input[type="checkbox"]')      // find the checkbox in that row
     .check(); 
 
-    cy.contains('aclientcypress@sta.com');
+    cy.contains('client@client.com');
 
     
-    cy.contains('acypress3@sta.com');
-    cy.contains('td', 'acypress3@sta.com') // find the cell with the target email
+    cy.contains('mzaidiro.mendoza8@sta.com');
+    cy.contains('td', 'mzaidiro.mendoza8@sta.com') // find the cell with the target email
     .parent('tr')                         // go to the parent row
     .find('input[type="checkbox"]')      // find the checkbox in that row
     .check(); 

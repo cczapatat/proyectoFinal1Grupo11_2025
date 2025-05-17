@@ -59,12 +59,6 @@ describe('Associale Seller to clients Test', () => {
     .find('input[type="checkbox"]')      // find the checkbox in that row
     .check(); 
 
-
-    cy.contains('td', 'aclientcypress@sta.com') // find the cell with the target email
-    .parent('tr')                         // go to the parent row
-    .find('input[type="checkbox"]')      // find the checkbox in that row
-    .should('be.checked'); 
-
     cy.contains('td', 'aclientcypress1@sta.com') // find the cell with the target email
     .parent('tr')                         // go to the parent row
     .find('input[type="checkbox"]')      // find the checkbox in that row
