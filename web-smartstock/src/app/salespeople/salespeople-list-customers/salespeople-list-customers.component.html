@@ -21,9 +21,9 @@
           <ng-container *ngIf="sellers.length > 0; else noSellers">
             <!-- Render sellers -->
             <tr *ngFor="let seller of sellers" [class.table-active]="seller === selectedSeller">
-              <td class="text-center align-middle" title="{{ seller.name }}">
+              <td class="text-center align-middle" >
                 <input type="checkbox" class="form-check-input" [checked]="seller === selectedSeller"
-                  (change)="onSelectSellerCheckbox(seller)" />
+                  (change)="onSelectSellerCheckbox(seller)" title="{{ seller.name }}"/>
               </td>
               <td class="text-start fw-bold">{{ seller.name }}</td>
               <td class="text-start">{{ 'ZONES.'+ seller.zone | translate }}</td>
@@ -96,9 +96,9 @@
           <!-- Show clients if available -->
           <ng-container *ngIf="clients.length > 0; else noClients">
             <tr *ngFor="let client of clients" [class.table-active]="client === selectedClient">
-              <td class="text-center align-middle" title="{{ client.name }}">
+              <td class="text-center align-middle" >
                 <input type="checkbox" class="form-check-input" [checked]="client === selectedClient"
-                  (change)="onSelectClientCheckbox(client)" />
+                  (change)="onSelectClientCheckbox(client)" title="{{ client.name }}"/>
               </td>
               <td class="text-start pt-0 pb-0">
                 <p class="mb-1 pt-0 pb-0 align-middle fw-bold">{{ client.name }}</p>
